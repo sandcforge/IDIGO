@@ -70,7 +70,7 @@ export const ItemCard = (props) => {
           </Avatar>
         }
         title={details.GodAppTitle}
-        subheader={`\u00a5${details.GodPresentPrice}`}
+        {/*subheader={`\u00a5${details.GodPresentPrice}`}*/}
       />
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>

@@ -76,32 +76,29 @@ export const App = () => {
     const buildFetchUrl = (tabIndex, subTabIndex, pageIndex) => {
       if (tabIndex === CONST_NEW_PRODUCT_TAB_INDEX) {
         const EndpointOfNewProducts = `https://www.snailsmall.com/Goods/FindPage?data={"Criterion":{"GodIsNew":true},"PageIndex":${pageIndex},"PageSize":${CONST_PAGE_SIZE}}`;
-        return corsProxy + EndpointOfNewProducts;
+        return EndpointOfNewProducts;
       }
       else if (tabIndex === CONST_CATEGORY_TAB_INDEX) {
         const EndpointOfCategroyProducts = `https://www.snailsmall.com/Goods/FindPage?data={"Criterion":{"GodCategoryCode":"${productCategory[subTabIndex].MgcCode}"},"PageIndex":${pageIndex},"PageSize":${CONST_PAGE_SIZE}}`;
-        return corsProxy + EndpointOfCategroyProducts;
+        return EndpointOfCategroyProducts;
       }
       return '';
     };
     if (rootTabValue === CONST_NEW_PRODUCT_TAB_INDEX || rootTabValue === CONST_CATEGORY_TAB_INDEX) {
-      const result = await axios(buildFetchUrl(rootTabValue, subTabValue, tabPageStatus.index));
+      const result = await axios.post('/api/proxy',{method: 'GET', url: buildFetchUrl(rootTabValue, subTabValue, tabPageStatus.index)});
       loadListData(result.data.Data.DataBody);
     }
   };
 
   const fetchProductCategory = async () => {
-    const result = await axios(corsProxy + EndpointOfProductCategory);
+    const result = await axios.post('/api/proxy',{method: 'GET', url: EndpointOfProductCategory});
     setProductCategory(result.data.Data);
   };
 
   const fetchOrderDetails = async (orderId) => {
     const EndpointOfOrderDetails = `https://www.snailsmall.com/Order/GetById?data={"OrdId":"${orderId}"}&buyercode=${CONST_MY_BUYER_CODE}`;
-    const cc = `https://api.allorigins.win/post?url=`;
-    const result = await axios.get(cc + EndpointOfOrderDetails);
-    console.log(cc + EndpointOfOrderDetails);
-
-    console.log(JSON.parse(result.data.contents));
+    const result = await axios.post('/api/proxy',{method: 'POST', url: EndpointOfOrderDetails});
+    console.log(result.data);
   };
 
 

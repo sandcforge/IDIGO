@@ -75,7 +75,7 @@ export const ItemCard = (props) => {
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
           <TextListItem title='商品名称' content={details.GodName} />
-          <TextListItem title='商品价格' content={`\u00a5${details.GodPresentPrice}`} />
+          {/*<TextListItem title='商品价格' content={`\u00a5${details.GodPresentPrice}`} />*/}
           <TextListItem title='商品规格' content={details.GodSpecification} />
           <TextListItem title='商品库存' content={details.GodSellStock} />
           <TextListItem title='商品文案' content={details.GodAppDescribe} />

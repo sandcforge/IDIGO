@@ -23,6 +23,8 @@ const CONST_CATEGORY_TAB_INDEX = 1;
 const CONST_ORDER_TAB_INDEX = 2;
 const defaultTabPageStatus = {index: 0, hasMore: true};
 const CONST_MY_BUYER_CODE = 68995;
+const CONST_DATA_STATUS_OK = 0;
+const CONST_DATA_STATUS_ERROR = -1;
 
 export const App = () => {
   const useStyles = makeStyles((theme) => ({
@@ -39,6 +41,7 @@ export const App = () => {
   const [listData, setListData] = useState([]);
   const [orderDetails, setOrderDetails] = useState(null);
   const [productCategory, setProductCategory] = useState([]);
+  const [orderIdTextFieldValue, setOrderIdTextFieldValue] = useState('');
 
   const handleSubTabChange = (event, newValue) => {
     clearListData();
@@ -50,6 +53,11 @@ export const App = () => {
     clearListData();
     setRootTabValueValue(newValue);
   };
+
+  const handleOrderIdTextFieldOnChange = (event) => {
+    setOrderIdTextFieldValue(event.target.value);
+  };
+
 
   const clearListData = () => {
     setListData([]);
@@ -96,11 +104,23 @@ export const App = () => {
   };
 
   const fetchOrderDetails = async (orderId) => {
-    const EndpointOfOrderDetails = `https://www.snailsmall.com/Order/GetById?data={"OrdId":"${orderId}"}&buyercode=${CONST_MY_BUYER_CODE}`;
-    const result = await axios.post('/api/proxy',{method: 'POST', url: EndpointOfOrderDetails});
-    console.log(result.data);
-  };
+    try {
+      const EndpointOfOrderSummary = `https://www.snailsmall.com/Order/GetById?data={"OrdId":"${orderId}"}&buyercode=${CONST_MY_BUYER_CODE}`;
+      const result1 = await axios.post('/api/proxy',{method: 'POST', url: EndpointOfOrderSummary});
+      const orderSummary = result1.data.Data;
+      if (orderSummary.OrdBuyerCode !== CONST_MY_BUYER_CODE.toString()) {
+        throw 'The buyer does not match!';
+      }
 
+      const EndpointOfLogisticSummary = `https://www.snailsmall.com/Order/FindLogistics1?data={"OrdCode":"${orderSummary.OrdCode}"}&buyercode=${CONST_MY_BUYER_CODE}`;
+      const result2 = await axios.post('/api/proxy',{method: 'POST', url: EndpointOfLogisticSummary});
+      const logisticSummary = result2.data.Data;
+      setOrderDetails({status: CONST_DATA_STATUS_OK, orderSummary, logisticSummary});
+    }
+    catch (err) {
+      setOrderDetails({status: CONST_DATA_STATUS_ERROR});
+    }
+  };
 
 
   useEffect(() => {
@@ -173,14 +193,21 @@ export const App = () => {
       </TabPanel>
       <TabPanel value={rootTabValue} index={CONST_ORDER_TAB_INDEX} padding={1}>
         <Box my={1}>
-          <TextField id="standard-basic" fullWidth={true} label="订单号" variant="outlined" />
+          <TextField
+            id="standard-basic"
+            fullWidth={true}
+            label="订单号"
+            value={orderIdTextFieldValue}
+            variant="outlined"
+            onChange={handleOrderIdTextFieldOnChange}
+          />
         </Box>
         <Button
           variant="contained"
           fullWidth={true}
           color="primary"
           startIcon={<SearchIcon />}
-          onClick={()=>{fetchOrderDetails(576451)}}
+          onClick={()=>{fetchOrderDetails(orderIdTextFieldValue)}}
         >
           查询订单
         </Button>

@@ -13,6 +13,8 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import clsx from 'clsx';
 
 const CONST_PROFIT = 1.15;
 const getBuyerPrice = (cost) => (cost*CONST_PROFIT).toFixed(2) ;
@@ -74,6 +76,17 @@ export const ItemCard = (props) => {
         }
         title={details.GodAppTitle}
         subheader={`\u00a5${getBuyerPrice(details.GodPresentPrice)}`}
+        action={
+          <IconButton
+          className={clsx(classes.expand, {
+            [classes.expandOpen]: expanded,
+          })}
+          aria-expanded={expanded}
+          aria-label="show more"
+        >
+          <ExpandMoreIcon />
+        </IconButton>
+        }
       />
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>

@@ -10,8 +10,9 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    maxWidth: 345,
-    margin: 8,
+    maxWidth: '100%',
+    marginTop: 8,
+    marginBottom: 8,
   },
   expand: {
     transform: 'rotate(0deg)',
@@ -46,7 +47,6 @@ export const FolderCard = (props) => {
           className={clsx(classes.expand, {
             [classes.expandOpen]: expanded,
           })}
-          onClick={handleExpandClick}
           aria-expanded={expanded}
           aria-label="show more"
         >
@@ -55,6 +55,7 @@ export const FolderCard = (props) => {
         }
         title={title}
         subheader={subheader}
+        onClick={handleExpandClick}
       />
 
       <Collapse in={expanded} timeout="auto" unmountOnExit>

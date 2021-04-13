@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {ItemCard} from './ItemCard.js';
+import {FolderCard} from './FolderCard.js';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -19,7 +20,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import Divider from '@material-ui/core/Divider';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import InfoIcon from '@material-ui/icons/Info';
@@ -28,6 +28,8 @@ import PersonIcon from '@material-ui/icons/Person';
 import PhoneIphoneIcon from '@material-ui/icons/PhoneIphone';
 import EventIcon from '@material-ui/icons/Event';
 import SearchIcon from '@material-ui/icons/Search';
+import LocalShippingIcon from '@material-ui/icons/LocalShipping';
+import ViewListIcon from '@material-ui/icons/ViewList';
 import './app.css';
 
 const corsProxy = 'https://api.codetabs.com/v1/proxy/?quest=';
@@ -176,6 +178,7 @@ export const App = () => {
     if (orderDetails && orderDetails.status === CONST_DATA_STATUS_OK) {
       console.log(orderDetails.logisticSummary.NodeInfos);
       return (<>
+        <FolderCard avatar={<InfoIcon/>} title={'订单详情'}>
         <List component="nav" >
           <ListItem >
             <ListItemIcon>
@@ -206,15 +209,6 @@ export const App = () => {
           </ListItem>
           <ListItem >
             <ListItemIcon>
-              <InfoIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary={"订单状态"}
-              secondary={orderDetails.orderSummary.OrdAppStatusName}
-            />
-          </ListItem>
-          <ListItem >
-            <ListItemIcon>
               <EventIcon />
             </ListItemIcon>
             <ListItemText
@@ -223,7 +217,25 @@ export const App = () => {
             />
           </ListItem>
         </List>
-        <Divider />
+        </FolderCard>
+
+        <FolderCard avatar={<ViewListIcon/>} title={'商品列表'}>
+          <List component="nav">
+            {orderDetails.orderSummary.EcmOrderGoodsInfos.map( (item, i) => (
+                <ListItem key={i}>
+                  <ListItemAvatar>
+                    <Avatar src={item.OgoGoodsImageUrl} />
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={item.OgoGoodsTitle}
+                    secondary={item.OgoNumber}
+                  />
+                </ListItem>
+            ))}
+          </List>
+        </FolderCard>
+
+        <FolderCard avatar={<LocalShippingIcon/>} title={'物流信息'}>
         <List component="nav">
           {orderDetails.logisticSummary.NodeInfos.map( (node, i) => (
               <ListItem >
@@ -238,21 +250,7 @@ export const App = () => {
               </ListItem>
           ))}
         </List>
-        <Divider />
-        <List component="nav">
-          {orderDetails.orderSummary.EcmOrderGoodsInfos.map( (item, i) => (
-              <ListItem key={i}>
-                <ListItemAvatar>
-                  <Avatar src={item.OgoGoodsImageUrl} />
-                </ListItemAvatar>
-                <ListItemText
-                  primary={item.OgoGoodsTitle}
-                  secondary={item.OgoNumber}
-                />
-              </ListItem>
-          ))}
-        </List>
-
+        </FolderCard>
       </>);
     }
     else {

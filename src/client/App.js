@@ -66,7 +66,6 @@ export const App = () => {
   };
 
   const handleRootTabChange = (event, newValue) => {
-    console.log(newValue);
     clearListData();
     setRootTabValueValue(newValue);
   };
@@ -126,7 +125,7 @@ export const App = () => {
       const result1 = await axios.post('/api/proxy',{method: 'POST', url: EndpointOfOrderSummary});
       const orderSummary = result1.data.Data;
       if (orderSummary.OrdBuyerCode !== CONST_MY_BUYER_CODE.toString()) {
-        throw 'The buyer does not match!';
+        throw new Error('The buyer does not match!');
       }
 
       const EndpointOfLogisticSummary = `https://www.snailsmall.com/Order/FindLogistics1?data={"OrdCode":"${orderSummary.OrdCode}"}&buyercode=${CONST_MY_BUYER_CODE}`;
@@ -135,7 +134,8 @@ export const App = () => {
       setOrderDetails({status: CONST_DATA_STATUS_OK, orderSummary, logisticSummary});
     }
     catch (err) {
-      setOrderDetails({status: CONST_DATA_STATUS_ERROR, errMsg: err});
+      console.log(err);
+      setOrderDetails({status: CONST_DATA_STATUS_ERROR, errMsg: '查询错误！'});
     }
   };
 
@@ -176,7 +176,6 @@ export const App = () => {
       return null;
     }
     if (orderDetails && orderDetails.status === CONST_DATA_STATUS_OK) {
-      console.log(orderDetails.logisticSummary.NodeInfos);
       return (<>
         <FolderCard avatar={<InfoIcon/>} title={'订单详情'}>
         <List component="nav" >
@@ -228,7 +227,7 @@ export const App = () => {
                   </ListItemAvatar>
                   <ListItemText
                     primary={item.OgoGoodsTitle}
-                    secondary={item.OgoNumber}
+                    secondary={`数量：${item.OgoNumber}`}
                   />
                 </ListItem>
             ))}
@@ -311,7 +310,7 @@ export const App = () => {
           fullWidth={true}
           color="primary"
           startIcon={<SearchIcon />}
-          onClick={()=>{fetchOrderDetails(576451/*orderIdTextFieldValue*/)}}
+          onClick={()=>{fetchOrderDetails(orderIdTextFieldValue)}}
         >
           查询订单
         </Button>

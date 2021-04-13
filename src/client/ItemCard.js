@@ -14,6 +14,9 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 
+const CONST_PROFIT = 1.15;
+const getBuyerPrice = (cost) => (cost*CONST_PROFIT).toFixed(2) ;
+
 const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: '100%',
@@ -70,12 +73,13 @@ export const ItemCard = (props) => {
           </Avatar>
         }
         title={details.GodAppTitle}
-        subheader={`${details.GodSpecification}`}
+        subheader={`\u00a5${getBuyerPrice(details.GodPresentPrice)}`}
       />
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
           <TextListItem title='商品名称' content={details.GodName} />
-          {/*<TextListItem title='商品价格' content={`\u00a5${details.GodPresentPrice}`} />*/}
+          <TextListItem title='商品价格' content={`\u00a5${getBuyerPrice(details.GodPresentPrice)}`} />
+          <TextListItem title='商品代码' content={details.GodCode} />
           <TextListItem title='商品规格' content={details.GodSpecification} />
           <TextListItem title='商品库存' content={details.GodSellStock} />
           <TextListItem title='商品文案' content={details.GodAppDescribe} />

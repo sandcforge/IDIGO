@@ -11,8 +11,23 @@ import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Container from "@material-ui/core/Container";
 import TextField from '@material-ui/core/TextField';
-import SearchIcon from '@material-ui/icons/Search';
+import Avatar from '@material-ui/core/Avatar';
 
+
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Divider from '@material-ui/core/Divider';
+import AccessTimeIcon from '@material-ui/icons/AccessTime';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import InfoIcon from '@material-ui/icons/Info';
+import PlaceIcon from '@material-ui/icons/Place';
+import PersonIcon from '@material-ui/icons/Person';
+import PhoneIphoneIcon from '@material-ui/icons/PhoneIphone';
+import EventIcon from '@material-ui/icons/Event';
+import SearchIcon from '@material-ui/icons/Search';
 import './app.css';
 
 const corsProxy = 'https://api.codetabs.com/v1/proxy/?quest=';
@@ -118,7 +133,7 @@ export const App = () => {
       setOrderDetails({status: CONST_DATA_STATUS_OK, orderSummary, logisticSummary});
     }
     catch (err) {
-      setOrderDetails({status: CONST_DATA_STATUS_ERROR});
+      setOrderDetails({status: CONST_DATA_STATUS_ERROR, errMsg: err});
     }
   };
 
@@ -152,6 +167,97 @@ export const App = () => {
       }
       </>
     );
+  };
+
+  const renderOrderDetails = () => {
+    if (orderDetails === null) {
+      return null;
+    }
+    if (orderDetails && orderDetails.status === CONST_DATA_STATUS_OK) {
+      console.log(orderDetails.logisticSummary.NodeInfos);
+      return (<>
+        <List component="nav" >
+          <ListItem >
+            <ListItemIcon>
+              <PersonIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary={"收件人"}
+              secondary={orderDetails.orderSummary.OrdReceiverName}
+            />
+          </ListItem>
+          <ListItem >
+            <ListItemIcon>
+              <PhoneIphoneIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary={"联系电话"}
+              secondary={orderDetails.orderSummary.OrdReceiverMobile}
+            />
+          </ListItem>
+          <ListItem >
+            <ListItemIcon>
+              <PlaceIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary={"收件地址"}
+              secondary={orderDetails.orderSummary.OrdReceiverProvince+orderDetails.orderSummary.OrdReceiverCity+orderDetails.orderSummary.OrdReceiverCounty+orderDetails.orderSummary.OrdReceiverAddress}
+            />
+          </ListItem>
+          <ListItem >
+            <ListItemIcon>
+              <InfoIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary={"订单状态"}
+              secondary={orderDetails.orderSummary.OrdAppStatusName}
+            />
+          </ListItem>
+          <ListItem >
+            <ListItemIcon>
+              <EventIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary={"订单创建时间"}
+              secondary={orderDetails.orderSummary.OrdCreateTime}
+            />
+          </ListItem>
+        </List>
+        <Divider />
+        <List component="nav">
+          {orderDetails.logisticSummary.NodeInfos.map( (node, i) => (
+              <ListItem >
+                <ListItemIcon >
+                  { i=== 0 ?  <AccessTimeIcon /> : <CheckCircleIcon /> }
+                </ListItemIcon>
+                <ListItemText
+                  key={i}
+                  primary={node.context}
+                  secondary={node.time}
+                />
+              </ListItem>
+          ))}
+        </List>
+        <Divider />
+        <List component="nav">
+          {orderDetails.orderSummary.EcmOrderGoodsInfos.map( (item, i) => (
+              <ListItem key={i}>
+                <ListItemAvatar>
+                  <Avatar src={item.OgoGoodsImageUrl} />
+                </ListItemAvatar>
+                <ListItemText
+                  primary={item.OgoGoodsTitle}
+                  secondary={item.OgoNumber}
+                />
+              </ListItem>
+          ))}
+        </List>
+
+      </>);
+    }
+    else {
+      return (<div>{orderDetails.errMsg}</div>);
+    }
   };
 
   return (
@@ -207,10 +313,11 @@ export const App = () => {
           fullWidth={true}
           color="primary"
           startIcon={<SearchIcon />}
-          onClick={()=>{fetchOrderDetails(orderIdTextFieldValue)}}
+          onClick={()=>{fetchOrderDetails(576451/*orderIdTextFieldValue*/)}}
         >
           查询订单
         </Button>
+        {renderOrderDetails()}
       </TabPanel>
     </div>
   );

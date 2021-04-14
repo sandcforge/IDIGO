@@ -37,7 +37,8 @@ const EndpointOfProductCategory = `https://www.snailsmall.com/GoodsCategory/Find
 const CONST_PAGE_SIZE = 30;
 const CONST_NEW_PRODUCT_TAB_INDEX = 0;
 const CONST_CATEGORY_TAB_INDEX = 1;
-const CONST_ORDER_TAB_INDEX = 2;
+const CONST_SEARCH_TAB_INDEX = 2;
+const CONST_ORDER_TAB_INDEX = 3;
 const defaultTabPageStatus = {index: 0, hasMore: true};
 const CONST_MY_BUYER_CODE = 68995;
 const CONST_DATA_STATUS_OK = 0;
@@ -59,6 +60,7 @@ export const App = () => {
   const [orderDetails, setOrderDetails] = useState(null);
   const [productCategory, setProductCategory] = useState([]);
   const [orderIdTextFieldValue, setOrderIdTextFieldValue] = useState('');
+  const [searchTextFieldValue, setSearchTextFieldValue] = useState('');
 
   const handleSubTabChange = (event, newValue) => {
     clearListData();
@@ -70,10 +72,14 @@ export const App = () => {
     setRootTabValueValue(newValue);
   };
 
+  const handleSearchTextFieldOnChange = (event) => {
+    clearListData();
+    setSearchTextFieldValue(event.target.value);
+  };
+
   const handleOrderIdTextFieldOnChange = (event) => {
     setOrderIdTextFieldValue(event.target.value);
   };
-
 
   const clearListData = () => {
     setListData([]);
@@ -94,6 +100,16 @@ export const App = () => {
         index: tabPageStatus.index+1,
       }));
     }
+  };
+
+  /**
+   *
+   * @param {*} keyword : search keyword, only return goods info from Health products.
+   */
+  const fetchSearchResults = async (keyword) => {
+    const EndpointOfSearch = `https://www.snailsmall.com/Goods/FindPage?data={"Criterion":{"SearchKeys":"${keyword}","GodCategoryCode":"57115bc2-bd99-4678-aff4-7ec259d14b72"},"PageIndex":${tabPageStatus.index},"PageSize":${CONST_PAGE_SIZE}}`;
+    const result = await axios.post('/api/proxy',{method: 'POST', url: EndpointOfSearch});
+    loadListData(result.data.Data.DataBody);
   };
 
   const fetchData = async () => {
@@ -148,6 +164,13 @@ export const App = () => {
   }, []);
 
   const renderListView = () => {
+    let handleLoadingMoreButtonOnClick = null;
+    if (rootTabValue === CONST_SEARCH_TAB_INDEX) {
+      handleLoadingMoreButtonOnClick = async() => fetchSearchResults(searchTextFieldValue);
+    }
+    else {
+      handleLoadingMoreButtonOnClick = async() => fetchData();
+    }
     return (<>
       {listData.map((item) => <ItemCard key={item.GodId} details={item}/>)}
       {tabPageStatus.hasMore &&
@@ -156,7 +179,7 @@ export const App = () => {
             variant="contained"
             color="primary"
             fullWidth={true}
-            onClick={fetchData}
+            onClick={handleLoadingMoreButtonOnClick}
           >
             加载更多
           </Button>
@@ -268,6 +291,7 @@ export const App = () => {
         >
           <Tab label="新品" {...a11yProps(CONST_NEW_PRODUCT_TAB_INDEX)} />
           <Tab label="分类" {...a11yProps(CONST_CATEGORY_TAB_INDEX)} />
+          <Tab label="搜索" {...a11yProps(CONST_SEARCH_TAB_INDEX)} />
           <Tab label="订单" {...a11yProps(CONST_ORDER_TAB_INDEX)} />
         </Tabs>
       </AppBar>
@@ -294,6 +318,31 @@ export const App = () => {
         </TabPanel>
 
       </TabPanel>
+
+      <TabPanel value={rootTabValue} index={CONST_SEARCH_TAB_INDEX}>
+      <Box my={1}>
+          <TextField
+            id="standard-basic"
+            fullWidth={true}
+            label="商品名称"
+            value={searchTextFieldValue}
+            variant="outlined"
+            onChange={handleSearchTextFieldOnChange}
+          />
+        </Box>
+        <Button
+          variant="contained"
+          fullWidth={true}
+          color="primary"
+          startIcon={<SearchIcon />}
+          onClick={()=>{fetchSearchResults(searchTextFieldValue)}}
+        >
+          搜索商品
+        </Button>
+        {renderListView()}
+      </TabPanel>
+
+
       <TabPanel value={rootTabValue} index={CONST_ORDER_TAB_INDEX} padding={1}>
         <Box my={1}>
           <TextField

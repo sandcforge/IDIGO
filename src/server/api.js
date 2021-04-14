@@ -9,12 +9,12 @@ const miscRoutes = (app) => {
     const { url, method, data } = req.body;
     if (method === 'GET') {
       console.log('proxy GET');
-      const retRaw = await axios.get(url);
+      const retRaw = await axios.get(encodeURI(url));
       res.json(retRaw.data);
     }
     else if (method === 'POST') {
       console.log('proxy POST');
-      const retRaw = await axios.post(url, data);
+      const retRaw = await axios.post(encodeURI(url), data);
       res.json(retRaw.data);
     }
   });

@@ -22,7 +22,8 @@ const getBuyerPrice = (cost) => (cost*CONST_PROFIT).toFixed(2) ;
 const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: '100%',
-    margin: 8,
+    marginTop: 8,
+    marginBottom: 8,
   },
   expand: {
     transform: 'rotate(0deg)',

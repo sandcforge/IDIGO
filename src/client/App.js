@@ -35,10 +35,14 @@ import './app.css';
 const corsProxy = 'https://api.codetabs.com/v1/proxy/?quest=';
 const EndpointOfProductCategory = `https://www.snailsmall.com/GoodsCategory/FindBigCategory`;
 const CONST_PAGE_SIZE = 30;
+/**
+ * The tab index hasb to be 0, 1, 2, 3...
+ * We do not show CONST_CATEGORY_TAB_INDEX, so set this one to be -1.
+ */
 const CONST_NEW_PRODUCT_TAB_INDEX = 0;
-const CONST_CATEGORY_TAB_INDEX = 1;
-const CONST_SEARCH_TAB_INDEX = 2;
-const CONST_ORDER_TAB_INDEX = 3;
+const CONST_CATEGORY_TAB_INDEX = -1;
+const CONST_SEARCH_TAB_INDEX = 1;
+const CONST_ORDER_TAB_INDEX = 2;
 const defaultTabPageStatus = {index: 0, hasMore: true};
 const CONST_MY_BUYER_CODE = 68995;
 const CONST_DATA_STATUS_OK = 0;
@@ -290,7 +294,7 @@ export const App = () => {
           aria-label="simple tabs example"
         >
           <Tab label="新品" {...a11yProps(CONST_NEW_PRODUCT_TAB_INDEX)} />
-          <Tab label="分类" {...a11yProps(CONST_CATEGORY_TAB_INDEX)} />
+          {/* <Tab label="分类" {...a11yProps(CONST_CATEGORY_TAB_INDEX)} /> */}
           <Tab label="搜索" {...a11yProps(CONST_SEARCH_TAB_INDEX)} />
           <Tab label="订单" {...a11yProps(CONST_ORDER_TAB_INDEX)} />
         </Tabs>

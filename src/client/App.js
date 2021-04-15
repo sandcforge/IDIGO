@@ -39,7 +39,7 @@ const CONST_PAGE_SIZE = 30;
  * The tab index hasb to be 0, 1, 2, 3...
  * We do not show CONST_CATEGORY_TAB_INDEX, so set this one to be -1.
  */
-const CONST_NEW_PRODUCT_TAB_INDEX = 0;
+const CONST_HOME_PAGE_TAB_INDEX = 0;
 const CONST_CATEGORY_TAB_INDEX = -1;
 const CONST_SEARCH_TAB_INDEX = 1;
 const CONST_ORDER_TAB_INDEX = 2;
@@ -118,8 +118,9 @@ export const App = () => {
 
   const fetchData = async () => {
     const buildFetchUrl = (tabIndex, subTabIndex, pageIndex) => {
-      if (tabIndex === CONST_NEW_PRODUCT_TAB_INDEX) {
-        const EndpointOfNewProducts = `https://www.snailsmall.com/Goods/FindPage?data={"Criterion":{"GodIsNew":true},"PageIndex":${pageIndex},"PageSize":${CONST_PAGE_SIZE}}`;
+      if (tabIndex === CONST_HOME_PAGE_TAB_INDEX) {
+        const EndpointOfNewProducts = `https://www.snailsmall.com/Goods/FindPage?data={"Criterion":{"GodCategoryCode":"57115bc2-bd99-4678-aff4-7ec259d14b72"},"PageIndex":${pageIndex},"PageSize":${CONST_PAGE_SIZE}}`;
+        // const EndpointOfNewProducts = `https://www.snailsmall.com/Goods/FindPage?data={"Criterion":{"GodIsNew":true},"PageIndex":${pageIndex},"PageSize":${CONST_PAGE_SIZE}}`;
         return EndpointOfNewProducts;
       }
       else if (tabIndex === CONST_CATEGORY_TAB_INDEX) {
@@ -128,7 +129,7 @@ export const App = () => {
       }
       return '';
     };
-    if (rootTabValue === CONST_NEW_PRODUCT_TAB_INDEX || rootTabValue === CONST_CATEGORY_TAB_INDEX) {
+    if (rootTabValue === CONST_HOME_PAGE_TAB_INDEX || rootTabValue === CONST_CATEGORY_TAB_INDEX) {
       const result = await axios.post('/api/proxy',{method: 'GET', url: buildFetchUrl(rootTabValue, subTabValue, tabPageStatus.index)});
       loadListData(result.data.Data.DataBody);
     }
@@ -293,13 +294,13 @@ export const App = () => {
           onChange={handleRootTabChange}
           aria-label="simple tabs example"
         >
-          <Tab label="新品" {...a11yProps(CONST_NEW_PRODUCT_TAB_INDEX)} />
+          <Tab label="首页" {...a11yProps(CONST_HOME_PAGE_TAB_INDEX)} />
           {/* <Tab label="分类" {...a11yProps(CONST_CATEGORY_TAB_INDEX)} /> */}
           <Tab label="搜索" {...a11yProps(CONST_SEARCH_TAB_INDEX)} />
           <Tab label="订单" {...a11yProps(CONST_ORDER_TAB_INDEX)} />
         </Tabs>
       </AppBar>
-      <TabPanel value={rootTabValue} index={CONST_NEW_PRODUCT_TAB_INDEX}>
+      <TabPanel value={rootTabValue} index={CONST_HOME_PAGE_TAB_INDEX}>
         {renderListView()}
       </TabPanel>
       <TabPanel value={rootTabValue} index={CONST_CATEGORY_TAB_INDEX}>

@@ -54,6 +54,11 @@ export const App = () => {
       flexGrow: 1,
       backgroundColor: theme.palette.background.paper,
     },
+    cover: {
+      width: '100%',
+      marginTop: 8,
+      marginBottom: 8,
+    }
   }));
 
   const classes = useStyles();
@@ -301,6 +306,7 @@ export const App = () => {
         </Tabs>
       </AppBar>
       <TabPanel value={rootTabValue} index={CONST_HOME_PAGE_TAB_INDEX}>
+        <img className={classes.cover} src="./public/cover.jpg"/>
         {renderListView()}
       </TabPanel>
       <TabPanel value={rootTabValue} index={CONST_CATEGORY_TAB_INDEX}>

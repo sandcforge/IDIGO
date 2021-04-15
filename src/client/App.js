@@ -347,7 +347,7 @@ export const App = () => {
       </TabPanel>
 
 
-      <TabPanel value={rootTabValue} index={CONST_ORDER_TAB_INDEX} padding={1}>
+      <TabPanel value={rootTabValue} index={CONST_ORDER_TAB_INDEX} >
         <Box my={1}>
           <TextField
             id="standard-basic"

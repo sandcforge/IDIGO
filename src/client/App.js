@@ -31,7 +31,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import LocalShippingIcon from '@material-ui/icons/LocalShipping';
 import ViewListIcon from '@material-ui/icons/ViewList';
 import './app.css';
-
+import cover from '../../public/cover.jpg';
 const corsProxy = 'https://api.codetabs.com/v1/proxy/?quest=';
 const EndpointOfProductCategory = `https://www.snailsmall.com/GoodsCategory/FindBigCategory`;
 const CONST_PAGE_SIZE = 30;
@@ -306,7 +306,7 @@ export const App = () => {
         </Tabs>
       </AppBar>
       <TabPanel value={rootTabValue} index={CONST_HOME_PAGE_TAB_INDEX}>
-        <img className={classes.cover} src="./public/cover.jpg"/>
+        <img className={classes.cover} src={cover}/>
         {renderListView()}
       </TabPanel>
       <TabPanel value={rootTabValue} index={CONST_CATEGORY_TAB_INDEX}>

@@ -95,8 +95,8 @@ export const ItemCard = (props) => {
           <TextListItem title='商品价格' content={`\u00a5${getBuyerPrice(details.GodPresentPrice)}`} />
           <TextListItem title='商品代码' content={details.GodCode} />
           <TextListItem title='商品规格' content={details.GodSpecification} />
-          <TextListItem title='商品库存' content={details.GodSellStock} />
-          <TextListItem title='商品文案' content={details.GodAppDescribe} />
+          {/*<TextListItem title='商品库存' content={details.GodSellStock} />*/}
+          <TextListItem title='商品介绍' content={details.GodAppDescribe} />
           <div className={classes.filmstripContainer}>
               <img className={classes.image} src={details.GodImageUrl} alt={'0'} />
               { details.GodImageUrl1 ? <img className={classes.image} src={details.GodImageUrl1} alt={1} /> : null }

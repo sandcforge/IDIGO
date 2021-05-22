@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import {ItemCard} from './ItemCard.js';
-import {FolderCard} from './FolderCard.js';
+import {ItemCard} from '../components/ItemCard.js';
+import {FolderCard} from '../components/FolderCard.js';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -30,7 +30,7 @@ import EventIcon from '@material-ui/icons/Event';
 import SearchIcon from '@material-ui/icons/Search';
 import LocalShippingIcon from '@material-ui/icons/LocalShipping';
 import ViewListIcon from '@material-ui/icons/ViewList';
-import cover from '../../public/cover.jpg';
+import cover from '../../../public/cover.jpg';
 const corsProxy = 'https://api.codetabs.com/v1/proxy/?quest=';
 const EndpointOfProductCategory = `https://www.snailsmall.com/GoodsCategory/FindBigCategory`;
 const CONST_PAGE_SIZE = 100;

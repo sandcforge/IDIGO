@@ -5,7 +5,7 @@ import {
   Route,
   Link
 } from "react-router-dom";
-import {HomePage} from './HomePage';
+import {HomePage} from './pages/HomePage';
 export const App = () => {
   return (
     <Router>

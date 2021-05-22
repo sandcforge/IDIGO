@@ -30,7 +30,6 @@ import EventIcon from '@material-ui/icons/Event';
 import SearchIcon from '@material-ui/icons/Search';
 import LocalShippingIcon from '@material-ui/icons/LocalShipping';
 import ViewListIcon from '@material-ui/icons/ViewList';
-import './app.css';
 import cover from '../../public/cover.jpg';
 const corsProxy = 'https://api.codetabs.com/v1/proxy/?quest=';
 const EndpointOfProductCategory = `https://www.snailsmall.com/GoodsCategory/FindBigCategory`;

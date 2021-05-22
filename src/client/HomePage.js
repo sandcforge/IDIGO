@@ -226,7 +226,7 @@ const CONST_GOODS_WHITE_LIST = [
   '7f009195-fb74-45fc-ae60-92aff870a1b7',
 ];
 
-export const App = () => {
+export const HomePage = () => {
   const useStyles = makeStyles((theme) => ({
     root: {
       flexGrow: 1,

@@ -17,6 +17,8 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import clsx from 'clsx';
 
 const CONST_PROFIT = 1.15;
+const CONST_ITEM_CARD_TYPE_FULL = 'full';
+const CONST_ITEM_CARD_TYPE_CUSTOMER = 'customer';
 const getBuyerPrice = (cost) => (cost*CONST_PROFIT).toFixed(2) ;
 
 const useStyles = makeStyles((theme) => ({
@@ -60,9 +62,45 @@ const useStyles = makeStyles((theme) => ({
 export const ItemCard = (props) => {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
-  const {details} = props;
+  const {type = CONST_ITEM_CARD_TYPE_CUSTOMER, details} = props;
   const handleExpandClick = () => {
     setExpanded(!expanded);
+  };
+
+  const renderCardContent = (type, details) => {
+    const renderExtraInfo = () => {
+      return (<>
+        <TextListItem title='商品库存' content={details.GodSellStock} />
+        <TextListItem title='商品品牌' content={details.GodBrand} />
+        <TextListItem title='商品规格' content={details.GodSpecification} />
+        <TextListItem title='商品重量' content={details.GodWeight} />
+        <TextListItem title='商品卖家' content={details.GodPurchaseSource} />
+        <TextListItem title='商品描述' content={details.GodDescription} />
+        <TextListItem title='商品原价' content={details.GodOriginalPrice} />
+        <TextListItem title='商品现价' content={details.GodPresentPrice} />
+        <TextListItem title='商品编号' content={details.GodId} />
+        <TextListItem title='商品条形码' content={details.GodBarcode} />
+      </>);
+    };
+    return (<>
+      <TextListItem title='商品名称' content={details.GodName} />
+      <TextListItem title='商品价格' content={`\u00a5${getBuyerPrice(details.GodPresentPrice)}`} />
+      <TextListItem title='商品代码' content={details.GodCode} />
+      <TextListItem title='商品规格' content={details.GodSpecification} />
+      <TextListItem title='商品介绍' content={details.GodAppDescribe} />
+      <div className={classes.filmstripContainer}>
+          <img className={classes.image} src={details.GodImageUrl} alt={'0'} />
+          { details.GodImageUrl1 ? <img className={classes.image} src={details.GodImageUrl1} alt={1} /> : null }
+          { details.GodImageUrl2 ? <img className={classes.image} src={details.GodImageUrl2} alt={2} /> : null }
+          { details.GodImageUrl3 ? <img className={classes.image} src={details.GodImageUrl3} alt={3} /> : null }
+          { details.GodImageUrl4 ? <img className={classes.image} src={details.GodImageUrl4} alt={4} /> : null }
+          { details.GodImageUrl5 ? <img className={classes.image} src={details.GodImageUrl5} alt={5} /> : null }
+          { details.GodImageUrl6 ? <img className={classes.image} src={details.GodImageUrl6} alt={6} /> : null }
+          { details.GodImageUrl7 ? <img className={classes.image} src={details.GodImageUrl7} alt={7} /> : null }
+          { details.GodImageUrl8 ? <img className={classes.image} src={details.GodImageUrl8} alt={8} /> : null }
+      </div>
+      {type === CONST_ITEM_CARD_TYPE_FULL ? renderExtraInfo() : null}
+    </>);
   };
 
   return (
@@ -91,24 +129,7 @@ export const ItemCard = (props) => {
       />
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          <TextListItem title='商品名称' content={details.GodName} />
-          <TextListItem title='商品价格' content={`\u00a5${getBuyerPrice(details.GodPresentPrice)}`} />
-          <TextListItem title='商品代码' content={details.GodCode} />
-          <TextListItem title='商品规格' content={details.GodSpecification} />
-          {/*<TextListItem title='商品库存' content={details.GodSellStock} />*/}
-          <TextListItem title='商品介绍' content={details.GodAppDescribe} />
-          <div className={classes.filmstripContainer}>
-              <img className={classes.image} src={details.GodImageUrl} alt={'0'} />
-              { details.GodImageUrl1 ? <img className={classes.image} src={details.GodImageUrl1} alt={1} /> : null }
-              { details.GodImageUrl2 ? <img className={classes.image} src={details.GodImageUrl2} alt={2} /> : null }
-              { details.GodImageUrl3 ? <img className={classes.image} src={details.GodImageUrl3} alt={3} /> : null }
-              { details.GodImageUrl4 ? <img className={classes.image} src={details.GodImageUrl4} alt={4} /> : null }
-              { details.GodImageUrl5 ? <img className={classes.image} src={details.GodImageUrl5} alt={5} /> : null }
-              { details.GodImageUrl6 ? <img className={classes.image} src={details.GodImageUrl6} alt={6} /> : null }
-              { details.GodImageUrl7 ? <img className={classes.image} src={details.GodImageUrl7} alt={7} /> : null }
-              { details.GodImageUrl8 ? <img className={classes.image} src={details.GodImageUrl8} alt={8} /> : null }
-          </div>
-          <TextListItem title='其他' content={`id: ${details.GodId} Code: ${details.GodCode} Barcode: ${details.GodBarcode} Brand: ${details.GodBrand} Num: ${details.GodNum} Weight: ${details.GodWeight}`} />
+          {renderCardContent(type, details)}
         </CardContent>
       </Collapse>
     </Card>

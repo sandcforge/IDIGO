@@ -6,6 +6,8 @@ import {
   Link
 } from "react-router-dom";
 import {HomePage} from './pages/HomePage';
+import {AdminPage} from './pages/AdminPage';
+
 export const App = () => {
   return (
     <Router>
@@ -16,7 +18,7 @@ export const App = () => {
             <HomePage />
           </Route>
           <Route path="/admin">
-          <div>管理员页面</div>
+            <AdminPage />
           </Route>
           <Route path="*">
             <div>找不到页面！</div>

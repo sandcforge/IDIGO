@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
@@ -31,8 +32,12 @@ import {ItemCard} from '../components/ItemCard.js';
 import {FolderCard} from '../components/FolderCard.js';
 import cover from '../../../public/cover.jpg';
 import { APP_CONST, UI_CONST } from '../constants.js';
+import { actions } from '../redux/actions.js';
+
 
 export const HomePage = () => {
+  const dispatch = useDispatch();
+
   const useStyles = makeStyles((theme) => ({
     root: {
       flexGrow: 1,
@@ -44,9 +49,9 @@ export const HomePage = () => {
       marginBottom: 8,
     }
   }));
+  const rootTabValue = useSelector(state => state.ui.homePageTabIndex);
 
   const classes = useStyles();
-  const [rootTabValue, setRootTabValueValue] = React.useState(0);
   const [subTabValue, setSubTabValueValue] = React.useState(0);
   const [tabPageStatus, setTabPageStatus] = React.useState(UI_CONST.DEFAULT_TAB_PAGE_STATUS);
   const [listData, setListData] = useState([]);
@@ -62,7 +67,7 @@ export const HomePage = () => {
 
   const handleRootTabChange = (event, newValue) => {
     clearListData();
-    setRootTabValueValue(newValue);
+    dispatch(actions.setTabIndex(newValue));
   };
 
   const handleSearchTextFieldOnChange = (event) => {

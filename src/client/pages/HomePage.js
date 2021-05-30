@@ -37,7 +37,6 @@ import { actionSetTabIndex, actionGetProductCategory } from '../redux/actions.js
 
 export const HomePage = () => {
   const dispatch = useDispatch();
-
   const useStyles = makeStyles((theme) => ({
     root: {
       flexGrow: 1,
@@ -49,14 +48,14 @@ export const HomePage = () => {
       marginBottom: 8,
     }
   }));
-  const rootTabValue = useSelector(state => state.ui.homePageTabIndex);
-
   const classes = useStyles();
+
+  const rootTabValue = useSelector(state => state.ui.homePageTabIndex);
+  const productCategory = useSelector(state => state.data.productCategory);
   const [subTabValue, setSubTabValueValue] = React.useState(0);
   const [tabPageStatus, setTabPageStatus] = React.useState(UI_CONST.DEFAULT_TAB_PAGE_STATUS);
   const [listData, setListData] = useState([]);
   const [orderDetails, setOrderDetails] = useState(null);
-  const [productCategory, setProductCategory] = useState([]);
   const [orderIdTextFieldValue, setOrderIdTextFieldValue] = useState('');
   const [searchTextFieldValue, setSearchTextFieldValue] = useState('');
 
@@ -131,9 +130,6 @@ export const HomePage = () => {
     }
   };
 
-  const fetchProductCategory = async () => {
-    setProductCategory(result.data.Data);
-  };
 
   const fetchOrderDetails = async (orderId) => {
     try {

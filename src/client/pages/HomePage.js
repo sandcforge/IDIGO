@@ -32,7 +32,7 @@ import {ItemCard} from '../components/ItemCard.js';
 import {FolderCard} from '../components/FolderCard.js';
 import cover from '../../../public/cover.jpg';
 import { APP_CONST, UI_CONST } from '../constants.js';
-import { actions } from '../redux/actions.js';
+import { actionSetTabIndex, actionGetProductCategory } from '../redux/actions.js';
 
 
 export const HomePage = () => {
@@ -67,7 +67,7 @@ export const HomePage = () => {
 
   const handleRootTabChange = (event, newValue) => {
     clearListData();
-    dispatch(actions.setTabIndex(newValue));
+    dispatch(actionSetTabIndex(newValue));
   };
 
   const handleSearchTextFieldOnChange = (event) => {
@@ -132,7 +132,6 @@ export const HomePage = () => {
   };
 
   const fetchProductCategory = async () => {
-    const result = await axios.post('/api/proxy',{method: 'GET', url: APP_CONST.GOODS_CATEGORY_EP});
     setProductCategory(result.data.Data);
   };
 
@@ -161,7 +160,7 @@ export const HomePage = () => {
     fetchData();
   }, [rootTabValue, subTabValue]);
   useEffect(() => {
-    fetchProductCategory();
+   dispatch(actionGetProductCategory());
   }, []);
 
   const renderListView = () => {

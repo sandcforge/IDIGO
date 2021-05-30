@@ -183,7 +183,7 @@ export const AdminPage = () => {
     return (<>
       {listData.map((item) => <ItemCard key={item.GodId} details={item}/>)}
       {tabPageStatus.hasMore &&
-        <Container maxWidth='98%' >
+        <Container>
           <Button
             variant="contained"
             color="primary"
@@ -194,7 +194,7 @@ export const AdminPage = () => {
           </Button>
           {/*Add a padding to avoid the mobile phone gesture area at the bottom.*/}
           <Typography
-            component="div"
+            component="span"
             style={{ height: "12vh" }}
           />
         </Container>
@@ -392,7 +392,7 @@ const TabPanel = (props) => {
     >
       {value === index && (
         <Box px={padding}>
-          <Typography>{children}</Typography>
+          <Typography component="span">{children}</Typography>
         </Box>
       )}
     </div>

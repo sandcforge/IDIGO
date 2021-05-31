@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
-import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
@@ -30,6 +29,7 @@ import ViewListIcon from '@material-ui/icons/ViewList';
 
 import {ItemCard} from '../components/ItemCard.js';
 import {FolderCard} from '../components/FolderCard.js';
+import {TabPanel} from '../components/TabPanel.js';
 import cover from '../../../public/cover.jpg';
 import { APP_CONST, UI_CONST } from '../constants.js';
 import { actionSetTabIndex, actionGetProductCategory } from '../redux/actions.js';
@@ -365,31 +365,6 @@ export const HomePage = () => {
     </div>
   );
 
-};
-
-const TabPanel = (props) => {
-  const { padding = 0, children, value, index, ...other } = props;
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box px={padding}>
-          <Typography component='span'>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-};
-
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired,
 };
 
 const a11yProps = (index) => {

@@ -5,10 +5,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
-import Container from "@material-ui/core/Container";
 import TextField from '@material-ui/core/TextField';
 import Avatar from '@material-ui/core/Avatar';
 import List from '@material-ui/core/List';
@@ -28,6 +26,7 @@ import LocalShippingIcon from '@material-ui/icons/LocalShipping';
 import ViewListIcon from '@material-ui/icons/ViewList';
 
 import {ItemCard} from '../components/ItemCard.js';
+import {ListView} from '../components/ListView.js';
 import {FolderCard} from '../components/FolderCard.js';
 import {TabPanel} from '../components/TabPanel.js';
 import cover from '../../../public/cover.jpg';
@@ -159,37 +158,6 @@ export const HomePage = () => {
    dispatch(actionGetProductCategory());
   }, []);
 
-  const renderListView = () => {
-    let handleLoadingMoreButtonOnClick = null;
-    if (rootTabValue === UI_CONST.SEARCH_TAB_INDEX) {
-      handleLoadingMoreButtonOnClick = async() => fetchSearchResults(searchTextFieldValue);
-    }
-    else {
-      handleLoadingMoreButtonOnClick = async() => fetchData();
-    }
-    return (<>
-      {listData.map((item) => <ItemCard key={item.GodId} details={item}/>)}
-      {tabPageStatus.hasMore &&
-        <Container>
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth={true}
-            onClick={handleLoadingMoreButtonOnClick}
-          >
-            加载更多1
-          </Button>
-          {/*Add a padding to avoid the mobile phone gesture area at the bottom.*/}
-          <Typography
-            component='span'
-            style={{ height: "12vh" }}
-          />
-        </Container>
-      }
-      </>
-    );
-  };
-
   const renderOrderDetails = () => {
     if (orderDetails === null) {
       return null;
@@ -286,15 +254,16 @@ export const HomePage = () => {
           aria-label="simple tabs example"
         >
           <Tab label="精选" {...a11yProps(UI_CONST.COLLECTION_TAB_INDEX)} />
-          {/* <Tab label="分类" {...a11yProps(UI_CONST.CATEGORY_TAB_INDEX)} /> */}
+          <Tab label="分类" {...a11yProps(UI_CONST.CATEGORY_TAB_INDEX)} />
           <Tab label="搜索" {...a11yProps(UI_CONST.SEARCH_TAB_INDEX)} />
           <Tab label="订单" {...a11yProps(UI_CONST.ORDER_TAB_INDEX)} />
         </Tabs>
       </AppBar>
       <TabPanel value={rootTabValue} index={UI_CONST.COLLECTION_TAB_INDEX}>
         <img className={classes.cover} src={cover}/>
-        {renderListView()}
+        <ListView listData={listData} content={ItemCard} keyName='GodId' onLoadData={async() => fetchData()}/>
       </TabPanel>
+
       <TabPanel value={rootTabValue} index={UI_CONST.CATEGORY_TAB_INDEX}>
         <AppBar position="static" color="default">
           <Tabs
@@ -311,7 +280,7 @@ export const HomePage = () => {
         </AppBar>
 
         <TabPanel value={subTabValue} index={subTabValue}>
-          {renderListView()}
+          <ListView listData={listData} content={ItemCard} keyName='GodId' onLoadData={async() => fetchData()}/>
         </TabPanel>
 
       </TabPanel>
@@ -336,9 +305,8 @@ export const HomePage = () => {
         >
           搜索商品
         </Button>
-        {renderListView()}
+        <ListView listData={listData} content={ItemCard} keyName='GodId' onLoadData={async() => fetchSearchResults(searchTextFieldValue)}/>
       </TabPanel>
-
 
       <TabPanel value={rootTabValue} index={UI_CONST.ORDER_TAB_INDEX} >
         <Box my={1}>

@@ -38,7 +38,7 @@ const CONST_PAGE_SIZE = 100;
  * The tab index hasb to be 0, 1, 2, 3...
  * We do not show CONST_CATEGORY_TAB_INDEX, so set this one to be -1.
  */
-const CONST_HOME_PAGE_TAB_INDEX = 0;
+const CONST_COLLECTION_TAB_INDEX = 0;
 const CONST_CATEGORY_TAB_INDEX = 1;
 const CONST_SEARCH_TAB_INDEX = 2;
 const CONST_ORDER_TAB_INDEX = 3;
@@ -123,7 +123,7 @@ export const AdminPage = () => {
 
   const fetchData = async () => {
     const buildFetchUrl = (tabIndex, subTabIndex, pageIndex) => {
-      if (tabIndex === CONST_HOME_PAGE_TAB_INDEX) {
+      if (tabIndex === CONST_COLLECTION_TAB_INDEX) {
         const EndpointOfNewProducts = `https://www.snailsmall.com/Goods/FindPage?data={"Criterion":{"GodIsNew":true},"PageIndex":${pageIndex},"PageSize":${CONST_PAGE_SIZE}}`;
         return EndpointOfNewProducts;
       }
@@ -133,7 +133,7 @@ export const AdminPage = () => {
       }
       return '';
     };
-    if (rootTabValue === CONST_HOME_PAGE_TAB_INDEX || rootTabValue === CONST_CATEGORY_TAB_INDEX) {
+    if (rootTabValue === CONST_COLLECTION_TAB_INDEX || rootTabValue === CONST_CATEGORY_TAB_INDEX) {
       const result = await axios.post('/api/proxy',{method: 'GET', url: buildFetchUrl(rootTabValue, subTabValue, tabPageStatus.index)});
       loadListData(result.data.Data.DataBody);
     }
@@ -298,13 +298,13 @@ export const AdminPage = () => {
           onChange={handleRootTabChange}
           aria-label="simple tabs example"
         >
-          <Tab label="首页" {...a11yProps(CONST_HOME_PAGE_TAB_INDEX)} />
+          <Tab label="首页" {...a11yProps(CONST_COLLECTION_TAB_INDEX)} />
           <Tab label="分类" {...a11yProps(CONST_CATEGORY_TAB_INDEX)} />
           <Tab label="搜索" {...a11yProps(CONST_SEARCH_TAB_INDEX)} />
           <Tab label="订单" {...a11yProps(CONST_ORDER_TAB_INDEX)} />
         </Tabs>
       </AppBar>
-      <TabPanel value={rootTabValue} index={CONST_HOME_PAGE_TAB_INDEX}>
+      <TabPanel value={rootTabValue} index={CONST_COLLECTION_TAB_INDEX}>
         <img className={classes.cover} src={cover}/>
         {renderListView()}
       </TabPanel>

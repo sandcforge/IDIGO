@@ -112,7 +112,7 @@ export const HomePage = () => {
 
   const fetchData = async () => {
     const buildFetchUrl = (tabIndex, subTabIndex, pageIndex) => {
-      if (tabIndex === UI_CONST.HOME_PAGE_TAB_INDEX) {
+      if (tabIndex === UI_CONST.COLLECTION_TAB_INDEX) {
         const EndpointOfNewProducts = `https://www.snailsmall.com/Goods/FindPage?data={"Criterion":{"GodPurchaseSource":"costco"},"PageIndex":${pageIndex},"PageSize":${APP_CONST.PAGE_SIZE}}`;
         // const EndpointOfNewProducts = `https://www.snailsmall.com/Goods/FindPage?data={"Criterion":{"GodIsNew":true},"PageIndex":${pageIndex},"PageSize":${APP_CONST.PAGE_SIZE}}`;
         return EndpointOfNewProducts;
@@ -123,7 +123,7 @@ export const HomePage = () => {
       }
       return '';
     };
-    if (rootTabValue === UI_CONST.HOME_PAGE_TAB_INDEX || rootTabValue === UI_CONST.CATEGORY_TAB_INDEX) {
+    if (rootTabValue === UI_CONST.COLLECTION_TAB_INDEX || rootTabValue === UI_CONST.CATEGORY_TAB_INDEX) {
       const result = await axios.post('/api/proxy',{method: 'GET', url: buildFetchUrl(rootTabValue, subTabValue, tabPageStatus.index)});
       const filteredList = result.data.Data.DataBody.filter( good => APP_CONST.GOODS_WHITE_LIST.includes(good.GodCode) );
       loadListData(filteredList);
@@ -285,13 +285,13 @@ export const HomePage = () => {
           onChange={handleRootTabChange}
           aria-label="simple tabs example"
         >
-          <Tab label="首页" {...a11yProps(UI_CONST.HOME_PAGE_TAB_INDEX)} />
+          <Tab label="精选" {...a11yProps(UI_CONST.COLLECTION_TAB_INDEX)} />
           {/* <Tab label="分类" {...a11yProps(UI_CONST.CATEGORY_TAB_INDEX)} /> */}
           <Tab label="搜索" {...a11yProps(UI_CONST.SEARCH_TAB_INDEX)} />
           <Tab label="订单" {...a11yProps(UI_CONST.ORDER_TAB_INDEX)} />
         </Tabs>
       </AppBar>
-      <TabPanel value={rootTabValue} index={UI_CONST.HOME_PAGE_TAB_INDEX}>
+      <TabPanel value={rootTabValue} index={UI_CONST.COLLECTION_TAB_INDEX}>
         <img className={classes.cover} src={cover}/>
         {renderListView()}
       </TabPanel>

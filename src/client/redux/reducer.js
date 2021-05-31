@@ -4,7 +4,7 @@ import {UI_CONST} from '../constants.js';
 import {actionGetProductCategory, actionSetTabIndex} from './actions.js';
 const initialState = {
   ui: {
-    homePageTabIndex: UI_CONST.HOME_PAGE_TAB_INDEX,
+    homePageTabIndex: UI_CONST.COLLECTION_TAB_INDEX,
   },
   data: {
     productCategory: [],

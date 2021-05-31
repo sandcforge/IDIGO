@@ -25,13 +25,19 @@ import SearchIcon from '@material-ui/icons/Search';
 import LocalShippingIcon from '@material-ui/icons/LocalShipping';
 import ViewListIcon from '@material-ui/icons/ViewList';
 
-import {ItemCard} from '../components/ItemCard.js';
-import {ListView} from '../components/ListView.js';
-import {FolderCard} from '../components/FolderCard.js';
-import {TabPanel} from '../components/TabPanel.js';
+import { ItemCard } from '../components/ItemCard.js';
+import { ListView } from '../components/ListView.js';
+import { FolderCard } from '../components/FolderCard.js';
+import { TabPanel } from '../components/TabPanel.js';
 import cover from '../../../public/cover.jpg';
 import { APP_CONST, UI_CONST } from '../constants.js';
-import { actionSetTabIndex, actionGetProductCategory } from '../redux/actions.js';
+import {
+  actionSetTabIndex,
+  actionGetProductCategory,
+  actionGetCollectionProducts,
+  actionGetSearchResults,
+  actionResetSearchTab
+} from '../redux/actions.js';
 
 
 export const HomePage = () => {
@@ -51,6 +57,10 @@ export const HomePage = () => {
 
   const rootTabValue = useSelector(state => state.ui.homePageTabIndex);
   const productCategory = useSelector(state => state.data.productCategory);
+  const collectionProducts = useSelector(state => state.data.collectionProducts);
+  const searchResults = useSelector(state => state.data.searchResults);
+  const dataLoadingStatus = useSelector(state => state.ui.dataLoadingStatus);
+
   const [subTabValue, setSubTabValueValue] = React.useState(0);
   const [tabPageStatus, setTabPageStatus] = React.useState(UI_CONST.DEFAULT_TAB_PAGE_STATUS);
   const [listData, setListData] = useState([]);
@@ -64,7 +74,6 @@ export const HomePage = () => {
   };
 
   const handleRootTabChange = (event, newValue) => {
-    clearListData();
     dispatch(actionSetTabIndex(newValue));
   };
 
@@ -79,7 +88,6 @@ export const HomePage = () => {
 
   const clearListData = () => {
     setListData([]);
-    setTabPageStatus(UI_CONST.DEFAULT_TAB_PAGE_STATUS);
   };
 
   const loadListData = (newData) => {
@@ -93,21 +101,10 @@ export const HomePage = () => {
       setListData(listData.concat(newData));
       setTabPageStatus(prevState => ({
         ...prevState,
-        index: tabPageStatus.index+1,
+        index: tabPageStatus.index + 1,
       }));
     }
   };
-
-  /**
-   *
-   * @param {*} keyword : search keyword, only return goods info from Health products.
-   */
-  const fetchSearchResults = async (keyword) => {
-    const EndpointOfSearch = `https://www.snailsmall.com/Goods/FindPage?data={"Criterion":{"SearchKeys":"${keyword}","GodPurchaseSource":"costco"},"PageIndex":${tabPageStatus.index},"PageSize":${APP_CONST.PAGE_SIZE}}`;
-    const result = await axios.post('/api/proxy',{method: 'POST', url: EndpointOfSearch});
-    const filteredList = result.data.Data.DataBody.filter( good => APP_CONST.GOODS_WHITE_LIST.includes(good.GodCode) );
-    loadListData(filteredList);
-};
 
   const fetchData = async () => {
     const buildFetchUrl = (tabIndex, subTabIndex, pageIndex) => {
@@ -123,8 +120,8 @@ export const HomePage = () => {
       return '';
     };
     if (rootTabValue === UI_CONST.COLLECTION_TAB_INDEX || rootTabValue === UI_CONST.CATEGORY_TAB_INDEX) {
-      const result = await axios.post('/api/proxy',{method: 'GET', url: buildFetchUrl(rootTabValue, subTabValue, tabPageStatus.index)});
-      const filteredList = result.data.Data.DataBody.filter( good => APP_CONST.GOODS_WHITE_LIST.includes(good.GodCode) );
+      const result = await axios.post('/api/proxy', { method: 'GET', url: buildFetchUrl(rootTabValue, subTabValue, tabPageStatus.index) });
+      const filteredList = result.data.Data.DataBody.filter(good => APP_CONST.GOODS_WHITE_LIST.includes(good.GodCode));
       loadListData(filteredList);
     }
   };
@@ -133,29 +130,29 @@ export const HomePage = () => {
   const fetchOrderDetails = async (orderId) => {
     try {
       const EndpointOfOrderSummary = `https://www.snailsmall.com/Order/GetById?data={"OrdId":"${orderId}"}&buyercode=${APP_CONST.MY_BUYER_CODE}`;
-      const result1 = await axios.post('/api/proxy',{method: 'POST', url: EndpointOfOrderSummary});
+      const result1 = await axios.post('/api/proxy', { method: 'POST', url: EndpointOfOrderSummary });
       const orderSummary = result1.data.Data;
       if (orderSummary.OrdBuyerCode !== APP_CONST.MY_BUYER_CODE.toString()) {
         throw new Error('The buyer does not match!');
       }
 
       const EndpointOfLogisticSummary = `https://www.snailsmall.com/Order/FindLogistics1?data={"OrdCode":"${orderSummary.OrdCode}"}&buyercode=${APP_CONST.MY_BUYER_CODE}`;
-      const result2 = await axios.post('/api/proxy',{method: 'POST', url: EndpointOfLogisticSummary});
+      const result2 = await axios.post('/api/proxy', { method: 'POST', url: EndpointOfLogisticSummary });
       const logisticSummary = result2.data.Data;
-      setOrderDetails({status: APP_CONST.DATA_STATUS_OK, orderSummary, logisticSummary});
+      setOrderDetails({ status: APP_CONST.DATA_STATUS_OK, orderSummary, logisticSummary });
     }
     catch (err) {
       console.log(err);
-      setOrderDetails({status: APP_CONST.DATA_STATUS_ERROR, errMsg: '查询错误！'});
+      setOrderDetails({ status: APP_CONST.DATA_STATUS_ERROR, errMsg: '查询错误！' });
     }
   };
 
 
   useEffect(() => {
-    fetchData();
-  }, [rootTabValue, subTabValue]);
+    dispatch(actionGetCollectionProducts());
+  }, []);
   useEffect(() => {
-   dispatch(actionGetProductCategory());
+    dispatch(actionGetProductCategory());
   }, []);
 
   const renderOrderDetails = () => {
@@ -164,69 +161,69 @@ export const HomePage = () => {
     }
     if (orderDetails && orderDetails.status === APP_CONST.DATA_STATUS_OK) {
       return (<>
-        <FolderCard avatar={<InfoIcon/>} title={'订单详情'}>
-        <List component="nav" >
-          <ListItem >
-            <ListItemIcon>
-              <PersonIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary={"收件人"}
-              secondary={orderDetails.orderSummary.OrdReceiverName}
-            />
-          </ListItem>
-          <ListItem >
-            <ListItemIcon>
-              <PhoneIphoneIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary={"联系电话"}
-              secondary={orderDetails.orderSummary.OrdReceiverMobile}
-            />
-          </ListItem>
-          <ListItem >
-            <ListItemIcon>
-              <PlaceIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary={"收件地址"}
-              secondary={orderDetails.orderSummary.OrdReceiverProvince+orderDetails.orderSummary.OrdReceiverCity+orderDetails.orderSummary.OrdReceiverCounty+orderDetails.orderSummary.OrdReceiverAddress}
-            />
-          </ListItem>
-          <ListItem >
-            <ListItemIcon>
-              <EventIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary={"订单创建时间"}
-              secondary={orderDetails.orderSummary.OrdCreateTime}
-            />
-          </ListItem>
-        </List>
+        <FolderCard avatar={<InfoIcon />} title={'订单详情'}>
+          <List component="nav" >
+            <ListItem >
+              <ListItemIcon>
+                <PersonIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary={"收件人"}
+                secondary={orderDetails.orderSummary.OrdReceiverName}
+              />
+            </ListItem>
+            <ListItem >
+              <ListItemIcon>
+                <PhoneIphoneIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary={"联系电话"}
+                secondary={orderDetails.orderSummary.OrdReceiverMobile}
+              />
+            </ListItem>
+            <ListItem >
+              <ListItemIcon>
+                <PlaceIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary={"收件地址"}
+                secondary={orderDetails.orderSummary.OrdReceiverProvince + orderDetails.orderSummary.OrdReceiverCity + orderDetails.orderSummary.OrdReceiverCounty + orderDetails.orderSummary.OrdReceiverAddress}
+              />
+            </ListItem>
+            <ListItem >
+              <ListItemIcon>
+                <EventIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary={"订单创建时间"}
+                secondary={orderDetails.orderSummary.OrdCreateTime}
+              />
+            </ListItem>
+          </List>
         </FolderCard>
 
-        <FolderCard avatar={<ViewListIcon/>} title={'商品列表'}>
+        <FolderCard avatar={<ViewListIcon />} title={'商品列表'}>
           <List component="nav">
-            {orderDetails.orderSummary.EcmOrderGoodsInfos.map( (item, i) => (
-                <ListItem key={i}>
-                  <ListItemAvatar>
-                    <Avatar src={item.OgoGoodsImageUrl} />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={item.OgoGoodsTitle}
-                    secondary={`数量：${item.OgoNumber}`}
-                  />
-                </ListItem>
+            {orderDetails.orderSummary.EcmOrderGoodsInfos.map((item, i) => (
+              <ListItem key={i}>
+                <ListItemAvatar>
+                  <Avatar src={item.OgoGoodsImageUrl} />
+                </ListItemAvatar>
+                <ListItemText
+                  primary={item.OgoGoodsTitle}
+                  secondary={`数量：${item.OgoNumber}`}
+                />
+              </ListItem>
             ))}
           </List>
         </FolderCard>
 
-        <FolderCard avatar={<LocalShippingIcon/>} title={'物流信息'}>
-        <List component="nav">
-          {orderDetails.logisticSummary.NodeInfos.map( (node, i) => (
+        <FolderCard avatar={<LocalShippingIcon />} title={'物流信息'}>
+          <List component="nav">
+            {orderDetails.logisticSummary.NodeInfos.map((node, i) => (
               <ListItem >
                 <ListItemIcon >
-                  { i=== 0 ?  <AccessTimeIcon /> : <CheckCircleIcon /> }
+                  {i === 0 ? <AccessTimeIcon /> : <CheckCircleIcon />}
                 </ListItemIcon>
                 <ListItemText
                   key={i}
@@ -234,14 +231,33 @@ export const HomePage = () => {
                   secondary={node.time}
                 />
               </ListItem>
-          ))}
-        </List>
+            ))}
+          </List>
         </FolderCard>
       </>);
     }
     else {
       return (<div>{orderDetails.errMsg}</div>);
     }
+  };
+
+  const showLoadMoreButtonOnTab = (tabIndex) => {
+    let ret = false;
+    switch (tabIndex) {
+      case UI_CONST.COLLECTION_TAB_INDEX:
+        ret = dataLoadingStatus.collectionTab.currentPageIndex !== 0 && dataLoadingStatus.collectionTab.hasMore === true;
+        break;
+      case UI_CONST.SEARCH_TAB_INDEX:
+        ret = dataLoadingStatus.searchTab.currentPageIndex !== 0 && dataLoadingStatus.searchTab.hasMore === true;
+        break;
+    }
+    console.log(tabIndex, ret);
+    return ret;
+  }
+
+  const onClickSearchButton = async () => {
+    dispatch(actionResetSearchTab());
+    dispatch(actionGetSearchResults(searchTextFieldValue));
   };
 
   return (
@@ -260,8 +276,14 @@ export const HomePage = () => {
         </Tabs>
       </AppBar>
       <TabPanel value={rootTabValue} index={UI_CONST.COLLECTION_TAB_INDEX}>
-        <img className={classes.cover} src={cover}/>
-        <ListView listData={listData} content={ItemCard} keyName='GodId' onLoadData={async() => fetchData()}/>
+        <img className={classes.cover} src={cover} />
+        <ListView
+          listData={collectionProducts}
+          showLoadMoreButton={showLoadMoreButtonOnTab(UI_CONST.COLLECTION_TAB_INDEX)}
+          content={ItemCard}
+          keyName='GodId'
+          onLoadData={() => dispatch(actionGetCollectionProducts())}
+        />
       </TabPanel>
 
       <TabPanel value={rootTabValue} index={UI_CONST.CATEGORY_TAB_INDEX}>
@@ -275,18 +297,18 @@ export const HomePage = () => {
             scrollButtons="on"
             aria-label="scrollable auto tabs example"
           >
-            {productCategory.map(( category, idx ) => <Tab key={category.MgcId} label={category.MgcName} {...a11yProps(idx)} />)}
+            {productCategory.map((category, idx) => <Tab key={category.MgcId} label={category.MgcName} {...a11yProps(idx)} />)}
           </Tabs>
         </AppBar>
 
         <TabPanel value={subTabValue} index={subTabValue}>
-          <ListView listData={listData} content={ItemCard} keyName='GodId' onLoadData={async() => fetchData()}/>
+          <ListView listData={listData} content={ItemCard} keyName='GodId' onLoadData={async () => fetchData()} />
         </TabPanel>
 
       </TabPanel>
 
       <TabPanel value={rootTabValue} index={UI_CONST.SEARCH_TAB_INDEX}>
-      <Box my={1}>
+        <Box my={1}>
           <TextField
             id="standard-basic"
             fullWidth={true}
@@ -301,11 +323,17 @@ export const HomePage = () => {
           fullWidth={true}
           color="primary"
           startIcon={<SearchIcon />}
-          onClick={()=>{fetchSearchResults(searchTextFieldValue)}}
+          onClick={onClickSearchButton}
         >
           搜索商品
         </Button>
-        <ListView listData={listData} content={ItemCard} keyName='GodId' onLoadData={async() => fetchSearchResults(searchTextFieldValue)}/>
+        <ListView
+          listData={searchResults}
+          showLoadMoreButton={showLoadMoreButtonOnTab(UI_CONST.SEARCH_TAB_INDEX)}
+          content={ItemCard}
+          keyName='GodId'
+          onLoadData={() => dispatch(actionGetSearchResults(searchTextFieldValue))}
+        />
       </TabPanel>
 
       <TabPanel value={rootTabValue} index={UI_CONST.ORDER_TAB_INDEX} >
@@ -324,7 +352,7 @@ export const HomePage = () => {
           fullWidth={true}
           color="primary"
           startIcon={<SearchIcon />}
-          onClick={()=>{fetchOrderDetails(orderIdTextFieldValue)}}
+          onClick={() => { fetchOrderDetails(orderIdTextFieldValue) }}
         >
           查询订单
         </Button>

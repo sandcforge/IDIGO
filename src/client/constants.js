@@ -187,8 +187,6 @@ export const UI_CONST = {
   CATEGORY_TAB_INDEX: 1,
   SEARCH_TAB_INDEX: 2,
   ORDER_TAB_INDEX: 3,
-  DEFAULT_TAB_PAGE_STATUS: {index: 0, hasMore: true},
-
 };
 
 export const APP_CONST = {

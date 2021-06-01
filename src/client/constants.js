@@ -187,6 +187,8 @@ export const UI_CONST = {
   CATEGORY_TAB_INDEX: 1,
   SEARCH_TAB_INDEX: 2,
   ORDER_TAB_INDEX: 3,
+  ITEM_CARD_TYPE_FULL: 'full',
+  ITEM_CARD_TYPE_CUSTOMER: 'customer',
 };
 
 export const APP_CONST = {
@@ -196,4 +198,9 @@ export const APP_CONST = {
   DATA_STATUS_OK: 0,
   DATA_STATUS_ERROR: -1,
   GOODS_CATEGORY_EP: `https://www.snailsmall.com/GoodsCategory/FindBigCategory`,
+};
+
+export const BUSINESS_CONST = {
+  GOODS_PROFIT: 1.15,
+
 };

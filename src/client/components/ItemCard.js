@@ -15,11 +15,10 @@ import ListItemText from '@material-ui/core/ListItemText';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import clsx from 'clsx';
+import { BUSINESS_CONST, UI_CONST } from '../constants';
 
-const CONST_PROFIT = 1.15;
-const CONST_ITEM_CARD_TYPE_FULL = 'full';
-const CONST_ITEM_CARD_TYPE_CUSTOMER = 'customer';
-const getBuyerPrice = (cost) => (cost*CONST_PROFIT).toFixed(2) ;
+
+const getBuyerPrice = (cost) => (cost*BUSINESS_CONST.GOODS_PROFIT).toFixed(2) ;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -62,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
 export const ItemCard = (props) => {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
-  const {type = CONST_ITEM_CARD_TYPE_CUSTOMER, details} = props;
+  const {type = UI_CONST.ITEM_CARD_TYPE_CUSTOMER, details} = props;
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
@@ -99,7 +98,7 @@ export const ItemCard = (props) => {
           { details.GodImageUrl7 ? <img className={classes.image} src={details.GodImageUrl7} alt={7} /> : null }
           { details.GodImageUrl8 ? <img className={classes.image} src={details.GodImageUrl8} alt={8} /> : null }
       </div>
-      {type === CONST_ITEM_CARD_TYPE_FULL ? renderExtraInfo() : null}
+      {type === UI_CONST.ITEM_CARD_TYPE_FULL && renderExtraInfo() }
     </>);
   };
 

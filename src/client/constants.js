@@ -1,4 +1,4 @@
-const CONST_GOODS_WHITE_LIST = [
+const GOODS_WHITE_LIST = [
   'fbe1b7da-cd29-4707-a069-eff19fdc5cbe',
   '77317203-ba3c-4d43-a99e-fc6159156439',
   '6f07233e-a9d4-4217-91b1-2f476ff0cf7a',
@@ -187,8 +187,8 @@ export const UI_CONST = {
   CATEGORY_TAB_INDEX: 1,
   SEARCH_TAB_INDEX: 2,
   ORDER_TAB_INDEX: 3,
-  ITEM_CARD_TYPE_FULL: 'full',
-  ITEM_CARD_TYPE_CUSTOMER: 'customer',
+  DISPLAY_TYPE_FULL: 'full',
+  DISPLAY_TYPE_CUSTOMER: 'customer',
 };
 
 export const APP_CONST = {
@@ -202,5 +202,5 @@ export const APP_CONST = {
 
 export const BUSINESS_CONST = {
   GOODS_PROFIT: 1.15,
-
+  GOODS_WHITE_LIST,
 };

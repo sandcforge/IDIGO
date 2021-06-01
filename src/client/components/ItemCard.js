@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
 export const ItemCard = (props) => {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
-  const {type = UI_CONST.ITEM_CARD_TYPE_CUSTOMER, details} = props;
+  const {type = UI_CONST.DISPLAY_TYPE_CUSTOMER, details} = props;
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
@@ -98,7 +98,7 @@ export const ItemCard = (props) => {
           { details.GodImageUrl7 ? <img className={classes.image} src={details.GodImageUrl7} alt={7} /> : null }
           { details.GodImageUrl8 ? <img className={classes.image} src={details.GodImageUrl8} alt={8} /> : null }
       </div>
-      {type === UI_CONST.ITEM_CARD_TYPE_FULL && renderExtraInfo() }
+      {type === UI_CONST.DISPLAY_TYPE_FULL && renderExtraInfo() }
     </>);
   };
 

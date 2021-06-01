@@ -6,7 +6,7 @@ import { APP_CONST, UI_CONST } from '../constants.js';
 
 export const actionSetTabIndex = createAction('SetTabIndex');
 export const actionIncreaseTabPageIndex = createAction('IncreaseTabPageIndex');
-export const actionResetSearchTab = createAction('ResetSearchTab');
+export const actionResetTab = createAction('ResetSearchTab');
 export const actionSetHasMoreOnTab = createAction('SetHasMoreOnTab', (tabIndex, hasMore) => {
   return {
     payload: {
@@ -73,6 +73,30 @@ export const actionGetSearchResults = createAsyncThunk(
         thunkApi.dispatch(actionSetHasMoreOnTab(UI_CONST.SEARCH_TAB_INDEX, true));
       }
       thunkApi.dispatch(actionIncreaseTabPageIndex(UI_CONST.SEARCH_TAB_INDEX));
+      return realData;
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  }
+);
+
+export const actionGetCategoryProducts = createAsyncThunk(
+  'GetCategoryProducts',
+  async (categoryIndex, thunkApi) => {
+    try {
+      const productCategory = thunkApi.getState().data.productCategory;
+      const pageIndex = thunkApi.getState().ui.dataLoadingStatus.categoryTab.currentPageIndex;
+      const url = `https://www.snailsmall.com/Goods/FindPage?data={"Criterion":{"GodCategoryCode":"${productCategory[categoryIndex].MgcCode}"},"PageIndex":${pageIndex},"PageSize":${APP_CONST.PAGE_SIZE}}`;
+      const result = await axios.post('/api/proxy', { method: 'GET', url });
+      const realData = result.data.Data.DataBody;
+      if (realData.length < APP_CONST.PAGE_SIZE) {
+        thunkApi.dispatch(actionSetHasMoreOnTab(UI_CONST.CATEGORY_TAB_INDEX, false));
+      }
+      else {
+        thunkApi.dispatch(actionSetHasMoreOnTab(UI_CONST.CATEGORY_TAB_INDEX, true));
+      }
+      thunkApi.dispatch(actionIncreaseTabPageIndex(UI_CONST.CATEGORY_TAB_INDEX));
       return realData;
     } catch (err) {
       console.log(err);

@@ -33,11 +33,11 @@ import cover from '../../../public/cover.jpg';
 import { APP_CONST, UI_CONST } from '../constants.js';
 import {
   actionSetTabIndex,
-  actionGetProductCategory,
   actionGetCollectionProducts,
   actionGetSearchResults,
-  actionResetSearchTab
+  actionResetTab,
 } from '../redux/actions.js';
+import { CategoryTab } from './CategoryTab.js';
 
 
 export const HomePage = () => {
@@ -56,74 +56,24 @@ export const HomePage = () => {
   const classes = useStyles();
 
   const rootTabValue = useSelector(state => state.ui.homePageTabIndex);
-  const productCategory = useSelector(state => state.data.productCategory);
   const collectionProducts = useSelector(state => state.data.collectionProducts);
   const searchResults = useSelector(state => state.data.searchResults);
   const dataLoadingStatus = useSelector(state => state.ui.dataLoadingStatus);
 
-  const [subTabValue, setSubTabValueValue] = React.useState(0);
-  const [tabPageStatus, setTabPageStatus] = React.useState(UI_CONST.DEFAULT_TAB_PAGE_STATUS);
-  const [listData, setListData] = useState([]);
   const [orderDetails, setOrderDetails] = useState(null);
   const [orderIdTextFieldValue, setOrderIdTextFieldValue] = useState('');
   const [searchTextFieldValue, setSearchTextFieldValue] = useState('');
-
-  const handleSubTabChange = (event, newValue) => {
-    clearListData();
-    setSubTabValueValue(newValue);
-  };
 
   const handleRootTabChange = (event, newValue) => {
     dispatch(actionSetTabIndex(newValue));
   };
 
   const handleSearchTextFieldOnChange = (event) => {
-    clearListData();
     setSearchTextFieldValue(event.target.value);
   };
 
   const handleOrderIdTextFieldOnChange = (event) => {
     setOrderIdTextFieldValue(event.target.value);
-  };
-
-  const clearListData = () => {
-    setListData([]);
-  };
-
-  const loadListData = (newData) => {
-    if (newData.length === 0) {
-      setTabPageStatus(prevState => ({
-        ...prevState,
-        hasMore: false,
-      }));
-    }
-    else {
-      setListData(listData.concat(newData));
-      setTabPageStatus(prevState => ({
-        ...prevState,
-        index: tabPageStatus.index + 1,
-      }));
-    }
-  };
-
-  const fetchData = async () => {
-    const buildFetchUrl = (tabIndex, subTabIndex, pageIndex) => {
-      if (tabIndex === UI_CONST.COLLECTION_TAB_INDEX) {
-        const EndpointOfNewProducts = `https://www.snailsmall.com/Goods/FindPage?data={"Criterion":{"GodPurchaseSource":"costco"},"PageIndex":${pageIndex},"PageSize":${APP_CONST.PAGE_SIZE}}`;
-        // const EndpointOfNewProducts = `https://www.snailsmall.com/Goods/FindPage?data={"Criterion":{"GodIsNew":true},"PageIndex":${pageIndex},"PageSize":${APP_CONST.PAGE_SIZE}}`;
-        return EndpointOfNewProducts;
-      }
-      else if (tabIndex === UI_CONST.CATEGORY_TAB_INDEX) {
-        const EndpointOfCategroyProducts = `https://www.snailsmall.com/Goods/FindPage?data={"Criterion":{"GodCategoryCode":"${productCategory[subTabIndex].MgcCode}"},"PageIndex":${pageIndex},"PageSize":${APP_CONST.PAGE_SIZE}}`;
-        return EndpointOfCategroyProducts;
-      }
-      return '';
-    };
-    if (rootTabValue === UI_CONST.COLLECTION_TAB_INDEX || rootTabValue === UI_CONST.CATEGORY_TAB_INDEX) {
-      const result = await axios.post('/api/proxy', { method: 'GET', url: buildFetchUrl(rootTabValue, subTabValue, tabPageStatus.index) });
-      const filteredList = result.data.Data.DataBody.filter(good => APP_CONST.GOODS_WHITE_LIST.includes(good.GodCode));
-      loadListData(filteredList);
-    }
   };
 
 
@@ -151,9 +101,7 @@ export const HomePage = () => {
   useEffect(() => {
     dispatch(actionGetCollectionProducts());
   }, []);
-  useEffect(() => {
-    dispatch(actionGetProductCategory());
-  }, []);
+
 
   const renderOrderDetails = () => {
     if (orderDetails === null) {
@@ -251,12 +199,11 @@ export const HomePage = () => {
         ret = dataLoadingStatus.searchTab.currentPageIndex !== 0 && dataLoadingStatus.searchTab.hasMore === true;
         break;
     }
-    console.log(tabIndex, ret);
     return ret;
   }
 
   const onClickSearchButton = async () => {
-    dispatch(actionResetSearchTab());
+    dispatch(actionResetTab(UI_CONST.SEARCH_TAB_INDEX));
     dispatch(actionGetSearchResults(searchTextFieldValue));
   };
 
@@ -287,24 +234,7 @@ export const HomePage = () => {
       </TabPanel>
 
       <TabPanel value={rootTabValue} index={UI_CONST.CATEGORY_TAB_INDEX}>
-        <AppBar position="static" color="default">
-          <Tabs
-            value={subTabValue}
-            onChange={handleSubTabChange}
-            indicatorColor="primary"
-            textColor="primary"
-            variant="scrollable"
-            scrollButtons="on"
-            aria-label="scrollable auto tabs example"
-          >
-            {productCategory.map((category, idx) => <Tab key={category.MgcId} label={category.MgcName} {...a11yProps(idx)} />)}
-          </Tabs>
-        </AppBar>
-
-        <TabPanel value={subTabValue} index={subTabValue}>
-          <ListView listData={listData} content={ItemCard} keyName='GodId' onLoadData={async () => fetchData()} />
-        </TabPanel>
-
+        <CategoryTab/>
       </TabPanel>
 
       <TabPanel value={rootTabValue} index={UI_CONST.SEARCH_TAB_INDEX}>

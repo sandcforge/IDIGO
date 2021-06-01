@@ -7,7 +7,6 @@ import TextField from '@material-ui/core/TextField';
 import SearchIcon from '@material-ui/icons/Search';
 
 import { ListView } from '../components/ListView.js';
-import { ItemCard } from '../components/ItemCard.js';
 import { UI_CONST } from '../constants.js';
 import {
   actionResetTab,
@@ -72,7 +71,6 @@ export const SearchTab = () => {
     <ListView
       listData={searchResults}
       showLoadMoreButton={showLoadMoreButtonOnTab(UI_CONST.SEARCH_TAB_INDEX)}
-      content={ItemCard}
       keyName='GodId'
       onLoadData={() => dispatch(actionGetSearchResults(searchTextFieldValue))}
     />

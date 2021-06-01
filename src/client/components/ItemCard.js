@@ -14,9 +14,10 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import clsx from 'clsx';
-import { BUSINESS_CONST, UI_CONST } from '../constants';
+import { useSelector } from 'react-redux';
 
+import clsx from 'clsx';
+import { APP_CONST, BUSINESS_CONST} from '../constants';
 
 const getBuyerPrice = (cost) => (cost*BUSINESS_CONST.GOODS_PROFIT).toFixed(2) ;
 
@@ -60,13 +61,15 @@ const useStyles = makeStyles((theme) => ({
 
 export const ItemCard = (props) => {
   const classes = useStyles();
+  const isAdmin = useSelector(state => state.app.access === APP_CONST.ACCESS_ROLE_ADMIN);
+
   const [expanded, setExpanded] = React.useState(false);
-  const {type = UI_CONST.DISPLAY_TYPE_CUSTOMER, details} = props;
+  const {details} = props;
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
 
-  const renderCardContent = (type, details) => {
+  const renderCardContent = (details) => {
     const renderExtraInfo = () => {
       return (<>
         <TextListItem title='商品库存' content={details.GodSellStock} />
@@ -98,7 +101,7 @@ export const ItemCard = (props) => {
           { details.GodImageUrl7 ? <img className={classes.image} src={details.GodImageUrl7} alt={7} /> : null }
           { details.GodImageUrl8 ? <img className={classes.image} src={details.GodImageUrl8} alt={8} /> : null }
       </div>
-      {type === UI_CONST.DISPLAY_TYPE_FULL && renderExtraInfo() }
+      {isAdmin && renderExtraInfo() }
     </>);
   };
 
@@ -128,7 +131,7 @@ export const ItemCard = (props) => {
       />
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          {renderCardContent(type, details)}
+          {renderCardContent(details)}
         </CardContent>
       </Collapse>
     </Card>

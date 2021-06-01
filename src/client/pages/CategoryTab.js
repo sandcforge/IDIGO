@@ -4,9 +4,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
-import { TabPanel } from '../components/TabPanel.js';
 import { ListView } from '../components/ListView.js';
-import { ItemCard } from '../components/ItemCard.js';
 import { UI_CONST } from '../constants.js';
 import {
   actionGetCategoryProducts,
@@ -69,7 +67,6 @@ export const CategoryTab = () => {
       <ListView
         listData={categoryProducts}
         showLoadMoreButton={showLoadMoreButtonOnTab(UI_CONST.CATEGORY_TAB_INDEX)}
-        content={ItemCard}
         keyName='GodId'
         onLoadData={() => dispatch(actionGetCategoryProducts(subTabValue))}
       />

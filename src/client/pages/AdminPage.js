@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import {ItemCard} from '../components/ItemCard.js';
 import {FolderCard} from '../components/FolderCard.js';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';

@@ -4,7 +4,6 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import cover from '../../../public/cover.jpg';
 import { ListView } from '../components/ListView.js';
-import { ItemCard } from '../components/ItemCard.js';
 import { UI_CONST } from '../constants.js';
 import {
   actionGetCollectionProducts,
@@ -49,7 +48,6 @@ export const CollectionTab = () => {
     <ListView
       listData={collectionProducts}
       showLoadMoreButton={showLoadMoreButtonOnTab(UI_CONST.COLLECTION_TAB_INDEX)}
-      content={ItemCard}
       keyName='GodId'
       onLoadData={() => dispatch(actionGetCollectionProducts())}
     />

@@ -1,6 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 
-import { UI_CONST } from '../constants.js';
+import { APP_CONST, UI_CONST } from '../constants.js';
 import {
   actionGetProductCategory,
   actionGetCollectionProducts,
@@ -36,6 +36,9 @@ const initialState = {
     categoryProducts: [],
     searchResults: [],
   },
+  app: {
+    access: APP_CONST.ACCESS_ROLE_USER,
+  }
 };
 
 

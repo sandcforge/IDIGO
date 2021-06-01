@@ -194,10 +194,12 @@ export const UI_CONST = {
 export const APP_CONST = {
   PAGE_SIZE: 100,
   MY_BUYER_CODE: 68995,
-  GOODS_WHITE_LIST: CONST_GOODS_WHITE_LIST,
+  GOODS_WHITE_LIST,
   DATA_STATUS_OK: 0,
   DATA_STATUS_ERROR: -1,
   GOODS_CATEGORY_EP: `https://www.snailsmall.com/GoodsCategory/FindBigCategory`,
+  ACCESS_ROLE_ADMIN: 1,
+  ACCESS_ROLE_USER: 2,
 };
 
 export const BUSINESS_CONST = {

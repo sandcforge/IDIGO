@@ -62,11 +62,10 @@ export const CategoryTab = () => {
         scrollButtons="on"
         aria-label="scrollable auto tabs example"
       >
-        {productCategory.map((category, idx) => <Tab key={category.MgcId} label={category.MgcName} {...a11yProps(idx)} />)}
+        {productCategory.map((category) => <Tab key={category.MgcId} label={category.MgcName} />)}
       </Tabs>
     </AppBar>
 
-    <TabPanel value={subTabValue} index={subTabValue}>
       <ListView
         listData={categoryProducts}
         showLoadMoreButton={showLoadMoreButtonOnTab(UI_CONST.CATEGORY_TAB_INDEX)}
@@ -74,13 +73,5 @@ export const CategoryTab = () => {
         keyName='GodId'
         onLoadData={() => dispatch(actionGetCategoryProducts(subTabValue))}
       />
-    </TabPanel>
   </>);
 }
-
-const a11yProps = (index) => {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-  };
-};

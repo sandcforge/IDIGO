@@ -6,6 +6,7 @@ import {
   actionGetCollectionProducts,
   actionGetSearchResults,
   actionSetTabIndex,
+  actionSetAccessRole,
   actionIncreaseTabPageIndex,
   actionResetTab,
   actionSetHasMoreOnTab,
@@ -37,13 +38,16 @@ const initialState = {
     searchResults: [],
   },
   app: {
-    access: APP_CONST.ACCESS_ROLE_USER,
+    accessRole: APP_CONST.ACCESS_ROLE_USER,
   }
 };
 
 
 export const rootReducer = createReducer(initialState, (builder) => {
   builder
+    .addCase(actionSetAccessRole, (state, action) => {
+      state.app.accessRole = action.payload;
+    })
     .addCase(actionSetTabIndex, (state, action) => {
       state.ui.homePageTabIndex = action.payload;
     })

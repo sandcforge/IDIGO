@@ -4,7 +4,9 @@ import axios from 'axios';
 import { APP_CONST, UI_CONST } from '../constants.js';
 
 
+
 export const actionSetTabIndex = createAction('SetTabIndex');
+export const actionSetAccessRole = createAction('SetAccessRole');
 export const actionIncreaseTabPageIndex = createAction('IncreaseTabPageIndex');
 export const actionResetTab = createAction('ResetSearchTab');
 export const actionSetHasMoreOnTab = createAction('SetHasMoreOnTab', (tabIndex, hasMore) => {

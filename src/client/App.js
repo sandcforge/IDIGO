@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -7,8 +7,17 @@ import {
 } from "react-router-dom";
 import {HomePage} from './pages/HomePage';
 import {AdminPage} from './pages/AdminPage';
+import { useDispatch } from 'react-redux';
+import { actionSetAccessRole } from "./redux/actions";
+import { APP_CONST } from "./constants";
 
 export const App = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(actionSetAccessRole(APP_CONST.ACCESS_ROLE_ADMIN));
+  }, []);
+
   return (
     <Router>
         {/* A <Switch> looks through its children <Route>s and

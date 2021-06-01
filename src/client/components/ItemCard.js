@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
 
 export const ItemCard = (props) => {
   const classes = useStyles();
-  const isAdmin = useSelector(state => state.app.access === APP_CONST.ACCESS_ROLE_ADMIN);
+  const isAdmin = useSelector(state => state.app.accessRole === APP_CONST.ACCESS_ROLE_ADMIN);
 
   const [expanded, setExpanded] = React.useState(false);
   const {details} = props;

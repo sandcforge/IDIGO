@@ -34,10 +34,9 @@ import { APP_CONST, UI_CONST } from '../constants.js';
 import {
   actionSetTabIndex,
   actionGetCollectionProducts,
-  actionGetSearchResults,
-  actionResetTab,
 } from '../redux/actions.js';
 import { CategoryTab } from './CategoryTab.js';
+import { SearchTab } from './SearchTab.js';
 
 
 export const HomePage = () => {
@@ -57,19 +56,13 @@ export const HomePage = () => {
 
   const rootTabValue = useSelector(state => state.ui.homePageTabIndex);
   const collectionProducts = useSelector(state => state.data.collectionProducts);
-  const searchResults = useSelector(state => state.data.searchResults);
   const dataLoadingStatus = useSelector(state => state.ui.dataLoadingStatus);
 
   const [orderDetails, setOrderDetails] = useState(null);
   const [orderIdTextFieldValue, setOrderIdTextFieldValue] = useState('');
-  const [searchTextFieldValue, setSearchTextFieldValue] = useState('');
 
   const handleRootTabChange = (event, newValue) => {
     dispatch(actionSetTabIndex(newValue));
-  };
-
-  const handleSearchTextFieldOnChange = (event) => {
-    setSearchTextFieldValue(event.target.value);
   };
 
   const handleOrderIdTextFieldOnChange = (event) => {
@@ -202,10 +195,6 @@ export const HomePage = () => {
     return ret;
   }
 
-  const onClickSearchButton = async () => {
-    dispatch(actionResetTab(UI_CONST.SEARCH_TAB_INDEX));
-    dispatch(actionGetSearchResults(searchTextFieldValue));
-  };
 
   return (
     <div className={classes.root}>
@@ -238,32 +227,7 @@ export const HomePage = () => {
       </TabPanel>
 
       <TabPanel value={rootTabValue} index={UI_CONST.SEARCH_TAB_INDEX}>
-        <Box my={1}>
-          <TextField
-            id="standard-basic"
-            fullWidth={true}
-            label="商品名称"
-            value={searchTextFieldValue}
-            variant="outlined"
-            onChange={handleSearchTextFieldOnChange}
-          />
-        </Box>
-        <Button
-          variant="contained"
-          fullWidth={true}
-          color="primary"
-          startIcon={<SearchIcon />}
-          onClick={onClickSearchButton}
-        >
-          搜索商品
-        </Button>
-        <ListView
-          listData={searchResults}
-          showLoadMoreButton={showLoadMoreButtonOnTab(UI_CONST.SEARCH_TAB_INDEX)}
-          content={ItemCard}
-          keyName='GodId'
-          onLoadData={() => dispatch(actionGetSearchResults(searchTextFieldValue))}
-        />
+        <SearchTab/>
       </TabPanel>
 
       <TabPanel value={rootTabValue} index={UI_CONST.ORDER_TAB_INDEX} >

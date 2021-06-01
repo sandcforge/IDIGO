@@ -1,38 +1,34 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Link
 } from "react-router-dom";
-import {HomePage} from './pages/HomePage';
-import {AdminPage} from './pages/AdminPage';
-import { useDispatch } from 'react-redux';
-import { actionSetAccessRole } from "./redux/actions";
-import { APP_CONST } from "./constants";
+import { QueryParamProvider } from 'use-query-params';
+
+import { HomePage } from './pages/HomePage';
+import { AdminPage } from './pages/AdminPage';
 
 export const App = () => {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(actionSetAccessRole(APP_CONST.ACCESS_ROLE_ADMIN));
-  }, []);
 
   return (
     <Router>
-        {/* A <Switch> looks through its children <Route>s and
+      {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
-        <Switch>
+      <Switch>
         <Route exact path="/">
+          <QueryParamProvider ReactRouterRoute={Route}>
             <HomePage />
-          </Route>
-          <Route path="/admin">
-            <AdminPage />
-          </Route>
-          <Route path="*">
-            <div>找不到页面！</div>
-          </Route>
-        </Switch>
+          </QueryParamProvider>
+        </Route>
+        <Route path="/admin">
+          <AdminPage />
+        </Route>
+        <Route path="*">
+          <div>找不到页面！</div>
+        </Route>
+      </Switch>
     </Router>
   );
 }

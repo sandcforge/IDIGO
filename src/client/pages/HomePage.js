@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useQueryParam, NumberParam } from 'use-query-params';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
 import { TabPanel } from '../components/TabPanel.js';
-import { UI_CONST } from '../constants.js';
+import { UI_CONST, APP_CONST } from '../constants.js';
 import {
+  actionSetAccessRole,
   actionSetTabIndex,
 } from '../redux/actions.js';
 import { CategoryTab } from './CategoryTab.js';
@@ -31,6 +33,15 @@ export const HomePage = () => {
   const handleRootTabChange = (event, newValue) => {
     dispatch(actionSetTabIndex(newValue));
   };
+
+  const [role, setRole] = useQueryParam('admin', NumberParam);
+
+  useEffect(() => {
+    if (role === APP_CONST.ACCESS_ROLE_ADMIN) {
+      dispatch(actionSetAccessRole(APP_CONST.ACCESS_ROLE_ADMIN));
+    }
+  }, []);
+
 
   return (
     <div className={classes.root}>

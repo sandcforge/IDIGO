@@ -6,9 +6,10 @@ const miscRoutes = (app) => {
     res.json({ now: Date.now(), appName: 'IDIGO' });
   });
 
-  app.get('/api/getcollections', async (req, res) => {
+  app.post('/api/getcollections', async (req, res) => {
+    const { pageSize, pageIndex } = req.body;
     try {
-      const o = await collectionGoods.find({});
+      const o = await collectionGoods.findAsCursor({}).skip(pageIndex*pageSize).limit(pageSize).toArray();
       res.json(o);
     }
     catch (e) {

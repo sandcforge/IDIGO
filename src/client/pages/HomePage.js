@@ -29,6 +29,7 @@ export const HomePage = () => {
   const classes = useStyles();
 
   const rootTabValue = useSelector(state => state.ui.homePageTabIndex);
+  const isAdmin = useSelector(state => state.app.accessRole === APP_CONST.ACCESS_ROLE_ADMIN);
 
   const handleRootTabChange = (event, newValue) => {
     dispatch(actionSetTabIndex(newValue));
@@ -53,22 +54,23 @@ export const HomePage = () => {
           aria-label="simple tabs example"
         >
           <Tab value={UI_CONST.COLLECTION_TAB_INDEX} label="精选" {...a11yProps(UI_CONST.COLLECTION_TAB_INDEX)} />
-          <Tab value={UI_CONST.CATEGORY_TAB_INDEX} label="分类" {...a11yProps(UI_CONST.CATEGORY_TAB_INDEX)} />
+          {isAdmin && <Tab value={UI_CONST.CATEGORY_TAB_INDEX} label="分类" {...a11yProps(UI_CONST.CATEGORY_TAB_INDEX)} />}
           <Tab value={UI_CONST.SEARCH_TAB_INDEX} label="搜索" {...a11yProps(UI_CONST.SEARCH_TAB_INDEX)} />
           <Tab value={UI_CONST.ORDER_TAB_INDEX} label="订单" {...a11yProps(UI_CONST.ORDER_TAB_INDEX)} />
         </Tabs>
       </AppBar>
       <TabPanel value={rootTabValue} index={UI_CONST.COLLECTION_TAB_INDEX}>
-        <CollectionTab/>
+        <CollectionTab />
       </TabPanel>
-      <TabPanel value={rootTabValue} index={UI_CONST.CATEGORY_TAB_INDEX}>
-        <CategoryTab/>
-      </TabPanel>
+      {isAdmin &&
+        (<TabPanel value={rootTabValue} index={UI_CONST.CATEGORY_TAB_INDEX}>
+          <CategoryTab />
+        </TabPanel>)}
       <TabPanel value={rootTabValue} index={UI_CONST.SEARCH_TAB_INDEX}>
-        <SearchTab/>
+        <SearchTab />
       </TabPanel>
       <TabPanel value={rootTabValue} index={UI_CONST.ORDER_TAB_INDEX} >
-        <OrderTab/>
+        <OrderTab />
       </TabPanel>
     </div>
   );

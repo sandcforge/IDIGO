@@ -17,9 +17,8 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useSelector } from 'react-redux';
 
 import clsx from 'clsx';
-import { APP_CONST, BUSINESS_CONST} from '../constants';
+import { APP_CONST, BUSINESS_CONST} from '../constants.js';
 
-const getBuyerPrice = (cost) => (cost*BUSINESS_CONST.GOODS_PROFIT).toFixed(2) ;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -58,10 +57,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-
 export const ItemCard = (props) => {
   const classes = useStyles();
   const isAdmin = useSelector(state => state.app.accessRole === APP_CONST.ACCESS_ROLE_ADMIN);
+  const getBuyerPrice = (cost) => {
+    return (cost * (isAdmin ? 1 : BUSINESS_CONST.GOODS_PROFIT)).toFixed(2);
+  }
 
   const [expanded, setExpanded] = React.useState(false);
   const {details} = props;

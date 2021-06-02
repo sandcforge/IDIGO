@@ -1,8 +1,50 @@
 const axios = require('axios');
+const { collectionGoods } = require('./db.js');
 
 const miscRoutes = (app) => {
   app.get('/api/now', (req, res) => {
     res.json({ now: Date.now(), appName: 'IDIGO' });
+  });
+
+  app.get('/api/getcollections', async (req, res) => {
+    try {
+      const o = await collectionGoods.find({});
+      res.json(o);
+    }
+    catch (e) {
+      console.log(e);
+      res.sendStatus(404);
+    }
+  });
+
+  app.post('/api/delgoods', async (req, res) => {
+    const { data } = req.body;
+    try {
+      const results = await collectionGoods.remove(
+        { GodId: data.GodId },
+      );
+      res.sendStatus(200);
+    }
+    catch (e) {
+      console.log(e);
+      res.sendStatus(404);
+    }
+  });
+
+  app.post('/api/addgoods', async (req, res) => {
+    const { data } = req.body;
+    try {
+      const results = await collectionGoods.update(
+        { GodId: data.GodId },
+        { $set: data },
+        { upsert: true },
+      );
+      res.sendStatus(200);
+    }
+    catch (e) {
+      console.log(e);
+      res.sendStatus(404);
+    }
   });
 
   app.post('/api/proxy', async (req, res) => {

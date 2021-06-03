@@ -8,7 +8,7 @@ import { APP_CONST, UI_CONST } from '../constants.js';
 export const actionSetTabIndex = createAction('SetTabIndex');
 export const actionSetAccessRole = createAction('SetAccessRole');
 export const actionIncreaseTabPageIndex = createAction('IncreaseTabPageIndex');
-export const actionResetTab = createAction('ResetSearchTab');
+export const actionResetTab = createAction('ResetTab');
 export const actionSetHasMoreOnTab = createAction('SetHasMoreOnTab', (tabIndex, hasMore) => {
   return {
     payload: {
@@ -99,6 +99,30 @@ export const actionGetCategoryProducts = createAsyncThunk(
       }
       thunkApi.dispatch(actionIncreaseTabPageIndex(UI_CONST.CATEGORY_TAB_INDEX));
       return realData;
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  }
+);
+
+export const actionAddProductToCollection = createAsyncThunk(
+  'AddProductToCollection',
+  async (productInfo, thunkApi) => {
+    try {
+      await axios.post('/api/addgoods', { data: productInfo });
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  }
+);
+
+export const actionRemoveProductFromCollection = createAsyncThunk(
+  'RemoveProductFromCollection',
+  async (productInfo, thunkApi) => {
+    try {
+      await axios.post('/api/delgoods', { data: productInfo });
     } catch (err) {
       console.log(err);
       throw err;

@@ -81,7 +81,11 @@ export const rootReducer = createReducer(initialState, (builder) => {
     .addCase(actionResetTab, (state, action) => {
       switch (action.payload) {
         case UI_CONST.COLLECTION_TAB_INDEX:
-          state.ui.dataLoadingStatus.collectionTab.hasMore = action.payload.hasMore;
+          state.ui.dataLoadingStatus.collectionTab = {
+            currentPageIndex: 0,
+            hasMore: false,
+          };
+          state.data.collectionProducts = [];
           break;
         case UI_CONST.CATEGORY_TAB_INDEX:
           state.ui.dataLoadingStatus.categoryTab = {

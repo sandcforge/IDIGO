@@ -5,6 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 import { TabPanel } from '../components/TabPanel.js';
 import { UI_CONST, APP_CONST } from '../constants.js';
@@ -30,6 +31,7 @@ export const HomePage = () => {
 
   const rootTabValue = useSelector(state => state.ui.homePageTabIndex);
   const isAdmin = useSelector(state => state.app.accessRole === APP_CONST.ACCESS_ROLE_ADMIN);
+  const isLoading = useSelector(state => state.ui.isApiLoading);
 
   const handleRootTabChange = (event, newValue) => {
     dispatch(actionSetTabIndex(newValue));
@@ -59,6 +61,7 @@ export const HomePage = () => {
           <Tab value={UI_CONST.ORDER_TAB_INDEX} label="订单" {...a11yProps(UI_CONST.ORDER_TAB_INDEX)} />
         </Tabs>
       </AppBar>
+      {isLoading && <LinearProgress />}
       <TabPanel value={rootTabValue} index={UI_CONST.COLLECTION_TAB_INDEX}>
         <CollectionTab />
       </TabPanel>

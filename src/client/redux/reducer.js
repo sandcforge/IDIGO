@@ -11,10 +11,12 @@ import {
   actionResetTab,
   actionSetHasMoreOnTab,
   actionGetCategoryProducts,
+  actionSetApiLoading,
 } from './actions.js';
 
 const initialState = {
   ui: {
+    isApiLoading: false,
     homePageTabIndex: UI_CONST.COLLECTION_TAB_INDEX,
     dataLoadingStatus: {
       collectionTab: {
@@ -47,6 +49,9 @@ export const rootReducer = createReducer(initialState, (builder) => {
   builder
     .addCase(actionSetAccessRole, (state, action) => {
       state.app.accessRole = action.payload;
+    })
+    .addCase(actionSetApiLoading, (state, action) => {
+      state.ui.isApiLoading = action.payload;
     })
     .addCase(actionSetTabIndex, (state, action) => {
       state.ui.homePageTabIndex = action.payload;

@@ -10,4 +10,5 @@ db.on('error', (err) => {
 db.on('connect', () => {
   console.log(`Connected to database: ${envConfig.dbName}`);
 });
-exports.collectionGoods = db.collection_goods;
+
+exports.collectionGoods = envConfig.nodeEnv === 'production' ? db. collection_goods : db. collection_goods_dev;

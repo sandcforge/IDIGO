@@ -21,6 +21,7 @@ export const CollectionTab = () => {
   const dispatch = useDispatch();
   const collectionProducts = useSelector(state => state.data.collectionProducts);
   const dataLoadingStatus = useSelector(state => state.ui.dataLoadingStatus);
+  const collectionGodIdSet = useSelector(state => new Set(state.data.collectionProducts.map(item => item.GodId)));
 
 
   useEffect(() => {
@@ -46,6 +47,7 @@ export const CollectionTab = () => {
   return (<>
     <img className={classes.cover} src={cover} />
     <ListView
+      whitelistSet={collectionGodIdSet}
       listData={collectionProducts}
       showLoadMoreButton={showLoadMoreButtonOnTab(UI_CONST.COLLECTION_TAB_INDEX)}
       keyName='GodId'

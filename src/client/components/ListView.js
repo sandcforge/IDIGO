@@ -8,8 +8,14 @@ import { ItemCard } from './ItemCard.js';
 
 
 export const ListView = (props) => {
-  const { Content = ItemCard, listData, keyName, onLoadData, showLoadMoreButton, ...other } = props;
-  
+  const { Content = ItemCard,
+    whitelistSet = undefined,
+    listData,
+    keyName,
+    onLoadData,
+    showLoadMoreButton,
+    ...other } = props;
+
   //A padding to avoid the mobile phone gesture area at the bottom.
   const Padding = () => (<Typography
     component='span'
@@ -17,7 +23,7 @@ export const ListView = (props) => {
   />);
 
   return (<>
-    {listData.map((item) => <Content key={item[keyName]} details={item} />)}
+    {listData.map((item) => <Content whitelistSet={whitelistSet} key={item[keyName]} details={item} />)}
     {showLoadMoreButton && (<Container>
       <Button
         variant="contained"

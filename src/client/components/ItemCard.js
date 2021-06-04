@@ -68,11 +68,10 @@ const useStyles = makeStyles((theme) => ({
 
 
 export const ItemCard = (props) => {
-  const { details } = props;
+  const { details, whitelistSet } = props;
   const classes = useStyles();
   const dispatch = useDispatch();
   const isAdmin = useSelector(state => state.app.accessRole === APP_CONST.ACCESS_ROLE_ADMIN);
-  const collectionGodIdSet = useSelector(state => new Set(state.data.collectionProducts.map(item => item.GodId)));
   const [expanded, setExpanded] = React.useState(false);
 
   const getBuyerPrice = (cost) => {
@@ -120,10 +119,10 @@ export const ItemCard = (props) => {
   };
 
   const renderEditActions = () => {
-    return (<>
+    return isAdmin && (<>
       <CardActions>
         <IconButton disabled>
-          <StarsIcon color={collectionGodIdSet.has(details.GodId) ? "primary" : "inherit"} />
+          <StarsIcon color={whitelistSet.has(details.GodId) ? "primary" : "inherit"} />
         </IconButton>
         <IconButton
           color="secondary"
@@ -149,6 +148,17 @@ export const ItemCard = (props) => {
     </>);
   };
 
+  /**
+   * Display logic
+   * if whitelistSet === undefined:
+   *    isAdmin  -> all features
+   *    !isAdmin -> partial features
+   * if whitelistSet is valid:
+   *    isAdmin  -> all features
+   *    !isAdmin & inWhitelist -> partial features
+   *    !isAdmin & !inWhitelist -> hidden
+   */
+  if (!isAdmin && whitelistSet && !whitelistSet.has(details.GodId)) { return null; }
   return (
     <>
       <Card className={classes.root}>
@@ -173,7 +183,7 @@ export const ItemCard = (props) => {
             </IconButton>
           }
         />
-        {isAdmin && renderEditActions()}
+        {renderEditActions()}
         <Collapse in={expanded} timeout="auto" unmountOnExit>
           <CardContent>
             {renderCardContent(details)}

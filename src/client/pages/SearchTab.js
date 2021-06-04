@@ -21,6 +21,7 @@ export const SearchTab = () => {
 
   const searchResults = useSelector(state => state.data.searchResults);
   const dataLoadingStatus = useSelector(state => state.ui.dataLoadingStatus);
+  const collectionGodIdSet = useSelector(state => new Set(state.data.collectionProducts.map(item => item.GodId)));
 
 
   const handleSearchTextFieldOnChange = (event) => {
@@ -69,6 +70,7 @@ export const SearchTab = () => {
       搜索商品
         </Button>
     <ListView
+      whitelistSet={collectionGodIdSet}
       listData={searchResults}
       showLoadMoreButton={showLoadMoreButtonOnTab(UI_CONST.SEARCH_TAB_INDEX)}
       keyName='GodId'

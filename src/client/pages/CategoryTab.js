@@ -19,6 +19,7 @@ export const CategoryTab = () => {
   const productCategory = useSelector(state => state.data.productCategory);
   const categoryProducts = useSelector(state => state.data.categoryProducts);
   const dataLoadingStatus = useSelector(state => state.ui.dataLoadingStatus);
+  const collectionGodIdSet = useSelector(state => new Set(state.data.collectionProducts.map(item => item.GodId)));
 
   const handleSubTabChange = (event, newValue) => {
     setSubTabValue(newValue);
@@ -65,6 +66,7 @@ export const CategoryTab = () => {
     </AppBar>
 
       <ListView
+        whitelistSet={collectionGodIdSet}
         listData={categoryProducts}
         showLoadMoreButton={showLoadMoreButtonOnTab(UI_CONST.CATEGORY_TAB_INDEX)}
         keyName='GodId'

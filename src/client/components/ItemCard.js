@@ -66,6 +66,9 @@ const useStyles = makeStyles((theme) => ({
     borderWidth: 1,
     height: 200,
     margin: 1,
+  },
+  rawImage:{
+    maxWidth: '100%',
   }
 }));
 
@@ -257,6 +260,7 @@ const Image = (props) => {
         aria-labelledby="responsive-dialog-title"
       >
         <img
+          className={classes.rawImage}
           onClick={handleClose}
           src={props.url}
           alt='没有图片' />

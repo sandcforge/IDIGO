@@ -104,15 +104,15 @@ export const ItemCard = (props) => {
       <TextListItem title='商品规格' content={details.GodSpecification} />
       <TextListItem title='商品介绍' content={details.GodAppDescribe} />
       <div className={classes.filmstripContainer}>
-        <img className={classes.image} src={details.GodImageUrl} alt={'0'} />
-        {details.GodImageUrl1 ? <img className={classes.image} src={details.GodImageUrl1} alt={1} /> : null}
-        {details.GodImageUrl2 ? <img className={classes.image} src={details.GodImageUrl2} alt={2} /> : null}
-        {details.GodImageUrl3 ? <img className={classes.image} src={details.GodImageUrl3} alt={3} /> : null}
-        {details.GodImageUrl4 ? <img className={classes.image} src={details.GodImageUrl4} alt={4} /> : null}
-        {details.GodImageUrl5 ? <img className={classes.image} src={details.GodImageUrl5} alt={5} /> : null}
-        {details.GodImageUrl6 ? <img className={classes.image} src={details.GodImageUrl6} alt={6} /> : null}
-        {details.GodImageUrl7 ? <img className={classes.image} src={details.GodImageUrl7} alt={7} /> : null}
-        {details.GodImageUrl8 ? <img className={classes.image} src={details.GodImageUrl8} alt={8} /> : null}
+        <Image url={details.GodImageUrl} />
+        <Image url={details.GodImageUrl1} />
+        <Image url={details.GodImageUrl2} />
+        <Image url={details.GodImageUrl3} />
+        <Image url={details.GodImageUrl4} />
+        <Image url={details.GodImageUrl5} />
+        <Image url={details.GodImageUrl6} />
+        <Image url={details.GodImageUrl7} />
+        <Image url={details.GodImageUrl8} />
       </div>
       {isAdmin && renderExtraInfo()}
     </>);
@@ -226,4 +226,9 @@ const TextListItem = (props) => {
       message={`复制到剪贴板：${content}.`}
     />
   </>);
+};
+
+const Image = (props) => {
+  const classes = useStyles();
+  return props.url && (<img className={classes.image} src={props.url} alt='没有图片' />);
 };

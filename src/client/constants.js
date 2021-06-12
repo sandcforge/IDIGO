@@ -203,6 +203,6 @@ export const APP_CONST = {
 };
 
 export const BUSINESS_CONST = {
-  GOODS_PROFIT: 1.15,
+  GOODS_PROFIT: 1.3,
   GOODS_WHITE_LIST,
 };

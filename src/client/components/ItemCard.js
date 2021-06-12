@@ -1,14 +1,18 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+
+
+import Avatar from '@material-ui/core/Avatar';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardContent';
 import Collapse from '@material-ui/core/Collapse';
-import Avatar from '@material-ui/core/Avatar';
+import Dialog from '@material-ui/core/Dialog';
 import IconButton from '@material-ui/core/IconButton';
 import { red } from '@material-ui/core/colors';
 import { makeStyles } from '@material-ui/core/styles';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Snackbar from "@material-ui/core/Snackbar";
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -18,7 +22,6 @@ import FileCopyIcon from '@material-ui/icons/FileCopy';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import StarsIcon from '@material-ui/icons/Stars';
-import { useDispatch, useSelector } from 'react-redux';
 
 import clsx from 'clsx';
 import { APP_CONST, BUSINESS_CONST, UI_CONST } from '../constants.js';
@@ -58,12 +61,12 @@ const useStyles = makeStyles((theme) => ({
     overflowX: 'auto',
     width: '100%',
   },
-  image: {
+  filmstripImage: {
     borderStyle: 'solid',
     borderWidth: 1,
     height: 200,
     margin: 1,
-  },
+  }
 }));
 
 
@@ -230,5 +233,34 @@ const TextListItem = (props) => {
 
 const Image = (props) => {
   const classes = useStyles();
-  return props.url && (<img className={classes.image} src={props.url} alt='没有图片' />);
+  const [open, setOpen] = React.useState(false);
+
+  const showModal = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  return props.url && (
+    <>
+      <img
+        className={classes.filmstripImage}
+        onClick={showModal}
+        src={props.url}
+        alt='没有图片' />
+      <Dialog
+        fullWidth={true}
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="responsive-dialog-title"
+      >
+        <img
+          onClick={handleClose}
+          src={props.url}
+          alt='没有图片' />
+      </Dialog>
+    </>
+  );
 };

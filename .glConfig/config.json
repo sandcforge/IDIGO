@@ -1,0 +1,27 @@
+{
+  "sites": [
+    {
+      "subject": "idigo.ml",
+      "altnames": [
+        "idigo.ml",
+        "www.idigo.ml"
+      ],
+      "renewAt": 1627362274280
+    }
+  ],
+  "defaults": {
+    "store": {
+      "module": "greenlock-store-fs"
+    },
+    "challenges": {
+      "http-01": {
+        "module": "acme-http-01-standalone"
+      }
+    },
+    "renewOffset": "-45d",
+    "renewStagger": "3d",
+    "accountKeyType": "EC-P256",
+    "serverKeyType": "RSA-2048",
+    "subscriberEmail": "sandcforge@gmail.com"
+  }
+}

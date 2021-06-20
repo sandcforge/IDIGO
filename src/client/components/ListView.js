@@ -24,17 +24,18 @@ export const ListView = (props) => {
 
   return (<>
     {listData.map((item) => <Content whitelistSet={whitelistSet} key={item[keyName]} details={item} />)}
-    {showLoadMoreButton && (<Container>
+    <Container>
       <Button
         variant="contained"
         color="primary"
         fullWidth={true}
         onClick={onLoadData}
+        disabled={!showLoadMoreButton}
       >
-        加载更多
+        {showLoadMoreButton ? '加载更多!' : '到底啦，我们是有底线的!'}
         </Button>
       <Padding />
-    </Container>)}
+    </Container>
   </>
   );
 };

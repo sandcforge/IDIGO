@@ -12,6 +12,7 @@ import { UI_CONST, APP_CONST } from '../constants.js';
 import {
   actionSetAccessRole,
   actionSetTabIndex,
+  actionSetCustomerService,
 } from '../redux/actions.js';
 import { CategoryTab } from './CategoryTab.js';
 import { CollectionTab } from './CollectionTab.js';
@@ -38,11 +39,20 @@ export const HomePage = () => {
   };
 
   const [role, setRole] = useQueryParam('admin', NumberParam);
+  const [customerService, setCustomerService] = useQueryParam('cs', NumberParam);
 
   useEffect(() => {
     if (role === APP_CONST.ACCESS_ROLE_ADMIN) {
       dispatch(actionSetAccessRole(APP_CONST.ACCESS_ROLE_ADMIN));
     }
+    if (customerService === APP_CONST.CUSTOMER_SERVICE_LIUQIAN
+      || customerService === APP_CONST.CUSTOMER_SERVICE_HUZI) {
+      dispatch(actionSetCustomerService(customerService));
+    }
+    else {
+      dispatch(actionSetCustomerService(APP_CONST.CUSTOMER_SERVICE_NULL));
+    }
+
   }, []);
 
 

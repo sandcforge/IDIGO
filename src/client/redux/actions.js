@@ -7,6 +7,7 @@ import { APP_CONST, UI_CONST } from '../constants.js';
 
 export const actionSetTabIndex = createAction('SetTabIndex');
 export const actionSetAccessRole = createAction('SetAccessRole');
+export const actionSetCustomerService = createAction('SetCustomerService');
 export const actionIncreaseTabPageIndex = createAction('IncreaseTabPageIndex');
 export const actionResetTab = createAction('ResetTab');
 export const actionSetApiLoading = createAction('SetApiLoading');

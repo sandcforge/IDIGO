@@ -15,6 +15,9 @@ export const APP_CONST = {
   GOODS_CATEGORY_EP: `https://www.snailsmall.com/GoodsCategory/FindBigCategory`,
   ACCESS_ROLE_ADMIN: 1,
   ACCESS_ROLE_USER: 2,
+  CUSTOMER_SERVICE_NULL: -1,
+  CUSTOMER_SERVICE_LIUQIAN: 1,
+  CUSTOMER_SERVICE_HUZI: 2,
 };
 
 export const BUSINESS_CONST = {

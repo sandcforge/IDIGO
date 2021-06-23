@@ -12,6 +12,7 @@ import {
   actionSetHasMoreOnTab,
   actionGetCategoryProducts,
   actionSetApiLoading,
+  actionSetCustomerService,
 } from './actions.js';
 
 const initialState = {
@@ -41,6 +42,7 @@ const initialState = {
   },
   app: {
     accessRole: APP_CONST.ACCESS_ROLE_USER,
+    customerService: APP_CONST.CUSTOMER_SERVICE_NULL,
   }
 };
 
@@ -49,6 +51,9 @@ export const rootReducer = createReducer(initialState, (builder) => {
   builder
     .addCase(actionSetAccessRole, (state, action) => {
       state.app.accessRole = action.payload;
+    })
+    .addCase(actionSetCustomerService, (state, action) => {
+      state.app.customerService = action.payload;
     })
     .addCase(actionSetApiLoading, (state, action) => {
       state.ui.isApiLoading = action.payload;

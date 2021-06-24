@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
+import Button from '@material-ui/core/Button';
 
 import { ItemCard } from '../components/ItemCard';
 import { APP_CONST } from '../constants.js';
@@ -40,14 +41,22 @@ export const ProductPage = () => {
     fetchProductDetailsByCode(code);
   }, []);
 
-
-
   return (<>
     {productDetails ? (
-      <ItemCard 
+      <ItemCard
         disableExpand={true}
-        defaultExpanded = {true}
+        defaultExpanded={true}
         details={productDetails} />)
       : '商品不存在!'}
+
+    <Button
+      variant="contained"
+      color="primary"
+      component={Link} to={'/'}
+      fullWidth={true}
+    >
+      点击这里，发现更多好货!
+    </Button>
+
   </>);
 };

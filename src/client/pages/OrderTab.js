@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
@@ -22,11 +23,13 @@ import ViewListIcon from '@material-ui/icons/ViewList';
 
 import { FolderCard } from '../components/FolderCard.js';
 import { APP_CONST } from '../constants.js';
+import { actionSetApiLoading } from '../redux/actions.js';
 
 
 export const OrderTab = (props) => {
   const [orderDetails, setOrderDetails] = useState(null);
   const [orderCodeTextFieldValue, setOrderCodeTextFieldValue] = useState('');
+  const dispatch = useDispatch();
 
   const handleOrderCodeTextFieldOnChange = (event) => {
     setOrderCodeTextFieldValue(event.target.value);
@@ -34,6 +37,7 @@ export const OrderTab = (props) => {
 
   const fetchOrderDetails = async (orderCode) => {
     try {
+      dispatch(actionSetApiLoading(true));
       const EndpointOfFindOrder = `https://www.snailsmall.com/Order/FindPage?data={"Criterion":{"OrdCode":"${orderCode}"},"PageIndex":0,"PageSize":1}&buyercode=${APP_CONST.MY_BUYER_CODE}`
       const result0 = await axios.post('/api/proxy', { method: 'POST', url: EndpointOfFindOrder });
       const orderList = result0.data.Data.DataBody;
@@ -55,10 +59,12 @@ export const OrderTab = (props) => {
       const EndpointOfLogisticSummary = `https://www.snailsmall.com/Order/FindLogistics1?data={"OrdCode":"${orderSummary.OrdCode}"}&buyercode=${APP_CONST.MY_BUYER_CODE}`;
       const result2 = await axios.post('/api/proxy', { method: 'POST', url: EndpointOfLogisticSummary });
       const logisticSummary = result2.data.Data;
+      dispatch(actionSetApiLoading(false));
       setOrderDetails({ status: APP_CONST.DATA_STATUS_OK, orderSummary, logisticSummary });
     }
     catch (err) {
       console.log(err);
+      dispatch(actionSetApiLoading(false));
       setOrderDetails({ status: APP_CONST.DATA_STATUS_ERROR, errMsg: '查询错误！' });
     }
   };

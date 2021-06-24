@@ -26,14 +26,25 @@ import { APP_CONST } from '../constants.js';
 
 export const OrderTab = (props) => {
   const [orderDetails, setOrderDetails] = useState(null);
-  const [orderIdTextFieldValue, setOrderIdTextFieldValue] = useState('');
+  const [orderCodeTextFieldValue, setOrderCodeTextFieldValue] = useState('');
 
-  const handleOrderIdTextFieldOnChange = (event) => {
-    setOrderIdTextFieldValue(event.target.value);
+  const handleOrderCodeTextFieldOnChange = (event) => {
+    setOrderCodeTextFieldValue(event.target.value);
   };
 
-  const fetchOrderDetails = async (orderId) => {
+  const fetchOrderDetails = async (orderCode) => {
     try {
+      const EndpointOfFindOrder = `https://www.snailsmall.com/Order/FindPage?data={"Criterion":{"OrdCode":"${orderCode}"},"PageIndex":0,"PageSize":1}&buyercode=${APP_CONST.MY_BUYER_CODE}`
+      const result0 = await axios.post('/api/proxy', { method: 'POST', url: EndpointOfFindOrder });
+      const orderList = result0.data.Data.DataBody;
+      let orderId = 0;
+      if (orderList && orderList[0]) {
+        orderId = orderList[0].OrdId;
+      }
+      else {
+        throw new Error('Invalid orderCode');
+      }
+
       const EndpointOfOrderSummary = `https://www.snailsmall.com/Order/GetById?data={"OrdId":"${orderId}"}&buyercode=${APP_CONST.MY_BUYER_CODE}`;
       const result1 = await axios.post('/api/proxy', { method: 'POST', url: EndpointOfOrderSummary });
       const orderSummary = result1.data.Data;
@@ -143,9 +154,9 @@ export const OrderTab = (props) => {
         id="standard-basic"
         fullWidth={true}
         label="订单号"
-        value={orderIdTextFieldValue}
+        value={orderCodeTextFieldValue}
         variant="outlined"
-        onChange={handleOrderIdTextFieldOnChange}
+        onChange={handleOrderCodeTextFieldOnChange}
       />
     </Box>
     <Button
@@ -153,7 +164,7 @@ export const OrderTab = (props) => {
       fullWidth={true}
       color="primary"
       startIcon={<SearchIcon />}
-      onClick={() => { fetchOrderDetails(orderIdTextFieldValue) }}
+      onClick={() => { fetchOrderDetails(orderCodeTextFieldValue) }}
     >
       查询订单
         </Button>

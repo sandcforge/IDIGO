@@ -21,7 +21,6 @@ export const ProductPage = () => {
       const productList = result0.data.Data.DataBody;
       let productDetails = null;
       if (productList && productList[0]) {
-        console.log(productList[0]);
         setProductDetails(productList[0]);
       }
       else {

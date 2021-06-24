@@ -8,7 +8,7 @@ import {
 import { QueryParamProvider } from 'use-query-params';
 
 import { HomePage } from './pages/HomePage';
-import { AdminPage } from './pages/AdminPage';
+import { ProductPage } from './pages/ProductPage';
 
 export const App = () => {
 
@@ -22,8 +22,8 @@ export const App = () => {
             <HomePage />
           </QueryParamProvider>
         </Route>
-        <Route path="/admin">
-          <AdminPage />
+        <Route exact path="/product/:code">
+          <ProductPage />
         </Route>
         <Route path="*">
           <div>找不到页面！</div>

@@ -67,18 +67,18 @@ const useStyles = makeStyles((theme) => ({
     height: 200,
     margin: 1,
   },
-  rawImage:{
+  rawImage: {
     maxWidth: '100%',
   }
 }));
 
 
 export const ItemCard = (props) => {
-  const { details, whitelistSet } = props;
+  const { details, whitelistSet, defaultExpanded = false, disableExpand = false } = props;
   const classes = useStyles();
   const dispatch = useDispatch();
   const isAdmin = useSelector(state => state.app.accessRole === APP_CONST.ACCESS_ROLE_ADMIN);
-  const [expanded, setExpanded] = React.useState(false);
+  const [expanded, setExpanded] = React.useState(defaultExpanded);
 
   const getBuyerPrice = (cost) => {
     return (cost * (isAdmin ? 1 : BUSINESS_CONST.GOODS_PROFIT)).toFixed(2);
@@ -169,7 +169,7 @@ export const ItemCard = (props) => {
     <>
       <Card className={classes.root}>
         <CardHeader
-          onClick={handleExpandClick}
+          onClick={disableExpand ? undefined : handleExpandClick}
           avatar={
             <Avatar aria-label="recipe" className={classes.avatar}>
               <img width='100%' height='100%' src={details.GodImageUrl} alt='avatar' />

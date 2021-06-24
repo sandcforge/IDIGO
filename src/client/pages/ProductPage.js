@@ -43,6 +43,11 @@ export const ProductPage = () => {
 
 
   return (<>
-    {productDetails ? (<ItemCard details={productDetails} />) : '商品不存在!'}
+    {productDetails ? (
+      <ItemCard 
+        disableExpand={true}
+        defaultExpanded = {true}
+        details={productDetails} />)
+      : '商品不存在!'}
   </>);
 };

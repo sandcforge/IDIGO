@@ -1,13 +1,22 @@
+const compression = require('compression');
 const express = require('express');
 const GreenlockExpress = require('greenlock-express');
+const path = require('path');
 const miscRoutes = require('./api.js');
 const { envConfig } = require('./constants.js');
 
 const app = express();
-app.use(express.static('dist'));
 app.use(express.json());
 
 miscRoutes(app);
+
+const outputPath = path.resolve(process.cwd(), 'dist');
+app.use(compression());
+app.use('/', express.static(outputPath));
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(outputPath, 'index.html'));
+});
+
 if (process.env.USE_SSL) {
   GreenlockExpress.init({
     packageRoot: process.cwd(),

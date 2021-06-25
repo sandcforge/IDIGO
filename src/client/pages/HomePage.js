@@ -6,6 +6,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import Badge from '@material-ui/core/Badge';
 
 import { TabPanel } from '../components/TabPanel.js';
 import { UI_CONST, APP_CONST } from '../constants.js';
@@ -34,6 +35,7 @@ export const HomePage = () => {
   const rootTabValue = useSelector(state => state.ui.homePageTabIndex);
   const isAdmin = useSelector(state => state.app.accessRole === APP_CONST.ACCESS_ROLE_ADMIN);
   const isLoading = useSelector(state => state.ui.isApiLoading);
+  const totalProductInCart = useSelector(state => state.ui.cart.reduce((accumulator, item) => accumulator + item.productNum, 0));
 
   const handleRootTabChange = (event, newValue) => {
     dispatch(actionSetTabIndex(newValue));
@@ -58,6 +60,17 @@ export const HomePage = () => {
 
   }, []);
 
+  const renderCartTabTitle = () => {
+    return (
+      <Badge
+        badgeContent={totalProductInCart}
+        max={9}
+        color="secondary"
+      >
+        购物车
+      </Badge>
+    );
+  };
 
   return (
     <div className={classes.root}>
@@ -72,7 +85,7 @@ export const HomePage = () => {
           {isAdmin && <Tab value={UI_CONST.CATEGORY_TAB_INDEX} label="分类" {...a11yProps(UI_CONST.CATEGORY_TAB_INDEX)} />}
           <Tab value={UI_CONST.SEARCH_TAB_INDEX} label="搜索" {...a11yProps(UI_CONST.SEARCH_TAB_INDEX)} />
           <Tab value={UI_CONST.ORDER_TAB_INDEX} label="订单" {...a11yProps(UI_CONST.ORDER_TAB_INDEX)} />
-          {isAdmin && <Tab value={UI_CONST.CART_TAB_INDEX} label="购物车" {...a11yProps(UI_CONST.CART_TAB_INDEX)} />}
+          {isAdmin && <Tab value={UI_CONST.CART_TAB_INDEX} label={renderCartTabTitle()} {...a11yProps(UI_CONST.CART_TAB_INDEX)} />}
         </Tabs>
       </AppBar>
       {isLoading && <LinearProgress />}

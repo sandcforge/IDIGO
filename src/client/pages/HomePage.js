@@ -46,11 +46,13 @@ export const HomePage = () => {
     if (role === APP_CONST.ACCESS_ROLE_ADMIN) {
       dispatch(actionSetAccessRole(APP_CONST.ACCESS_ROLE_ADMIN));
     }
-    if (customerService === APP_CONST.CUSTOMER_SERVICE_LIUQIAN
+    else if (customerService === APP_CONST.CUSTOMER_SERVICE_LIUQIAN
       || customerService === APP_CONST.CUSTOMER_SERVICE_HUZI) {
       dispatch(actionSetCustomerService(customerService));
+      dispatch(actionSetAccessRole(APP_CONST.ACCESS_ROLE_CUSTOMER_SERVICE));
     }
     else {
+      dispatch(actionSetAccessRole(APP_CONST.ACCESS_ROLE_USER));
       dispatch(actionSetCustomerService(APP_CONST.CUSTOMER_SERVICE_NULL));
     }
 

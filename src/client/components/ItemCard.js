@@ -22,14 +22,16 @@ import FileCopyIcon from '@material-ui/icons/FileCopy';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import StarsIcon from '@material-ui/icons/Stars';
-
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import RemoveShoppingCartIcon from '@material-ui/icons/RemoveShoppingCart';
 import clsx from 'clsx';
 import { APP_CONST, BUSINESS_CONST, UI_CONST } from '../constants.js';
 import {
   actionAddProductToCollection,
   actionGetCollectionProducts,
   actionRemoveProductFromCollection,
-  actionResetTab
+  actionResetTab,
+  actionUpdateCart
 } from '../redux/actions.js';
 
 
@@ -78,6 +80,7 @@ export const ItemCard = (props) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const isAdmin = useSelector(state => state.app.accessRole === APP_CONST.ACCESS_ROLE_ADMIN);
+  const isCustomerService = useSelector(state => state.app.accessRole === APP_CONST.ACCESS_ROLE_CUSTOMER_SERVICE);
   const [expanded, setExpanded] = React.useState(defaultExpanded);
 
   const getBuyerPrice = (cost) => {
@@ -128,30 +131,52 @@ export const ItemCard = (props) => {
   };
 
   const renderEditActions = () => {
-    return isAdmin && (<>
+    return (isAdmin || isCustomerService) && (<>
       <CardActions>
-        <IconButton disabled>
+        {isAdmin && (<><IconButton disabled>
           <StarsIcon color={whitelistSet.has(details.GodId) ? "primary" : "inherit"} />
         </IconButton>
+          <IconButton
+            color="secondary"
+            onClick={async () => {
+              dispatch(actionResetTab(UI_CONST.COLLECTION_TAB_INDEX));
+              await dispatch(actionAddProductToCollection(details));
+              await dispatch(actionGetCollectionProducts());
+            }}
+          >
+            <AddCircleIcon />
+          </IconButton>
+          <IconButton
+            color="secondary"
+            onClick={async () => {
+              dispatch(actionResetTab(UI_CONST.COLLECTION_TAB_INDEX));
+              await dispatch(actionRemoveProductFromCollection(details));
+              await dispatch(actionGetCollectionProducts());
+            }}
+          >
+            <RemoveCircleIcon />
+          </IconButton></>)}
         <IconButton
-          color="secondary"
-          onClick={async () => {
-            dispatch(actionResetTab(UI_CONST.COLLECTION_TAB_INDEX));
-            await dispatch(actionAddProductToCollection(details));
-            await dispatch(actionGetCollectionProducts());
+          color='primary'
+          onClick={() => {
+            dispatch(actionUpdateCart({
+              productDetails: details,
+              productNum: 1,
+            }));
           }}
         >
-          <AddCircleIcon />
+          <ShoppingCartIcon />
         </IconButton>
         <IconButton
-          color="secondary"
-          onClick={async () => {
-            dispatch(actionResetTab(UI_CONST.COLLECTION_TAB_INDEX));
-            await dispatch(actionRemoveProductFromCollection(details));
-            await dispatch(actionGetCollectionProducts());
+          color='primary'
+          onClick={() => {
+            dispatch(actionUpdateCart({
+              productDetails: details,
+              productNum: -1,
+            }));
           }}
         >
-          <RemoveCircleIcon />
+          <RemoveShoppingCartIcon />
         </IconButton>
       </CardActions>
     </>);

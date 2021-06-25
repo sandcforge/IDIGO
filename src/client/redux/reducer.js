@@ -13,6 +13,7 @@ import {
   actionGetCategoryProducts,
   actionSetApiLoading,
   actionSetCustomerService,
+  actionUpdateCart,
 } from './actions.js';
 
 const initialState = {
@@ -32,7 +33,8 @@ const initialState = {
         currentPageIndex: 0,
         hasMore: false,
       },
-    }
+    },
+    cart: []
   },
   data: {
     productCategory: [],
@@ -113,6 +115,25 @@ export const rootReducer = createReducer(initialState, (builder) => {
           break;
       }
     })
+    .addCase(actionUpdateCart, (state, action) => {
+      const { productDetails, productNum } = action.payload;
+      const index = state.ui.cart.findIndex(
+        item => item.productDetails.GodCode === productDetails.GodCode);
+      if (index < 0) {
+        if (productNum > 0) {
+          state.ui.cart.push(action.payload);
+        }
+      }
+      else {
+        if (productNum + state.ui.cart[index].productNum > 0) {
+          state.ui.cart[index].productNum += productNum;
+        }
+        else {
+          state.ui.cart.splice(index, 1);
+        }
+      }
+    })
+
     .addCase(actionGetProductCategory.fulfilled, (state, action) => {
       state.data.productCategory = action.payload;
     })

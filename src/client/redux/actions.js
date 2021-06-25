@@ -11,6 +11,7 @@ export const actionSetCustomerService = createAction('SetCustomerService');
 export const actionIncreaseTabPageIndex = createAction('IncreaseTabPageIndex');
 export const actionResetTab = createAction('ResetTab');
 export const actionSetApiLoading = createAction('SetApiLoading');
+export const actionUpdateCart = createAction('UpdateCart');
 
 export const actionSetHasMoreOnTab = createAction('SetHasMoreOnTab', (tabIndex, hasMore) => {
   return {

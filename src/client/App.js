@@ -22,7 +22,7 @@ export const App = () => {
             <HomePage />
           </QueryParamProvider>
         </Route>
-        <Route exact path="/product/:code">
+        <Route exact path="/p/:id">
           <ProductPage />
         </Route>
         <Route path="*">

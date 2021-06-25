@@ -8,6 +8,9 @@ export const UI_CONST = {
 };
 
 export const APP_CONST = {
+  // TODOs: support dev env
+  SITE_DOMAIN: 'idigo.ml',
+  PRODUCT_PATH: 'p',
   PAGE_SIZE: 30,
   MY_BUYER_CODE: 68995,
   DATA_STATUS_OK: 0,

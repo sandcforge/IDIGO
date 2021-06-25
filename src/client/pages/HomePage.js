@@ -18,6 +18,7 @@ import { CategoryTab } from './CategoryTab.js';
 import { CollectionTab } from './CollectionTab.js';
 import { OrderTab } from './OrderTab.js';
 import { SearchTab } from './SearchTab.js';
+import { CartTab } from './CartTab.js';
 
 
 export const HomePage = () => {
@@ -69,6 +70,7 @@ export const HomePage = () => {
           {isAdmin && <Tab value={UI_CONST.CATEGORY_TAB_INDEX} label="分类" {...a11yProps(UI_CONST.CATEGORY_TAB_INDEX)} />}
           <Tab value={UI_CONST.SEARCH_TAB_INDEX} label="搜索" {...a11yProps(UI_CONST.SEARCH_TAB_INDEX)} />
           <Tab value={UI_CONST.ORDER_TAB_INDEX} label="订单" {...a11yProps(UI_CONST.ORDER_TAB_INDEX)} />
+          {isAdmin && <Tab value={UI_CONST.CART_TAB_INDEX} label="购物车" {...a11yProps(UI_CONST.CART_TAB_INDEX)} />}
         </Tabs>
       </AppBar>
       {isLoading && <LinearProgress />}
@@ -84,6 +86,9 @@ export const HomePage = () => {
       </TabPanel>
       <TabPanel value={rootTabValue} index={UI_CONST.ORDER_TAB_INDEX} >
         <OrderTab />
+      </TabPanel>
+      <TabPanel value={rootTabValue} index={UI_CONST.CART_TAB_INDEX} >
+        <CartTab />
       </TabPanel>
     </div>
   );

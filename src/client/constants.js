@@ -3,6 +3,7 @@ export const UI_CONST = {
   CATEGORY_TAB_INDEX: 1,
   SEARCH_TAB_INDEX: 2,
   ORDER_TAB_INDEX: 3,
+  CART_TAB_INDEX: 4,
   DISPLAY_TYPE_FULL: 'full',
   DISPLAY_TYPE_CUSTOMER: 'customer',
 };

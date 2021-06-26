@@ -75,80 +75,80 @@ export const OrderTab = (props) => {
   };
 
   const renderOrderDetails = () => {
-      return (<>
-        <FolderCard avatar={<InfoIcon />} title={'订单详情'}>
-          <List component="nav" >
-            <ListItem >
-              <ListItemIcon>
-                <PersonIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary={"收件人"}
-                secondary={orderDetails.orderSummary.OrdReceiverName}
-              />
-            </ListItem>
-            <ListItem >
-              <ListItemIcon>
-                <PhoneIphoneIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary={"联系电话"}
-                secondary={orderDetails.orderSummary.OrdReceiverMobile}
-              />
-            </ListItem>
-            <ListItem >
-              <ListItemIcon>
-                <PlaceIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary={"收件地址"}
-                secondary={orderDetails.orderSummary.OrdReceiverProvince + orderDetails.orderSummary.OrdReceiverCity + orderDetails.orderSummary.OrdReceiverCounty + orderDetails.orderSummary.OrdReceiverAddress}
-              />
-            </ListItem>
-            <ListItem >
-              <ListItemIcon>
-                <EventIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary={"订单创建时间"}
-                secondary={orderDetails.orderSummary.OrdCreateTime}
-              />
-            </ListItem>
-          </List>
-        </FolderCard>
+    return (<>
+      <FolderCard avatar={<InfoIcon />} title={'订单详情'}>
+        <List component="nav" >
+          <ListItem >
+            <ListItemIcon>
+              <PersonIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary={"收件人"}
+              secondary={orderDetails.orderSummary.OrdReceiverName}
+            />
+          </ListItem>
+          <ListItem >
+            <ListItemIcon>
+              <PhoneIphoneIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary={"联系电话"}
+              secondary={orderDetails.orderSummary.OrdReceiverMobile}
+            />
+          </ListItem>
+          <ListItem >
+            <ListItemIcon>
+              <PlaceIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary={"收件地址"}
+              secondary={orderDetails.orderSummary.OrdReceiverProvince + orderDetails.orderSummary.OrdReceiverCity + orderDetails.orderSummary.OrdReceiverCounty + orderDetails.orderSummary.OrdReceiverAddress}
+            />
+          </ListItem>
+          <ListItem >
+            <ListItemIcon>
+              <EventIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary={"订单创建时间"}
+              secondary={orderDetails.orderSummary.OrdCreateTime}
+            />
+          </ListItem>
+        </List>
+      </FolderCard>
 
-        <FolderCard avatar={<ViewListIcon />} title={'商品列表'}>
-          <List component="nav">
-            {orderDetails.orderSummary.EcmOrderGoodsInfos.map((item, i) => (
-              <ListItem key={i}>
-                <ListItemAvatar>
-                  <Avatar src={item.OgoGoodsImageUrl} />
-                </ListItemAvatar>
-                <ListItemText
-                  primary={item.OgoGoodsTitle}
-                  secondary={`数量：${item.OgoNumber}`}
-                />
-              </ListItem>
-            ))}
-          </List>
-        </FolderCard>
+      <FolderCard avatar={<ViewListIcon />} title={'商品列表'}>
+        <List component="nav">
+          {orderDetails.orderSummary.EcmOrderGoodsInfos.map((item, i) => (
+            <ListItem key={i}>
+              <ListItemAvatar>
+                <Avatar src={item.OgoGoodsImageUrl} />
+              </ListItemAvatar>
+              <ListItemText
+                primary={item.OgoGoodsTitle}
+                secondary={`数量：${item.OgoNumber}`}
+              />
+            </ListItem>
+          ))}
+        </List>
+      </FolderCard>
 
-        <FolderCard avatar={<LocalShippingIcon />} title={'物流信息'}>
-          <List component="nav">
-            {orderDetails.logisticSummary.NodeInfos.map((node, i) => (
-              <ListItem key={i}>
-                <ListItemIcon >
-                  {i === 0 ? <AccessTimeIcon /> : <CheckCircleIcon />}
-                </ListItemIcon>
-                <ListItemText
-                  primary={node.context}
-                  secondary={node.time}
-                />
-              </ListItem>
-            ))}
-          </List>
-        </FolderCard>
-      </>);
+      <FolderCard avatar={<LocalShippingIcon />} title={'物流信息'}>
+        <List component="nav">
+          {orderDetails.logisticSummary.NodeInfos.map((node, i) => (
+            <ListItem key={i}>
+              <ListItemIcon >
+                {i === 0 ? <AccessTimeIcon /> : <CheckCircleIcon />}
+              </ListItemIcon>
+              <ListItemText
+                primary={node.context}
+                secondary={node.time}
+              />
+            </ListItem>
+          ))}
+        </List>
+      </FolderCard>
+    </>);
   };
 
   return (<>

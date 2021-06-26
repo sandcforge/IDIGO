@@ -23,7 +23,7 @@ import ViewListIcon from '@material-ui/icons/ViewList';
 
 import { FolderCard } from '../components/FolderCard.js';
 import { APP_CONST } from '../constants.js';
-import { actionSetApiLoading } from '../redux/actions.js';
+import { actionSetApiLoading, actionSetSnackbar } from '../redux/actions.js';
 
 
 export const OrderTab = (props) => {
@@ -65,6 +65,11 @@ export const OrderTab = (props) => {
     catch (err) {
       console.log(err);
       dispatch(actionSetApiLoading(false));
+      dispatch(actionSetSnackbar({
+        visible: true,
+        message: '查询错误！',
+        autoHideDuration: 5000,
+      }))
       setOrderDetails({ status: APP_CONST.DATA_STATUS_ERROR, errMsg: '查询错误！' });
     }
   };

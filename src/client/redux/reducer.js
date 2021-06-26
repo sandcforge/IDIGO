@@ -14,11 +14,17 @@ import {
   actionSetApiLoading,
   actionSetCustomerService,
   actionUpdateCart,
+  actionSetSnackbar,
 } from './actions.js';
 
 const initialState = {
   ui: {
     isApiLoading: false,
+    snackbar: {
+      visible: false,
+      message: '',
+      autoHideDuration: 1000,
+    },
     homePageTabIndex: UI_CONST.COLLECTION_TAB_INDEX,
     dataLoadingStatus: {
       collectionTab: {
@@ -34,7 +40,7 @@ const initialState = {
         hasMore: false,
       },
     },
-    cart: []
+    cart: [],
   },
   data: {
     productCategory: [],
@@ -59,6 +65,12 @@ export const rootReducer = createReducer(initialState, (builder) => {
     })
     .addCase(actionSetApiLoading, (state, action) => {
       state.ui.isApiLoading = action.payload;
+    })
+    .addCase(actionSetSnackbar, (state, action) => {
+      const { visible, message, autoHideDuration } = action.payload;
+      if (visible !== undefined) { state.ui.snackbar.visible = visible; }
+      if (message !== undefined) { state.ui.snackbar.message = message; }
+      if (autoHideDuration !== undefined) { state.ui.snackbar.autoHideDuration = autoHideDuration; }
     })
     .addCase(actionSetTabIndex, (state, action) => {
       state.ui.homePageTabIndex = action.payload;

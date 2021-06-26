@@ -34,6 +34,7 @@ export const HomePage = () => {
 
   const rootTabValue = useSelector(state => state.ui.homePageTabIndex);
   const isAdmin = useSelector(state => state.app.accessRole === APP_CONST.ACCESS_ROLE_ADMIN);
+  const isCustomerService = useSelector(state => state.app.accessRole === APP_CONST.ACCESS_ROLE_CUSTOMER_SERVICE);
   const isLoading = useSelector(state => state.ui.isApiLoading);
   const totalProductInCart = useSelector(state => state.ui.cart.reduce((accumulator, item) => accumulator + item.productNum, 0));
 
@@ -85,7 +86,7 @@ export const HomePage = () => {
           {isAdmin && <Tab value={UI_CONST.CATEGORY_TAB_INDEX} label="分类" {...a11yProps(UI_CONST.CATEGORY_TAB_INDEX)} />}
           <Tab value={UI_CONST.SEARCH_TAB_INDEX} label="搜索" {...a11yProps(UI_CONST.SEARCH_TAB_INDEX)} />
           <Tab value={UI_CONST.ORDER_TAB_INDEX} label="订单" {...a11yProps(UI_CONST.ORDER_TAB_INDEX)} />
-          {isAdmin && <Tab value={UI_CONST.CART_TAB_INDEX} label={renderCartTabTitle()} {...a11yProps(UI_CONST.CART_TAB_INDEX)} />}
+          {(isCustomerService || isAdmin) && <Tab value={UI_CONST.CART_TAB_INDEX} label={renderCartTabTitle()} {...a11yProps(UI_CONST.CART_TAB_INDEX)} />}
         </Tabs>
       </AppBar>
       {isLoading && <LinearProgress />}
@@ -102,9 +103,11 @@ export const HomePage = () => {
       <TabPanel value={rootTabValue} index={UI_CONST.ORDER_TAB_INDEX} >
         <OrderTab />
       </TabPanel>
-      <TabPanel value={rootTabValue} index={UI_CONST.CART_TAB_INDEX} >
-        <CartTab />
-      </TabPanel>
+      {(isCustomerService || isAdmin) &&
+        (<TabPanel value={rootTabValue} index={UI_CONST.CART_TAB_INDEX} >
+          <CartTab />
+        </TabPanel>)}
+
     </div>
   );
 

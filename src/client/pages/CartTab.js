@@ -8,10 +8,22 @@ import SearchIcon from '@material-ui/icons/Search';
 import { actionSetApiLoading, actionSetSnackbar } from '../redux/actions.js';
 import { APP_CONST } from '../constants.js';
 import axios from 'axios';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 
 export const CartTab = (props) => {
   const dispatch = useDispatch();
+  const [alertOpen, setAlertOpen] = React.useState(false);
+  const handleClickAlertOpen = () => {
+    setAlertOpen(true);
+  };
+
+  const handleAlertClose = () => {
+    setAlertOpen(false);
+  };
+
   const cart = useSelector(state => state.ui.cart);
   const nameRef = useRef(null);
   const phoneRef = useRef(null);
@@ -30,7 +42,7 @@ export const CartTab = (props) => {
       "OgoPrice": item.productDetails.GodPresentPrice,
       "OgoTotalPrice": item.productNum * item.productDetails.GodPresentPrice
     }));
-    const totalPrice = productList.reduce((a,item)=> a + item.OgoTotalPrice, 0 );
+    const totalPrice = productList.reduce((a, item) => a + item.OgoTotalPrice, 0);
     const ret = {
       "OrdReceiverName": nameRef.current.value,
       "OrdReceiverMobile": phoneRef.current.value,
@@ -51,6 +63,7 @@ export const CartTab = (props) => {
   };
 
   const submitOrder = async () => {
+    handleAlertClose();
     dispatch(actionSetApiLoading(true));
     const EndpointOfAddOrder = `https://www.snailsmall.com/Order/Add?data=${JSON.stringify(buildReq())}&buyercode=${APP_CONST.MY_BUYER_CODE}`
     try {
@@ -67,7 +80,7 @@ export const CartTab = (props) => {
       dispatch(actionSetSnackbar({
         visible: true,
         message: err.message,
-        autoHideDuration: 0,
+        autoHideDuration: 5000,
       }));
     }
 
@@ -113,19 +126,32 @@ export const CartTab = (props) => {
         inputRef={memoRef}
       />
     </Box>
-
-    {
-      cart.map(item => <ItemCard key={item.productDetails.GodId} details={item.productDetails} />)
-    }
-
+    {cart.map(item => <ItemCard key={item.productDetails.GodId} details={item.productDetails} />)}
     <Button
       variant="contained"
       fullWidth={true}
       color="primary"
       startIcon={<SearchIcon />}
-      onClick={submitOrder}
+      onClick={handleClickAlertOpen}
     >
       添加订单
     </Button>
+
+    <Dialog
+      open={alertOpen}
+      onClose={handleAlertClose}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+    >
+      <DialogTitle id="alert-dialog-title">确认该订单？</DialogTitle>
+      <DialogActions>
+        <Button onClick={handleAlertClose} color="primary" autoFocus>
+          取消
+        </Button>
+        <Button onClick={submitOrder} color="primary">
+          确认
+        </Button>
+      </DialogActions>
+    </Dialog>
   </>);
 };

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from "react-router-dom";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import Button from '@material-ui/core/Button';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 import { ItemCard } from '../components/ItemCard';
 import {
@@ -14,6 +15,7 @@ export const ProductPage = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const [productDetails, setProductDetails] = useState(null);
+  const isLoading = useSelector(state => state.ui.isApiLoading);
 
   const fetchProductDetailsById = async (productId) => {
     try {
@@ -47,11 +49,13 @@ export const ProductPage = () => {
   }, []);
 
   return (<>
-    {productDetails &&
+    {productDetails && (<>
+      {isLoading && <LinearProgress />}
       <ItemCard
         disableExpand={true}
         defaultExpanded={true}
-        details={productDetails} />}
+        details={productDetails} />
+    </>)}
 
     <Button
       variant="contained"

@@ -5,7 +5,10 @@ import axios from 'axios';
 import Button from '@material-ui/core/Button';
 
 import { ItemCard } from '../components/ItemCard';
-import { actionSetApiLoading } from '../redux/actions.js';
+import {
+  actionSetSnackbar,
+  actionSetApiLoading
+} from '../redux/actions.js';
 
 export const ProductPage = () => {
   const { id } = useParams();
@@ -22,7 +25,7 @@ export const ProductPage = () => {
         setProductDetails(productList[0]);
       }
       else {
-        throw new Error('Invalid Product Id');
+        throw new Error('无效的商品ID！');
       }
 
       dispatch(actionSetApiLoading(false));
@@ -30,6 +33,11 @@ export const ProductPage = () => {
     catch (err) {
       console.log(err);
       dispatch(actionSetApiLoading(false));
+      dispatch(actionSetSnackbar({
+        visible: true,
+        message: err.message,
+        autoHideDuration: 5000,
+      }));
       setProductDetails(null);
     }
   };
@@ -39,12 +47,11 @@ export const ProductPage = () => {
   }, []);
 
   return (<>
-    {productDetails ? (
+    {productDetails &&
       <ItemCard
         disableExpand={true}
         defaultExpanded={true}
-        details={productDetails} />)
-      : '商品不存在!'}
+        details={productDetails} />}
 
     <Button
       variant="contained"

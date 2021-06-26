@@ -33,6 +33,7 @@ import {
   actionResetTab,
   actionUpdateCart
 } from '../redux/actions.js';
+import { getBuyerPrice } from '../utils.js';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -83,9 +84,6 @@ export const ItemCard = (props) => {
   const isCustomerService = useSelector(state => state.app.accessRole === APP_CONST.ACCESS_ROLE_CUSTOMER_SERVICE);
   const [expanded, setExpanded] = React.useState(defaultExpanded);
 
-  const getBuyerPrice = (cost) => {
-    return (cost * (isAdmin ? 1 : BUSINESS_CONST.GOODS_PROFIT)).toFixed(2);
-  }
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -134,7 +132,7 @@ export const ItemCard = (props) => {
     return (isAdmin || isCustomerService) && (<>
       <CardActions>
         {isAdmin && (<><IconButton disabled>
-          <StarsIcon color={whitelistSet.has(details.GodId) ? "primary" : "inherit"} />
+          <StarsIcon color={whitelistSet && whitelistSet.has(details.GodId) ? "primary" : "inherit"} />
         </IconButton>
           <IconButton
             color="secondary"

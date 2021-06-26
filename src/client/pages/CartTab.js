@@ -5,6 +5,9 @@ import { ItemCard } from '../components/ItemCard.js';
 import Box from '@material-ui/core/Box';
 import TextField from '@material-ui/core/TextField';
 import SearchIcon from '@material-ui/icons/Search';
+import { actionSetApiLoading, actionSetSnackbar } from '../redux/actions.js';
+import { APP_CONST } from '../constants.js';
+import axios from 'axios';
 
 
 export const CartTab = (props) => {
@@ -16,7 +19,7 @@ export const CartTab = (props) => {
   const addressRef = useRef(null);
   const memoRef = useRef(null);
 
-  const submitOrder = async () => {
+  const buildReq = () => {
     const productList = cart.map(item => ({
       "OgoGoodsCode": item.productDetails.GodCode,
       "OgoBarcode": item.productDetails.GodBarcode,
@@ -44,7 +47,30 @@ export const CartTab = (props) => {
       "OrdAppCouponCode": "",
       "EcmOrderGoodsInfos": productList
     };
-    console.log(ret);
+    return ret;
+  };
+
+  const submitOrder = async () => {
+    dispatch(actionSetApiLoading(true));
+    const EndpointOfAddOrder = `https://www.snailsmall.com/Order/Add?data=${JSON.stringify(buildReq())}&buyercode=${APP_CONST.MY_BUYER_CODE}`
+    try {
+      const result = await axios.post('/api/proxy', { method: 'POST', url: EndpointOfAddOrder });
+      if (result.data.ResCode == '01') {
+        console.log(result.data.Data.OrdCode);
+      }
+      else {
+        throw new Error(result.data.ResMessage);
+      }
+    }
+    catch (err) {
+      dispatch(actionSetApiLoading(false));
+      dispatch(actionSetSnackbar({
+        visible: true,
+        message: err.message,
+        autoHideDuration: 0,
+      }));
+    }
+
   };
   return (<>
     <Box my={1}>

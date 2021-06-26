@@ -173,7 +173,7 @@ export const OrderTab = (props) => {
       onClick={() => { fetchOrderDetails(orderCodeTextFieldValue) }}
     >
       查询订单
-        </Button>
+    </Button>
     {renderOrderDetails()}
   </>);
 

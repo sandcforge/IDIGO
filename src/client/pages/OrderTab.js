@@ -46,39 +46,35 @@ export const OrderTab = (props) => {
         orderId = orderList[0].OrdId;
       }
       else {
-        throw new Error('Invalid orderCode');
+        throw new Error('无效的订单号！');
       }
 
       const EndpointOfOrderSummary = `https://www.snailsmall.com/Order/GetById?data={"OrdId":"${orderId}"}&buyercode=${APP_CONST.MY_BUYER_CODE}`;
       const result1 = await axios.post('/api/proxy', { method: 'POST', url: EndpointOfOrderSummary });
       const orderSummary = result1.data.Data;
       if (orderSummary.OrdBuyerCode !== APP_CONST.MY_BUYER_CODE.toString()) {
-        throw new Error('The buyer does not match!');
+        throw new Error('查询错误！');
       }
 
       const EndpointOfLogisticSummary = `https://www.snailsmall.com/Order/FindLogistics1?data={"OrdCode":"${orderSummary.OrdCode}"}&buyercode=${APP_CONST.MY_BUYER_CODE}`;
       const result2 = await axios.post('/api/proxy', { method: 'POST', url: EndpointOfLogisticSummary });
       const logisticSummary = result2.data.Data;
       dispatch(actionSetApiLoading(false));
-      setOrderDetails({ status: APP_CONST.DATA_STATUS_OK, orderSummary, logisticSummary });
+      setOrderDetails({ orderSummary, logisticSummary });
     }
     catch (err) {
       console.log(err);
       dispatch(actionSetApiLoading(false));
       dispatch(actionSetSnackbar({
         visible: true,
-        message: '查询错误！',
+        message: err.message,
         autoHideDuration: 5000,
-      }))
-      setOrderDetails({ status: APP_CONST.DATA_STATUS_ERROR, errMsg: '查询错误！' });
+      }));
+      setOrderDetails(null);
     }
   };
 
   const renderOrderDetails = () => {
-    if (orderDetails === null) {
-      return null;
-    }
-    if (orderDetails && orderDetails.status === APP_CONST.DATA_STATUS_OK) {
       return (<>
         <FolderCard avatar={<InfoIcon />} title={'订单详情'}>
           <List component="nav" >
@@ -153,10 +149,6 @@ export const OrderTab = (props) => {
           </List>
         </FolderCard>
       </>);
-    }
-    else {
-      return (<div>{orderDetails.errMsg}</div>);
-    }
   };
 
   return (<>
@@ -179,7 +171,7 @@ export const OrderTab = (props) => {
     >
       查询订单
     </Button>
-    {renderOrderDetails()}
+    {orderDetails !== null && renderOrderDetails()}
   </>);
 
 };

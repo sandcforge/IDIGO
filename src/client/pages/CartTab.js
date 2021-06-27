@@ -16,6 +16,13 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 export const CartTab = (props) => {
   const dispatch = useDispatch();
   const [alertOpen, setAlertOpen] = React.useState(false);
+  const [newOrderCode, setNewOrderCode] = React.useState(null);
+  const totalProductInCart = useSelector(state => {
+    return state.ui.cart.reduce((accumulator, item) => {
+      return accumulator + item.productNum;
+    }, 0);
+  });
+
   const handleClickAlertOpen = () => {
     setAlertOpen(true);
   };
@@ -25,10 +32,6 @@ export const CartTab = (props) => {
   };
 
   const cart = useSelector(state => state.ui.cart);
-  const nameRef = useRef(null);
-  const phoneRef = useRef(null);
-  const idCardRef = useRef(null);
-  const addressRef = useRef(null);
   const memoRef = useRef(null);
 
   const buildReq = () => {
@@ -44,14 +47,14 @@ export const CartTab = (props) => {
     }));
     const totalPrice = productList.reduce((a, item) => a + item.OgoTotalPrice, 0);
     const ret = {
-      "OrdReceiverName": nameRef.current.value,
-      "OrdReceiverMobile": phoneRef.current.value,
-      "OrdReceiverCardNo": idCardRef.current.value,
+      "OrdReceiverName": '便捷地址',
+      "OrdReceiverMobile": '11111111111',
+      "OrdReceiverCardNo": '',
       "OrdReceiverPost": "",
       "OrdReceiverProvince": "备注",
       "OrdReceiverCity": "备注",
       "OrdReceiverCounty": "备注",
-      "OrdReceiverAddress": addressRef.current.value,
+      "OrdReceiverAddress": '详细收件人信息填写在备注里',
       "OrdRemark": memoRef.current.value,
       "OrdAppTotalMoney": totalPrice,
       "OrdAppCouponMoney": 0,
@@ -59,7 +62,25 @@ export const CartTab = (props) => {
       "OrdAppCouponCode": "",
       "EcmOrderGoodsInfos": productList
     };
+    console.log(ret);
     return ret;
+  };
+
+  const presubmitOrder = () => {
+    try {
+      // Data Validation
+      if (totalProductInCart <= 0) {
+        throw new Error('购物车不能为空！');
+      }
+      handleClickAlertOpen();
+    }
+    catch (err) {
+      dispatch(actionSetSnackbar({
+        visible: true,
+        message: err.message,
+        autoHideDuration: 3000,
+      }));
+    }
   };
 
   const submitOrder = async () => {
@@ -69,11 +90,12 @@ export const CartTab = (props) => {
     try {
       const result = await axios.post('/api/proxy', { method: 'POST', url: EndpointOfAddOrder });
       if (result.data.ResCode == '01') {
-        console.log(result.data.Data.OrdCode);
+        setNewOrderCode(result.data.Data.OrdCode);
       }
       else {
         throw new Error(result.data.ResMessage);
       }
+      dispatch(actionSetApiLoading(false));
     }
     catch (err) {
       dispatch(actionSetApiLoading(false));
@@ -89,39 +111,8 @@ export const CartTab = (props) => {
     <Box my={1}>
       <TextField
         fullWidth={true}
-        label="收件人姓名"
-        variant="outlined"
-        inputRef={nameRef}
-      />
-    </Box>
-    <Box my={1}>
-      <TextField
-        fullWidth={true}
-        label="收件人电话"
-        variant="outlined"
-        inputRef={phoneRef}
-      />
-    </Box>
-    <Box my={1}>
-      <TextField
-        fullWidth={true}
-        label="收件人身份证"
-        variant="outlined"
-        inputRef={idCardRef}
-      />
-    </Box>
-    <Box my={1}>
-      <TextField
-        fullWidth={true}
-        label="收件人地址"
-        variant="outlined"
-        inputRef={addressRef}
-      />
-    </Box>
-    <Box my={1}>
-      <TextField
-        fullWidth={true}
-        label="备注"
+        label="收件人信息"
+        multiline={true}
         variant="outlined"
         inputRef={memoRef}
       />
@@ -132,11 +123,11 @@ export const CartTab = (props) => {
       fullWidth={true}
       color="primary"
       startIcon={<SearchIcon />}
-      onClick={handleClickAlertOpen}
+      onClick={presubmitOrder}
     >
       添加订单
     </Button>
-
+    {newOrderCode && `新订单号为：${newOrderCode}，请在订单页查询状态。`}
     <Dialog
       open={alertOpen}
       onClose={handleAlertClose}

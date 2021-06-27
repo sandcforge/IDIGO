@@ -1,10 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import { ItemCard } from './ItemCard.js';
+import { APP_CONST } from '../constants.js';
 
 
 export const ListView = (props) => {
@@ -22,8 +24,21 @@ export const ListView = (props) => {
     style={{ height: "12vh" }}
   />);
 
+  const isAdmin = useSelector(state => state.app.accessRole === APP_CONST.ACCESS_ROLE_ADMIN);
+
+  const listDataOnWhiteList =
+    (whitelistSet && (!isAdmin)) ?
+      listData.filter(item => whitelistSet.has(item.GodId)) :
+      listData;
+
   return (<>
-    {listData.map((item) => <Content whitelistSet={whitelistSet} key={item[keyName]} details={item} />)}
+    {listDataOnWhiteList.map((item) =>
+      <Content
+        star={whitelistSet && whitelistSet.has(item.GodId)}
+        key={item[keyName]}
+        details={item}
+      />
+    )}
     <Container>
       <Button
         variant="contained"
@@ -33,7 +48,7 @@ export const ListView = (props) => {
         disabled={!showLoadMoreButton}
       >
         {showLoadMoreButton ? '加载更多!' : '到底啦，我们是有底线的!'}
-        </Button>
+      </Button>
       <Padding />
     </Container>
   </>

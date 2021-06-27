@@ -62,7 +62,6 @@ export const CartTab = (props) => {
       "OrdAppCouponCode": "",
       "EcmOrderGoodsInfos": productList
     };
-    console.log(ret);
     return ret;
   };
 
@@ -71,6 +70,9 @@ export const CartTab = (props) => {
       // Data Validation
       if (totalProductInCart <= 0) {
         throw new Error('购物车不能为空！');
+      }
+      if (memoRef.current.value === '') {
+        throw new Error('收件人信息不能为空！');
       }
       handleClickAlertOpen();
     }

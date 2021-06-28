@@ -52,7 +52,7 @@ export const actionGetCollectionProducts = createAsyncThunk(
     const pageIndex = thunkApi.getState().ui.dataLoadingStatus.collectionTab.currentPageIndex;
     // const EndpointOfCollectionProducts = `https://www.snailsmall.com/Goods/FindPage?data={"Criterion":{"GodIsNew":true},"PageIndex":${pageIndex},"PageSize":${APP_CONST.PAGE_SIZE}}`;
     // const EndpointOfCollectionProducts = `https://www.snailsmall.com/Goods/FindPage?data={"Criterion":{"GodPurchaseSource":"costco"},"PageIndex":${pageIndex},"PageSize":${APP_CONST.PAGE_SIZE}}`;
-    const result = await axios.post('/api/getcollections', { pageIndex, pageSize: APP_CONST.PAGE_SIZE });
+    const result = await axios.post('/api/getcollections', { pageIndex, pageSize: 500 });
     const realData = result.data;
     if (realData.length < APP_CONST.PAGE_SIZE) {
       thunkApi.dispatch(actionSetHasMoreOnTab(UI_CONST.COLLECTION_TAB_INDEX, false));

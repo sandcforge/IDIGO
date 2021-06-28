@@ -29,10 +29,18 @@ import { actionSetApiLoading, actionSetSnackbar } from '../redux/actions.js';
 export const OrderTab = (props) => {
   const [orderDetails, setOrderDetails] = useState(null);
   const [orderCodeTextFieldValue, setOrderCodeTextFieldValue] = useState('');
+  const [receiverNameTextFieldValue, setReceiverNameTextFieldValue] = useState('');
+
+  const isAdmin = useSelector(state => state.app.accessRole === APP_CONST.ACCESS_ROLE_ADMIN);
+
   const dispatch = useDispatch();
 
   const handleOrderCodeTextFieldOnChange = (event) => {
     setOrderCodeTextFieldValue(event.target.value);
+  };
+
+  const handleReceiverNameTextFieldOnChange = (event) => {
+    setReceiverNameTextFieldValue(event.target.value);
   };
 
   const fetchOrderDetails = async (orderCode) => {
@@ -54,6 +62,11 @@ export const OrderTab = (props) => {
       const orderSummary = result1.data.Data;
       if (orderSummary.OrdBuyerCode !== APP_CONST.MY_BUYER_CODE.toString()) {
         throw new Error('查询错误！');
+      }
+
+
+      if (!isAdmin && orderSummary.OrdReceiverName !== receiverNameTextFieldValue) {
+        throw new Error('收件人姓名不匹配！');
       }
 
       const EndpointOfLogisticSummary = `https://www.snailsmall.com/Order/FindLogistics1?data={"OrdCode":"${orderSummary.OrdCode}"}&buyercode=${APP_CONST.MY_BUYER_CODE}`;
@@ -162,6 +175,16 @@ export const OrderTab = (props) => {
         onChange={handleOrderCodeTextFieldOnChange}
       />
     </Box>
+    {!isAdmin && <Box my={1}>
+      <TextField
+        id="standard-basic"
+        fullWidth={true}
+        label="收件人姓名"
+        value={receiverNameTextFieldValue}
+        variant="outlined"
+        onChange={handleReceiverNameTextFieldOnChange}
+      />
+    </Box>}
     <Button
       variant="contained"
       fullWidth={true}

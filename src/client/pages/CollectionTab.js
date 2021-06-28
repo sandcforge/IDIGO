@@ -9,6 +9,7 @@ import {
   actionGetCollectionProducts,
 } from '../redux/actions.js';
 import { Divider } from '@material-ui/core';
+import { showLoadMoreButtonOnTab } from '../utils';
 
 export const CollectionTab = () => {
   const useStyles = makeStyles((theme) => ({
@@ -28,22 +29,6 @@ export const CollectionTab = () => {
   useEffect(() => {
     dispatch(actionGetCollectionProducts());
   }, []);
-
-  const showLoadMoreButtonOnTab = (tabIndex) => {
-    let ret = false;
-    switch (tabIndex) {
-      case UI_CONST.COLLECTION_TAB_INDEX:
-        ret = dataLoadingStatus.collectionTab.currentPageIndex !== 0 && dataLoadingStatus.collectionTab.hasMore === true;
-        break;
-      case UI_CONST.CATEGORY_TAB_INDEX:
-        ret = dataLoadingStatus.categoryTab.currentPageIndex !== 0 && dataLoadingStatus.categoryTab.hasMore === true;
-        break;
-      case UI_CONST.SEARCH_TAB_INDEX:
-        ret = dataLoadingStatus.searchTab.currentPageIndex !== 0 && dataLoadingStatus.searchTab.hasMore === true;
-        break;
-    }
-    return ret;
-  }
 
   return (<>
     <img className={classes.cover} src={cover} />

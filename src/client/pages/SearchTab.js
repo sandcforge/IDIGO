@@ -12,6 +12,7 @@ import {
   actionResetTab,
   actionGetSearchResults,
 } from '../redux/actions.js';
+import { showLoadMoreButtonOnTab } from '../utils.js';
 
 
 export const SearchTab = () => {
@@ -27,22 +28,6 @@ export const SearchTab = () => {
   const handleSearchTextFieldOnChange = (event) => {
     setSearchTextFieldValue(event.target.value);
   };
-
-  const showLoadMoreButtonOnTab = (tabIndex) => {
-    let ret = false;
-    switch (tabIndex) {
-      case UI_CONST.COLLECTION_TAB_INDEX:
-        ret = dataLoadingStatus.collectionTab.currentPageIndex !== 0 && dataLoadingStatus.collectionTab.hasMore === true;
-        break;
-      case UI_CONST.CATEGORY_TAB_INDEX:
-        ret = dataLoadingStatus.categoryTab.currentPageIndex !== 0 && dataLoadingStatus.categoryTab.hasMore === true;
-        break;
-      case UI_CONST.SEARCH_TAB_INDEX:
-        ret = dataLoadingStatus.searchTab.currentPageIndex !== 0 && dataLoadingStatus.searchTab.hasMore === true;
-        break;
-    }
-    return ret;
-  }
 
   const onClickSearchButton = async () => {
     dispatch(actionResetTab(UI_CONST.SEARCH_TAB_INDEX));
@@ -68,7 +53,7 @@ export const SearchTab = () => {
       onClick={onClickSearchButton}
     >
       搜索商品
-        </Button>
+    </Button>
     <ListView
       whitelistSet={collectionGodIdSet}
       listData={searchResults}

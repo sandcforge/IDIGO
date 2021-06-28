@@ -23,6 +23,7 @@
     "express": "^4.16.3",
     "greenlock-express": "^4.0.3",
     "mongoist": "^2.5.3",
+    "node-schedule": "^2.0.0",
     "query-string": "^7.0.0",
     "react": "^16.5.2",
     "react-copy-to-clipboard": "^5.0.3",

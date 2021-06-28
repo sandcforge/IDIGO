@@ -4,6 +4,7 @@ const GreenlockExpress = require('greenlock-express');
 const path = require('path');
 const miscRoutes = require('./api.js');
 const { envConfig } = require('./constants.js');
+const { syncCollection } = require('./syncDb.js');
 
 const app = express();
 app.use(express.json());

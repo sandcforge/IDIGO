@@ -1,0 +1,48 @@
+const { default: axios } = require('axios');
+const schedule = require('node-schedule');
+const { ProvidePlugin } = require('webpack');
+const { envConfig } = require('./constants');
+const { collectionGoods } = require('./db');
+
+// Sync every day on prod, and every min for dev
+const rule = envConfig.nodeEnv === 'production' ? '0 0 0 * * *' : '0 * * * * *';
+const syncCollection = schedule.scheduleJob(rule, async () => {
+  console.log('Start to sync DB at ' + new Date().toISOString());
+  const syncDb = async (item) => {
+    try {
+      const url = `https://www.snailsmall.com/Goods/FindPage?data={"Criterion":{"GodId":${item.GodId}},"PageIndex":0,"PageSize":1}`;
+      const retRaw = await axios.get(encodeURI(url));
+      if (retRaw.data.ResCode === '01' && retRaw.data.Data.TotalRecords === 1) {
+        const newDetails = retRaw.data.Data.DataBody[0];
+        const results = await collectionGoods.update(
+          { GodId: newDetails.GodId },
+          { $set: newDetails },
+          { upsert: true },
+        );
+        console.log(`${item.GodId} is updated.`);
+      }
+      else {
+        await collectionGoods.remove({ GodId: item.GodId });
+        console.log(`${item.GodId} is removed.`);
+      }
+    }
+    catch (err) {
+      console.log(err);
+    }
+  };
+
+  const startUpdateDBwithDelay = (idx) => {
+    setTimeout(async () => {
+      await syncDb(collections[idx]);
+      idx += 1;
+      if (idx < collections.length) {
+        startUpdateDBwithDelay(idx);   //  decrement i and call myLoop again if i > 0
+      };
+    }, 1000);
+  };
+
+  const collections = await collectionGoods.find({});
+  startUpdateDBwithDelay(0);
+});
+
+exports.syncCollection = syncCollection;

@@ -73,12 +73,18 @@ const useStyles = makeStyles((theme) => ({
   },
   rawImage: {
     maxWidth: '100%',
+  },
+  subheaderContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
   }
 }));
 
 
 export const ItemCard = (props) => {
-  const { details, defaultExpanded = false, disableExpand = false, star = false } = props;
+  const { details, defaultExpanded = false, disableExpand = false, star = false, amount = -1 } = props;
   const classes = useStyles();
   const dispatch = useDispatch();
   const isAdmin = useSelector(state => state.app.accessRole === APP_CONST.ACCESS_ROLE_ADMIN);
@@ -197,6 +203,15 @@ export const ItemCard = (props) => {
     );
   };
 
+  const renderSubHeader = () => {
+    return (
+      <div className={classes.subheaderContainer}>
+        <div>{`\u00a5${getBuyerPrice(details.GodPresentPrice)}`}</div>
+        {(amount >= 0) && <div>x {amount}</div>}
+      </div>
+    );
+  };
+
   return (
     <>
       <Card className={classes.root}>
@@ -208,7 +223,7 @@ export const ItemCard = (props) => {
             </Avatar>
           }
           title={details.GodAppTitle}
-          subheader={`\u00a5${getBuyerPrice(details.GodPresentPrice)}`}
+          subheader={renderSubHeader()}
           action={
             <IconButton
               className={clsx(classes.expand, {

@@ -13,13 +13,15 @@ import ListItemText from '@material-ui/core/ListItemText';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import InfoIcon from '@material-ui/icons/Info';
-import PlaceIcon from '@material-ui/icons/Place';
+import HomeIcon from '@material-ui/icons/Home';
 import PersonIcon from '@material-ui/icons/Person';
 import PhoneIphoneIcon from '@material-ui/icons/PhoneIphone';
 import EventIcon from '@material-ui/icons/Event';
 import SearchIcon from '@material-ui/icons/Search';
 import LocalShippingIcon from '@material-ui/icons/LocalShipping';
 import ViewListIcon from '@material-ui/icons/ViewList';
+import AssignmentIcon from '@material-ui/icons/Assignment';
+import CreditCardIcon from '@material-ui/icons/CreditCard';
 
 import { FolderCard } from '../components/FolderCard.js';
 import { APP_CONST } from '../constants.js';
@@ -29,7 +31,7 @@ import { actionSetApiLoading, actionSetSnackbar } from '../redux/actions.js';
 export const OrderTab = (props) => {
   const [orderDetails, setOrderDetails] = useState(null);
   const [orderCodeTextFieldValue, setOrderCodeTextFieldValue] = useState('');
-  const [receiverNameTextFieldValue, setReceiverNameTextFieldValue] = useState('');
+  const [receiverPhoneTextFieldValue, setReceiverPhoneTextFieldValue] = useState('');
 
   const isAdmin = useSelector(state => state.app.accessRole === APP_CONST.ACCESS_ROLE_ADMIN);
 
@@ -39,12 +41,22 @@ export const OrderTab = (props) => {
     setOrderCodeTextFieldValue(event.target.value);
   };
 
-  const handleReceiverNameTextFieldOnChange = (event) => {
-    setReceiverNameTextFieldValue(event.target.value);
+  const handleReceiverPhoneTextFieldOnChange = (event) => {
+    setReceiverPhoneTextFieldValue(event.target.value);
   };
 
   const fetchOrderDetails = async (orderCode) => {
     try {
+      //Validation Data before submission.
+      if (isNaN(orderCodeTextFieldValue)) {
+        throw new Error('无效的订单号！');
+      }
+      if (!isAdmin
+        && (isNaN(receiverPhoneTextFieldValue)
+          || receiverPhoneTextFieldValue.toString().length < 8)) {
+        throw new Error('无效的电话号码！');
+      }
+
       dispatch(actionSetApiLoading(true));
       const EndpointOfFindOrder = `https://www.snailsmall.com/Order/FindPage?data={"Criterion":{"OrdCode":"${orderCode}"},"PageIndex":0,"PageSize":1}&buyercode=${APP_CONST.MY_BUYER_CODE}`
       const result0 = await axios.post('/api/proxy', { method: 'POST', url: EndpointOfFindOrder });
@@ -65,14 +77,18 @@ export const OrderTab = (props) => {
       }
 
 
-      if (!isAdmin && orderSummary.OrdReceiverName !== receiverNameTextFieldValue) {
-        throw new Error('收件人姓名不匹配！');
+      if (!isAdmin
+        && orderSummary.OrdReceiverMobile !== receiverPhoneTextFieldValue
+        && !orderSummary.OrdRemark.includes(receiverPhoneTextFieldValue)
+      ) {
+        throw new Error('收件人电话不匹配！');
       }
 
       const EndpointOfLogisticSummary = `https://www.snailsmall.com/Order/FindLogistics1?data={"OrdCode":"${orderSummary.OrdCode}"}&buyercode=${APP_CONST.MY_BUYER_CODE}`;
       const result2 = await axios.post('/api/proxy', { method: 'POST', url: EndpointOfLogisticSummary });
       const logisticSummary = result2.data.Data;
       dispatch(actionSetApiLoading(false));
+      console.log({ orderSummary, logisticSummary });
       setOrderDetails({ orderSummary, logisticSummary });
     }
     catch (err) {
@@ -96,10 +112,21 @@ export const OrderTab = (props) => {
               <PersonIcon />
             </ListItemIcon>
             <ListItemText
-              primary={"收件人"}
+              primary={"收件人姓名"}
               secondary={orderDetails.orderSummary.OrdReceiverName}
             />
           </ListItem>
+
+          <ListItem >
+            <ListItemIcon>
+              <CreditCardIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary={"收件人身份证"}
+              secondary={orderDetails.orderSummary.OrdReceiverCardNo}
+            />
+          </ListItem>
+
           <ListItem >
             <ListItemIcon>
               <PhoneIphoneIcon />
@@ -111,13 +138,24 @@ export const OrderTab = (props) => {
           </ListItem>
           <ListItem >
             <ListItemIcon>
-              <PlaceIcon />
+              <HomeIcon />
             </ListItemIcon>
             <ListItemText
               primary={"收件地址"}
               secondary={orderDetails.orderSummary.OrdReceiverProvince + orderDetails.orderSummary.OrdReceiverCity + orderDetails.orderSummary.OrdReceiverCounty + orderDetails.orderSummary.OrdReceiverAddress}
             />
           </ListItem>
+
+          <ListItem >
+            <ListItemIcon>
+              <AssignmentIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary={"备注"}
+              secondary={orderDetails.orderSummary.OrdRemark}
+            />
+          </ListItem>
+
           <ListItem >
             <ListItemIcon>
               <EventIcon />
@@ -127,6 +165,7 @@ export const OrderTab = (props) => {
               secondary={orderDetails.orderSummary.OrdCreateTime}
             />
           </ListItem>
+
         </List>
       </FolderCard>
 
@@ -179,10 +218,10 @@ export const OrderTab = (props) => {
       <TextField
         id="standard-basic"
         fullWidth={true}
-        label="收件人姓名"
-        value={receiverNameTextFieldValue}
+        label="收件人电话"
+        value={receiverPhoneTextFieldValue}
         variant="outlined"
-        onChange={handleReceiverNameTextFieldOnChange}
+        onChange={handleReceiverPhoneTextFieldOnChange}
       />
     </Box>}
     <Button

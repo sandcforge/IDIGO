@@ -5,7 +5,7 @@ const path = require('path');
 const miscRoutes = require('./api.js');
 const { envConfig } = require('./constants.js');
 if (envConfig.nodeEnv === 'production' || envConfig.syncDb) {
-  const { syncCollection } = require('./syncDb.Îjs');
+  const { syncCollection } = require('./syncDb.js');
 }
 
 const app = express();

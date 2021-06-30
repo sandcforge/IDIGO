@@ -1,6 +1,6 @@
 {
   "name": "IDIGO",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Boilerplate to build a full stack web application using React, Node.js, Express and Webpack.",
   "main": "src/server/index.js",
   "scripts": {
@@ -9,7 +9,10 @@
     "start:ssl": "USE_SSL=1 npm start",
     "client": "webpack-dev-server --mode development --devtool inline-source-map --hot",
     "server": "cross-env NODE_ENV=development nodemon src/server/index.js",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "release:major": "npx standard-version -r major && git push --follow-tags origin master",
+    "release:minor": "npx standard-version -r minor && git push --follow-tags origin master",
+    "release:patch": "npx standard-version -r patch && git push --follow-tags origin master"
   },
   "author": "sandcforge",
   "license": "ISC",

@@ -12,3 +12,4 @@ db.on('connect', () => {
 });
 
 exports.collectionGoods = envConfig.nodeEnv === 'production' ? db. collection_goods : db. collection_goods_dev;
+exports.orders = envConfig.nodeEnv === 'production' ? db. orders : db. orders_dev;

@@ -22,6 +22,9 @@ export const CartTab = (props) => {
       return accumulator + item.productNum;
     }, 0);
   });
+  const isAdmin = useSelector(state => state.app.accessRole === APP_CONST.ACCESS_ROLE_ADMIN);
+  const isCustomerService = useSelector(state => state.app.accessRole === APP_CONST.ACCESS_ROLE_CUSTOMER_SERVICE);
+  const mustProvidePriceOut = isAdmin || isCustomerService;
 
   const handleClickAlertOpen = () => {
     setAlertOpen(true);
@@ -33,6 +36,7 @@ export const CartTab = (props) => {
 
   const cart = useSelector(state => state.ui.cart);
   const memoRef = useRef(null);
+  const priceRef = useRef(null);
 
   const buildReq = () => {
     const productList = cart.map(item => ({
@@ -74,6 +78,11 @@ export const CartTab = (props) => {
       if (memoRef.current.value === '') {
         throw new Error('收件人信息不能为空！');
       }
+      if (mustProvidePriceOut
+        && (isNaN(priceRef.current.value)
+          || parseFloat(priceRef.current.value) < 0)) {
+        throw new Error('价格填写错误！');
+      }
       handleClickAlertOpen();
     }
     catch (err) {
@@ -91,12 +100,18 @@ export const CartTab = (props) => {
     const EndpointOfAddOrder = `https://www.snailsmall.com/Order/Add?data=${JSON.stringify(buildReq())}&buyercode=${APP_CONST.MY_BUYER_CODE}`
     try {
       const result = await axios.post('/api/proxy', { method: 'POST', url: EndpointOfAddOrder });
-      if (result.data.ResCode == '01') {
-        setNewOrderCode(result.data.Data.OrdCode);
-      }
-      else {
+      if (result.data.ResCode != '01') {
         throw new Error(result.data.ResMessage);
       }
+
+      //Backup the price out from Admin or CS.
+      if (mustProvidePriceOut) {
+        result.data.Data._priceOut = parseFloat(priceRef.current.value);
+        await axios.post('/api/addorder', { data: result.data.Data });
+      }
+
+      setNewOrderCode(result.data.Data.OrdCode);
+
       dispatch(actionSetApiLoading(false));
     }
     catch (err) {
@@ -119,6 +134,17 @@ export const CartTab = (props) => {
         inputRef={memoRef}
       />
     </Box>
+    {mustProvidePriceOut
+      &&
+      <Box my={1}>
+        <TextField
+          fullWidth={true}
+          label="卖出价格"
+          multiline={true}
+          variant="outlined"
+          inputRef={priceRef}
+        />
+      </Box>}
     {cart.map(item => <ItemCard key={item.productDetails.GodId} details={item.productDetails} />)}
     <Button
       variant="contained"

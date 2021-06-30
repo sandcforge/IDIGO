@@ -1,5 +1,5 @@
 const axios = require('axios');
-const { collectionGoods } = require('./db.js');
+const { collectionGoods, orders } = require('./db.js');
 
 const miscRoutes = (app) => {
   app.get('/api/now', (req, res) => {
@@ -47,6 +47,23 @@ const miscRoutes = (app) => {
       res.sendStatus(404);
     }
   });
+
+  app.post('/api/addorder', async (req, res) => {
+    const { data } = req.body;
+    try {
+      const results = await orders.update(
+        { OrdId: data.OrdId },
+        { $set: data },
+        { upsert: true },
+      );
+      res.sendStatus(200);
+    }
+    catch (e) {
+      console.log(e);
+      res.sendStatus(404);
+    }
+  });
+
 
   app.post('/api/proxy', async (req, res) => {
     const { url, method, data } = req.body;

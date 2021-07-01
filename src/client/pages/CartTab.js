@@ -24,7 +24,8 @@ export const CartTab = (props) => {
   });
   const isAdmin = useSelector(state => state.app.accessRole === APP_CONST.ACCESS_ROLE_ADMIN);
   const isCustomerService = useSelector(state => state.app.accessRole === APP_CONST.ACCESS_ROLE_CUSTOMER_SERVICE);
-  const mustProvidePriceOut = isAdmin || isCustomerService;
+  const mustProvideRevenue = isAdmin || isCustomerService;
+  const customerServiceIndex = useSelector(state => state.app.customerService);
 
   const handleClickAlertOpen = () => {
     setAlertOpen(true);
@@ -36,7 +37,7 @@ export const CartTab = (props) => {
 
   const cart = useSelector(state => state.ui.cart);
   const memoRef = useRef(null);
-  const priceRef = useRef(null);
+  const revenueRef = useRef(null);
 
   const buildReq = () => {
     const productList = cart.map(item => ({
@@ -78,9 +79,10 @@ export const CartTab = (props) => {
       if (memoRef.current.value === '') {
         throw new Error('收件人信息不能为空！');
       }
-      if (mustProvidePriceOut
-        && (isNaN(priceRef.current.value)
-          || parseFloat(priceRef.current.value) < 0)) {
+      if (mustProvideRevenue
+        && (revenueRef.current.value === ''
+          || isNaN(revenueRef.current.value)
+          || parseFloat(revenueRef.current.value) < 0)) {
         throw new Error('价格填写错误！');
       }
       handleClickAlertOpen();
@@ -104,9 +106,10 @@ export const CartTab = (props) => {
         throw new Error(result.data.ResMessage);
       }
 
-      //Backup the price out from Admin or CS.
-      if (mustProvidePriceOut) {
-        result.data.Data._priceOut = parseFloat(priceRef.current.value);
+      //Backup the revenue and customerservice index.
+      if (mustProvideRevenue) {
+        result.data.Data._revenue = parseFloat(revenueRef.current.value);
+        result.data.Data._customerService = customerServiceIndex;
         await axios.post('/api/addorder', { data: result.data.Data });
       }
 
@@ -134,7 +137,7 @@ export const CartTab = (props) => {
         inputRef={memoRef}
       />
     </Box>
-    {mustProvidePriceOut
+    {mustProvideRevenue
       &&
       <Box my={1}>
         <TextField
@@ -142,7 +145,7 @@ export const CartTab = (props) => {
           label="卖出价格"
           multiline={true}
           variant="outlined"
-          inputRef={priceRef}
+          inputRef={revenueRef}
         />
       </Box>}
     {cart.map(item => <ItemCard key={item.productDetails.GodId} details={item.productDetails} />)}

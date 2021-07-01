@@ -9,7 +9,7 @@ const miscRoutes = (app) => {
   app.post('/api/getcollections', async (req, res) => {
     const { pageSize, pageIndex } = req.body;
     try {
-      const o = await collectionGoods.findAsCursor({}).skip(pageIndex*pageSize).limit(pageSize).toArray();
+      const o = await collectionGoods.findAsCursor({}).skip(pageIndex * pageSize).limit(pageSize).toArray();
       res.json(o);
     }
     catch (e) {
@@ -64,6 +64,22 @@ const miscRoutes = (app) => {
     }
   });
 
+  app.post('/api/getorders', async (req, res) => {
+    const { pageSize, pageIndex } = req.body;
+    try {
+      const o = await orders.find({}, { _id: 1,
+        _revenue: 1,
+        _customerService: 1,
+        OrdCode: 1,
+        OrdId: 1,
+      });
+      res.json(o);
+    }
+    catch (e) {
+      console.log(e);
+      res.sendStatus(404);
+    }
+  });
 
   app.post('/api/proxy', async (req, res) => {
     const { url, method, data } = req.body;

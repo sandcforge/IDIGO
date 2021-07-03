@@ -25,3 +25,7 @@ export const showLoadMoreButtonOnTab = (tabIndex) => {
   }
   return ret;
 }
+
+export const mDelay = (ms) => {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}

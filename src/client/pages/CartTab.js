@@ -17,153 +17,17 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import TextField from '@material-ui/core/TextField';
 import SearchIcon from '@material-ui/icons/Search';
+import TelegramIcon from '@material-ui/icons/Telegram';
 
 import { actionSetApiLoading, actionSetSnackbar } from '../redux/actions.js';
 import { APP_CONST } from '../constants.js';
 import { mDelay } from '../utils.js';
 import { ItemCard } from '../components/ItemCard.js';
 
-const de = [
-  {
-    "OrdId": 646646,
-    "OrdCode": "2107030907",
-    "OrdMasterCode": "2107030907",
-    "OrdPlatformCode": "2107030907",
-    "OrdAppStatus": 5,
-    "OrdSource": 12,
-    "OrdBuyerCode": "68995",
-    "OrdKefuCode": null,
-    "OrdFirstOrder": 0,
-    "OrdCancelReason": null,
-    "OrdSenderMobile": "9063700041",
-    "OrdReceiverName": "便捷地址",
-    "OrdReceiverMobile": "11111111111",
-    "OrdReceiverCardNo": "",
-    "OrdCardPositiveUrl": null,
-    "OrdCardNegativeUrl": null,
-    "OrdReceiverPost": "",
-    "OrdReceiverProvince": "备注",
-    "OrdReceiverCity": "备注",
-    "OrdReceiverCounty": "备注",
-    "OrdReceiverAddress": "详细收件人信息填写在备注里",
-    "OrdRemark": "df",
-    "OrdCreateTime": "2021-07-03 21:00:15",
-    "OrdCreateUserCode": "68995",
-    "OrdUpdateTime": null,
-    "OrdUpdateUserCode": null,
-    "OrdAppTotalMoney": 230,
-    "OrdAppCouponMoney": 0,
-    "OrdAppPaymentMoney": 230,
-    "OrdAppCouponCode": "",
-    "OrdPayFlowWaterNo": null,
-    "OrdPayType": 0,
-    "OrdIsPay": 0,
-    "OrdWnPayTime": null,
-    "OrdAppStatusName": null,
-    "OrdSourceName": null,
-    "Openid": null,
-    "EcmOrderGoodsInfos": [
-      {
-        "OgoId": 765009,
-        "OgoOrdCode": "2107030907",
-        "OgoGoodsCode": "cea03a80-5a2e-41d0-9dc9-e0352b143d4c",
-        "OgoBarcode": "096619177707",
-        "OgoImportName": null,
-        "OgoName": "Kirkland Optifiber水溶性膳食纤维减肥/美容/排毒养颜 760g",
-        "OgoGoodsTitle": "Kirkland Optifiber水溶性膳食纤维减肥/美容/排毒养颜 760g",
-        "OgoBrand": "Kirkland Optifiber",
-        "OgoNumber": 2,
-        "OgoPrice": 115,
-        "OgoTotalPrice": 230,
-        "OgoGoodsHuohao": "1349614",
-        "OgoSpecification": null,
-        "OgoGoodsImageUrl": "http://img.yhchinc.com/9621cf80-3a5e-4a24-b1e6-5ce14470e7d0.jpg",
-        "OgoCreateTime": "0001-01-01 00:00:00",
-        "OgoCreateUserCode": null,
-        "OgoUpdateTime": null,
-        "OgoUpdateUserCode": null,
-        "OgoLockStatus": 0,
-        "OgoUnlockTime": null,
-        "OgoUnlockReason": null
-      }
-    ],
-    "_revenue": 71.1142061281337,
-    "_customerService": -1
-  },
-  {
-    "OrdId": 646647,
-    "OrdCode": "2107030908",
-    "OrdMasterCode": "2107030908",
-    "OrdPlatformCode": "2107030908",
-    "OrdAppStatus": 5,
-    "OrdSource": 12,
-    "OrdBuyerCode": "68995",
-    "OrdKefuCode": null,
-    "OrdFirstOrder": 0,
-    "OrdCancelReason": null,
-    "OrdSenderMobile": "9063700041",
-    "OrdReceiverName": "便捷地址",
-    "OrdReceiverMobile": "11111111111",
-    "OrdReceiverCardNo": "",
-    "OrdCardPositiveUrl": null,
-    "OrdCardNegativeUrl": null,
-    "OrdReceiverPost": "",
-    "OrdReceiverProvince": "备注",
-    "OrdReceiverCity": "备注",
-    "OrdReceiverCounty": "备注",
-    "OrdReceiverAddress": "详细收件人信息填写在备注里",
-    "OrdRemark": "df",
-    "OrdCreateTime": "2021-07-03 21:00:16",
-    "OrdCreateUserCode": "68995",
-    "OrdUpdateTime": null,
-    "OrdUpdateUserCode": null,
-    "OrdAppTotalMoney": 129,
-    "OrdAppCouponMoney": 0,
-    "OrdAppPaymentMoney": 129,
-    "OrdAppCouponCode": "",
-    "OrdPayFlowWaterNo": null,
-    "OrdPayType": 0,
-    "OrdIsPay": 0,
-    "OrdWnPayTime": null,
-    "OrdAppStatusName": null,
-    "OrdSourceName": null,
-    "Openid": null,
-    "EcmOrderGoodsInfos": [
-      {
-        "OgoId": 765010,
-        "OgoOrdCode": "2107030908",
-        "OgoGoodsCode": "45ffa09e-b81a-41c8-8afc-a2160f1d33e3",
-        "OgoBarcode": "096619883134",
-        "OgoImportName": null,
-        "OgoName": "Trunature Lutein 叶黄素胶囊保护眼睛 140粒",
-        "OgoGoodsTitle": "Trunature Lutein 叶黄素胶囊保护眼睛 140粒",
-        "OgoBrand": "TruNature",
-        "OgoNumber": 1,
-        "OgoPrice": 129,
-        "OgoTotalPrice": 129,
-        "OgoGoodsHuohao": "681272",
-        "OgoSpecification": null,
-        "OgoGoodsImageUrl": "http://img.yhchinc.com/e826caf9-f00b-4115-a668-72f2d153f90f.jpg",
-        "OgoCreateTime": "0001-01-01 00:00:00",
-        "OgoCreateUserCode": null,
-        "OgoUpdateTime": null,
-        "OgoUpdateUserCode": null,
-        "OgoLockStatus": 0,
-        "OgoUnlockTime": null,
-        "OgoUnlockReason": null
-      }
-    ],
-    "_revenue": 39.8857938718663,
-    "_customerService": -1
-  },
-  { error: '错误1' },
-];
-
-
 export const CartTab = (props) => {
   const dispatch = useDispatch();
   const [alertOpen, setAlertOpen] = React.useState(false);
-  const [newOrders, setNewOrders] = React.useState(de);
+  const [newOrders, setNewOrders] = React.useState([]);
   const isAdmin = useSelector(state => state.app.accessRole === APP_CONST.ACCESS_ROLE_ADMIN);
   const isCustomerService = useSelector(state => state.app.accessRole === APP_CONST.ACCESS_ROLE_CUSTOMER_SERVICE);
   const mustProvideRevenue = isAdmin || isCustomerService;
@@ -312,7 +176,7 @@ export const CartTab = (props) => {
       <Box my={1}>
         <TextField
           fullWidth={true}
-          label="卖出价格"
+          label="实际收款"
           multiline={true}
           variant="outlined"
           inputRef={revenueRef}
@@ -323,10 +187,10 @@ export const CartTab = (props) => {
       variant="contained"
       fullWidth={true}
       color="primary"
-      startIcon={<SearchIcon />}
+      startIcon={<TelegramIcon />}
       onClick={presubmitOrder}
     >
-      添加订单
+      提交订单
     </Button>
     {newOrders.map((order, i) => <OrderSummary key={i} details={order} />)}
     <Dialog

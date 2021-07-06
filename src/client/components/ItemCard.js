@@ -127,7 +127,7 @@ export const ItemCard = (props) => {
       <TextListItem title='商品价格' content={`\u00a5${getBuyerPrice(details.GodPresentPrice)}`} />
       <TextListItem title='商品代码' content={details.GodCode} />
       <TextListItem title='商品规格' content={details.GodSpecification} />
-      <TextListItem title='商品介绍' content={details.GodAppDescribe} />
+      <TextListItem title='商品介绍' content={details.GodAppDescribe || (details._ && details._._description)} />
       {/* TODOs: Add a Clickable link here */}
       <TextListItem title='商品链接' content={`${APP_CONST.SITE_DOMAIN}/${APP_CONST.PRODUCT_PATH}/${details.GodId}`} />
       <div className={classes.filmstripContainer}>

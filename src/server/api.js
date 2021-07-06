@@ -1,5 +1,5 @@
 const axios = require('axios');
-const { collectionGoods, orders } = require('./db.js');
+const { collectionGoods, orders, products } = require('./db.js');
 
 const miscRoutes = (app) => {
   app.get('/api/now', (req, res) => {
@@ -9,7 +9,24 @@ const miscRoutes = (app) => {
   app.post('/api/getcollections', async (req, res) => {
     const { pageSize, pageIndex } = req.body;
     try {
-      const o = await collectionGoods.findAsCursor({}).skip(pageIndex * pageSize).limit(pageSize).toArray();
+      const o = await collectionGoods.aggregate([{
+        "$limit": pageSize
+      }, {
+        "$skip": pageIndex * pageSize
+      }, {
+        "$lookup": {
+          "localField": "GodCode",
+          "from": "products_dev",
+          "foreignField": "GodCode",
+          "as": "_"
+        }
+      }, {
+        "$unwind": {
+          path: "$_",
+          preserveNullAndEmptyArrays: true
+        }
+      }]);
+
       res.json(o);
     }
     catch (e) {

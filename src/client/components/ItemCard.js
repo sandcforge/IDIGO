@@ -24,8 +24,11 @@ import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import StarsIcon from '@material-ui/icons/Stars';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import RemoveShoppingCartIcon from '@material-ui/icons/RemoveShoppingCart';
+import { Divider } from '@material-ui/core';
+
 import clsx from 'clsx';
 import { APP_CONST, BUSINESS_CONST, UI_CONST } from '../constants.js';
+
 import {
   actionAddProductToCollection,
   actionGetCollectionProducts,
@@ -34,8 +37,7 @@ import {
   actionUpdateCart
 } from '../redux/actions.js';
 import { getBuyerPrice } from '../utils.js';
-import { Divider } from '@material-ui/core';
-
+import { TextEditor } from './TextEditor.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -89,6 +91,11 @@ export const ItemCard = (props) => {
   const dispatch = useDispatch();
   const isAdmin = useSelector(state => state.app.accessRole === APP_CONST.ACCESS_ROLE_ADMIN);
   const isCustomerService = useSelector(state => state.app.accessRole === APP_CONST.ACCESS_ROLE_CUSTOMER_SERVICE);
+  const canRenderExtraInfo = isAdmin;
+  const canManageCollection = isAdmin;
+  const canManageCart = isAdmin || isCustomerService;
+  const canModifyCopyWriting = isAdmin || isCustomerService;
+
   const numInCart = useSelector(state => {
     const matchedItem = state.ui.cart.find(item => item.productDetails.GodCode === details.GodCode);
     if (matchedItem) {
@@ -127,7 +134,7 @@ export const ItemCard = (props) => {
       <TextListItem title='商品价格' content={`\u00a5${getBuyerPrice(details.GodPresentPrice)}`} />
       <TextListItem title='商品代码' content={details.GodCode} />
       <TextListItem title='商品规格' content={details.GodSpecification} />
-      <TextListItem title='商品介绍' content={details.GodAppDescribe || (details._ && details._._description)} />
+      <TextListItem title='商品介绍' content={(details._ && details._._description) || details.GodAppDescribe} />
       {/* TODOs: Add a Clickable link here */}
       <TextListItem title='商品链接' content={`${APP_CONST.SITE_DOMAIN}/${APP_CONST.PRODUCT_PATH}/${details.GodId}`} />
       <div className={classes.filmstripContainer}>
@@ -141,12 +148,12 @@ export const ItemCard = (props) => {
         <Image url={details.GodImageUrl7} />
         <Image url={details.GodImageUrl8} />
       </div>
-      {isAdmin && renderExtraInfo()}
+      {canRenderExtraInfo && renderExtraInfo()}
     </>);
   };
 
   const renderCollectionActions = () => {
-    return (isAdmin) && (<>
+    return (canManageCollection) && (<>
       <IconButton disabled>
         <StarsIcon color={star ? "primary" : "inherit"} />
       </IconButton>
@@ -174,7 +181,7 @@ export const ItemCard = (props) => {
   };
 
   const renderCartActions = () => {
-    return (isAdmin || isCustomerService) && (
+    return (canManageCart) && (
       <>
         <IconButton
           color='primary'
@@ -240,6 +247,11 @@ export const ItemCard = (props) => {
           {renderCollectionActions()}
           <Divider />
           {renderCartActions()}
+          <Divider />
+          {canModifyCopyWriting && <TextEditor
+            name='更改文案'
+            initialText={(details._ && details._._description) || details.GodAppDescribe}
+          />}
         </CardActions>
         <Collapse in={expanded} timeout="auto" unmountOnExit>
           <CardContent>
@@ -270,7 +282,7 @@ const TextListItem = (props) => {
       <CopyToClipboard text={content} onCopy={() => { showSnackbar(); }}>
         <ListItemIcon ><IconButton><FileCopyIcon /></IconButton></ListItemIcon>
       </CopyToClipboard>
-      <ListItemText style={{whiteSpace: 'pre-wrap'}} primary={title} secondary={content} />
+      <ListItemText style={{ whiteSpace: 'pre-wrap' }} primary={title} secondary={content} />
     </ListItem>
     <Snackbar
       anchorOrigin={{

@@ -270,7 +270,7 @@ const TextListItem = (props) => {
       <CopyToClipboard text={content} onCopy={() => { showSnackbar(); }}>
         <ListItemIcon ><IconButton><FileCopyIcon /></IconButton></ListItemIcon>
       </CopyToClipboard>
-      <ListItemText primary={title} secondary={content} />
+      <ListItemText style={{whiteSpace: 'pre-wrap'}} primary={title} secondary={content} />
     </ListItem>
     <Snackbar
       anchorOrigin={{

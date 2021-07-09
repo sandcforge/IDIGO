@@ -25,6 +25,7 @@ import StarsIcon from '@material-ui/icons/Stars';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import RemoveShoppingCartIcon from '@material-ui/icons/RemoveShoppingCart';
 import { Divider } from '@material-ui/core';
+import EditIcon from '@material-ui/icons/Edit';
 
 import clsx from 'clsx';
 import { APP_CONST, BUSINESS_CONST, UI_CONST } from '../constants.js';
@@ -85,9 +86,17 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+const COLLAPSE_STATUS = {
+  UNEXPANDED: 'unexpanded',
+  PRODUCT_MORE_DETAILS: 'more',
+  COLLECTION_ACTIONS: 'collection',
+  CART_ACTIONS: 'cart',
+  COPYWRITING_ACTIONS: 'copywritng',
+};
+
 
 export const ItemCard = (props) => {
-  const { details, defaultExpanded = false, disableExpand = false, star = false, amount = -1 } = props;
+  const { details, defaultExpanded = COLLAPSE_STATUS.UNEXPANDED, disableExpand = false, star = false, amount = -1 } = props;
   const classes = useStyles();
   const dispatch = useDispatch();
   const isAdmin = useSelector(state => state.app.accessRole === APP_CONST.ACCESS_ROLE_ADMIN);
@@ -108,14 +117,45 @@ export const ItemCard = (props) => {
     }
   });
 
-  const [expanded, setExpanded] = React.useState(defaultExpanded);
+  const [collaspeStatus, setCollaspeStatus] = React.useState(defaultExpanded);
+
+  const handleActionIcon = (event) => {
+    if (collaspeStatus === event.currentTarget.id) {
+      setCollaspeStatus(COLLAPSE_STATUS.UNEXPANDED);
+    }
+    else {
+      setCollaspeStatus(event.currentTarget.id);
+    }
+
+  }
 
 
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
+  const renderCardContent = () => {
+    switch (collaspeStatus) {
+      case COLLAPSE_STATUS.PRODUCT_MORE_DETAILS:
+        return renderProductDetails(details);
+      case COLLAPSE_STATUS.COPYWRITING_ACTIONS:
+        return (<TextEditor
+          name='更改文案'
+          initialText={(details._ && details._._copywriting) || details.GodAppDescribe}
+          onConfirm={(text) => {
+            dispatch(actionUpdateProductCopyWriting({
+              _customerService: customerService,
+              GodAppTitle: details.GodAppTitle,
+              GodCode: details.GodCode,
+              GodId: details.GodId,
+              _copywriting: text,
+            }));
+          }}
+        />);
+      case COLLAPSE_STATUS.CART_ACTIONS:
+        return renderCartActions();
+      case COLLAPSE_STATUS.COLLECTION_ACTIONS:
+        return renderCollectionActions();
+    }
   };
 
-  const renderCardContent = (details) => {
+  const renderProductDetails = (details) => {
     const renderExtraInfo = () => {
       return (<>
         <TextListItem title='商品库存' content={details.GodSellStock} />
@@ -155,7 +195,7 @@ export const ItemCard = (props) => {
   };
 
   const renderCollectionActions = () => {
-    return (canManageCollection) && (<>
+    return (<>
       <IconButton disabled>
         <StarsIcon color={star ? "primary" : "inherit"} />
       </IconButton>
@@ -183,33 +223,31 @@ export const ItemCard = (props) => {
   };
 
   const renderCartActions = () => {
-    return (canManageCart) && (
-      <>
-        <IconButton
-          color='primary'
-          onClick={() => {
-            dispatch(actionUpdateCart({
-              productDetails: details,
-              productNum: 1,
-            }));
-          }}
-        >
-          <ShoppingCartIcon />
-        </IconButton>
-        {numInCart}
-        <IconButton
-          color='primary'
-          onClick={() => {
-            dispatch(actionUpdateCart({
-              productDetails: details,
-              productNum: -1,
-            }));
-          }}
-        >
-          <RemoveShoppingCartIcon />
-        </IconButton>
-      </>
-    );
+    return (<>
+      <IconButton
+        color='primary'
+        onClick={() => {
+          dispatch(actionUpdateCart({
+            productDetails: details,
+            productNum: 1,
+          }));
+        }}
+      >
+        <ShoppingCartIcon />
+      </IconButton>
+      {numInCart}
+      <IconButton
+        color='primary'
+        onClick={() => {
+          dispatch(actionUpdateCart({
+            productDetails: details,
+            productNum: -1,
+          }));
+        }}
+      >
+        <RemoveShoppingCartIcon />
+      </IconButton>
+    </>);
   };
 
   const renderSubHeader = () => {
@@ -221,11 +259,13 @@ export const ItemCard = (props) => {
     );
   };
 
+
   return (
     <>
       <Card className={classes.root}>
         <CardHeader
-          onClick={disableExpand ? undefined : handleExpandClick}
+          onClick={disableExpand ? undefined : handleActionIcon}
+          id={COLLAPSE_STATUS.PRODUCT_MORE_DETAILS}
           avatar={
             <Avatar aria-label="recipe" className={classes.avatar}>
               <img width='100%' height='100%' src={details.GodImageUrl} alt='avatar' />
@@ -236,37 +276,30 @@ export const ItemCard = (props) => {
           action={
             <IconButton
               className={clsx(classes.expand, {
-                [classes.expandOpen]: expanded,
+                [classes.expandOpen]: collaspeStatus === COLLAPSE_STATUS.PRODUCT_MORE_DETAILS,
               })}
-              aria-expanded={expanded}
-              aria-label="show more"
             >
               <ExpandMoreIcon />
             </IconButton>
           }
         />
         <CardActions>
-          {renderCollectionActions()}
-          <Divider />
-          {renderCartActions()}
-          <Divider />
-          {canModifyCopyWriting && <TextEditor
-            name='更改文案'
-            initialText={(details._ && details._._copywriting) || details.GodAppDescribe}
-            onConfirm={(text) => {
-              dispatch(actionUpdateProductCopyWriting({
-                _customerService: customerService,
-                GodAppTitle: details.GodAppTitle,
-                GodCode: details.GodCode,
-                GodId: details.GodId,
-                _copywriting: text,
-              }));
-            }}
-          />}
+          {canManageCollection &&
+            <IconButton id={COLLAPSE_STATUS.COLLECTION_ACTIONS} onClick={handleActionIcon}>
+              <StarsIcon color='primary' />
+            </IconButton>}
+          {canManageCart &&
+            <IconButton id={COLLAPSE_STATUS.CART_ACTIONS} onClick={handleActionIcon}>
+              <ShoppingCartIcon color='primary' />
+            </IconButton>}
+          {canModifyCopyWriting &&
+            <IconButton id={COLLAPSE_STATUS.COPYWRITING_ACTIONS} onClick={handleActionIcon}>
+              <EditIcon color='primary' />
+            </IconButton>}
         </CardActions>
-        <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <Collapse in={collaspeStatus !== COLLAPSE_STATUS.UNEXPANDED} timeout="auto" unmountOnExit>
           <CardContent>
-            {renderCardContent(details)}
+            {renderCardContent()}
           </CardContent>
         </Collapse>
       </Card>

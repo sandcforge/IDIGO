@@ -53,7 +53,7 @@ export const ProductPage = () => {
       {isLoading && <LinearProgress />}
       <ItemCard
         disableExpand={true}
-        defaultExpanded={true}
+        defaultExpanded='more'
         details={productDetails} />
     </>)}
 

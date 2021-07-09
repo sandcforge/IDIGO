@@ -11,7 +11,7 @@ import TextField from '@material-ui/core/TextField';
 export const TextEditor = (pros) => {
   const { initialText, onConfirm, name } = pros;
   const [editorStatus, setEditorStatus] = React.useState(false);
-  const [editorContent, setEditorContent] = React.useState(initialText);
+  const [editorContent, setEditorContent] = React.useState(initialText || '');
 
   const handleChange = (event) => {
     setEditorContent(event.target.value);
@@ -53,7 +53,9 @@ export const TextEditor = (pros) => {
         variant="contained"
         color="primary"
         startIcon={<CheckIcon />}
-        onClick={onConfirm}
+        onClick={()=> {
+          onConfirm(editorContent);
+        }}
       >
         确定
       </Button>

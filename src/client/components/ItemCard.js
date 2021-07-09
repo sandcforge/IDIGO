@@ -34,7 +34,8 @@ import {
   actionGetCollectionProducts,
   actionRemoveProductFromCollection,
   actionResetTab,
-  actionUpdateCart
+  actionUpdateCart,
+  actionUpdateProductCopyWriting,
 } from '../redux/actions.js';
 import { getBuyerPrice } from '../utils.js';
 import { TextEditor } from './TextEditor.js';
@@ -91,6 +92,7 @@ export const ItemCard = (props) => {
   const dispatch = useDispatch();
   const isAdmin = useSelector(state => state.app.accessRole === APP_CONST.ACCESS_ROLE_ADMIN);
   const isCustomerService = useSelector(state => state.app.accessRole === APP_CONST.ACCESS_ROLE_CUSTOMER_SERVICE);
+  const customerService = useSelector(state => state.app.customerService);
   const canRenderExtraInfo = isAdmin;
   const canManageCollection = isAdmin;
   const canManageCart = isAdmin || isCustomerService;
@@ -134,7 +136,7 @@ export const ItemCard = (props) => {
       <TextListItem title='商品价格' content={`\u00a5${getBuyerPrice(details.GodPresentPrice)}`} />
       <TextListItem title='商品代码' content={details.GodCode} />
       <TextListItem title='商品规格' content={details.GodSpecification} />
-      <TextListItem title='商品介绍' content={(details._ && details._._description) || details.GodAppDescribe} />
+      <TextListItem title='商品介绍' content={(details._ && details._._copywriting) || details.GodAppDescribe} />
       {/* TODOs: Add a Clickable link here */}
       <TextListItem title='商品链接' content={`${APP_CONST.SITE_DOMAIN}/${APP_CONST.PRODUCT_PATH}/${details.GodId}`} />
       <div className={classes.filmstripContainer}>
@@ -250,7 +252,16 @@ export const ItemCard = (props) => {
           <Divider />
           {canModifyCopyWriting && <TextEditor
             name='更改文案'
-            initialText={(details._ && details._._description) || details.GodAppDescribe}
+            initialText={(details._ && details._._copywriting) || details.GodAppDescribe}
+            onConfirm={(text) => {
+              dispatch(actionUpdateProductCopyWriting({
+                _customerService: customerService,
+                GodAppTitle: details.GodAppTitle,
+                GodCode: details.GodCode,
+                GodId: details.GodId,
+                _copywriting: text,
+              }));
+            }}
           />}
         </CardActions>
         <Collapse in={expanded} timeout="auto" unmountOnExit>

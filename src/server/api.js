@@ -98,6 +98,26 @@ const miscRoutes = (app) => {
     }
   });
 
+  app.post('/api/addcopywriting', async (req, res) => {
+    const { data } = req.body;
+    try {
+      const results = await products.update(
+        {
+          GodId: data.GodId,
+        },
+        { $set: data },
+        { upsert: true },
+      );
+      res.sendStatus(200);
+    }
+    catch (e) {
+      console.log(e);
+      res.sendStatus(404);
+    }
+  });
+
+
+
   app.post('/api/proxy', async (req, res) => {
     const { url, method, data } = req.body;
     if (method === 'GET') {

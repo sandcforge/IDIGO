@@ -117,3 +117,11 @@ export const actionRemoveProductFromCollection = createAsyncThunk(
     await axios.post('/api/delgoods', { data: productInfo });
   })
 );
+
+export const actionUpdateProductCopyWriting = createAsyncThunk(
+  'UpdateProductCopyWriting',
+  asyncActionHelper(async (payload, thunkApi) => {
+    await axios.post('/api/addcopywriting', {data: payload});
+  })
+);
+

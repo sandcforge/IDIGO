@@ -138,6 +138,7 @@ export const ItemCard = (props) => {
         return (<TextEditor
           name='更改文案'
           initialText={(details._ && details._._copywriting) || details.GodAppDescribe}
+          onCancel={() => { setCollaspeStatus(COLLAPSE_STATUS.UNEXPANDED); }}
           onConfirm={(text) => {
             dispatch(actionUpdateProductCopyWriting({
               _customerService: customerService,

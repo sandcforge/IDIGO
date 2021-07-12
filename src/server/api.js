@@ -1,6 +1,6 @@
 const axios = require('axios');
 const { collectionGoods, orders, products } = require('./db.js');
-
+const { envConfig } = require('./constants.js');
 const miscRoutes = (app) => {
   app.get('/api/now', (req, res) => {
     res.json({ now: Date.now(), appName: 'IDIGO' });
@@ -16,7 +16,7 @@ const miscRoutes = (app) => {
       }, {
         "$lookup": {
           "localField": "GodCode",
-          "from": "products_dev",
+          "from": envConfig.nodeEnv == 'production' ? "products" : "products_dev",
           "foreignField": "GodCode",
           "as": "_"
         }
@@ -84,7 +84,8 @@ const miscRoutes = (app) => {
   app.post('/api/getorders', async (req, res) => {
     const { pageSize, pageIndex } = req.body;
     try {
-      const o = await orders.find({}, { _id: 1,
+      const o = await orders.find({}, {
+        _id: 1,
         _revenue: 1,
         _customerService: 1,
         OrdCode: 1,

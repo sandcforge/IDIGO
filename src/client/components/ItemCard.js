@@ -83,7 +83,14 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
-  }
+  },
+  actionContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignContent: 'center',
+    width: '100%',
+  },
 }));
 
 const COLLAPSE_STATUS = {
@@ -196,59 +203,69 @@ export const ItemCard = (props) => {
   };
 
   const renderCollectionActions = () => {
-    return (<>
+    return (<div className={classes.actionContainer}>
       <IconButton disabled>
         <StarsIcon color={star ? "primary" : "inherit"} />
       </IconButton>
-      <IconButton
-        color="secondary"
-        onClick={async () => {
-          dispatch(actionResetTab(UI_CONST.COLLECTION_TAB_INDEX));
-          await dispatch(actionAddProductToCollection(details));
-          await dispatch(actionGetCollectionProducts());
-        }}
-      >
-        <AddCircleIcon />
-      </IconButton>
-      <IconButton
-        color="secondary"
-        onClick={async () => {
-          dispatch(actionResetTab(UI_CONST.COLLECTION_TAB_INDEX));
-          await dispatch(actionRemoveProductFromCollection(details));
-          await dispatch(actionGetCollectionProducts());
-        }}
-      >
-        <RemoveCircleIcon />
-      </IconButton>
-    </>);
+      <div >
+        <IconButton
+          color="secondary"
+          onClick={async () => {
+            dispatch(actionResetTab(UI_CONST.COLLECTION_TAB_INDEX));
+            await dispatch(actionAddProductToCollection(details));
+            await dispatch(actionGetCollectionProducts());
+          }}
+        >
+          <AddCircleIcon />
+        </IconButton>
+        <IconButton
+          color="secondary"
+          onClick={async () => {
+            dispatch(actionResetTab(UI_CONST.COLLECTION_TAB_INDEX));
+            await dispatch(actionRemoveProductFromCollection(details));
+            await dispatch(actionGetCollectionProducts());
+          }}
+        >
+          <RemoveCircleIcon />
+        </IconButton>
+      </div>
+
+    </div>);
   };
 
   const renderCartActions = () => {
-    return (<>
-      <IconButton
-        color='primary'
-        onClick={() => {
-          dispatch(actionUpdateCart({
-            productDetails: details,
-            productNum: 1,
-          }));
-        }}
-      >
-        <ShoppingCartIcon />
-      </IconButton>
-      {numInCart}
-      <IconButton
-        color='primary'
-        onClick={() => {
-          dispatch(actionUpdateCart({
-            productDetails: details,
-            productNum: -1,
-          }));
-        }}
-      >
-        <RemoveShoppingCartIcon />
-      </IconButton>
-    </>);
+    return (<div className={classes.actionContainer}>
+      <div>
+        <IconButton disabled={true}>
+          <ShoppingCartIcon color='primary' />
+        </IconButton>
+        {numInCart}
+      </div>
+      <div>
+        <IconButton
+          color="secondary"
+          onClick={() => {
+            dispatch(actionUpdateCart({
+              productDetails: details,
+              productNum: 1,
+            }));
+          }}
+        >
+          <AddCircleIcon />
+        </IconButton>
+        <IconButton
+          color="secondary"
+          onClick={() => {
+            dispatch(actionUpdateCart({
+              productDetails: details,
+              productNum: -1,
+            }));
+          }}
+        >
+          <RemoveCircleIcon />
+        </IconButton>
+      </div>
+    </div>);
   };
 
   const renderSubHeader = () => {

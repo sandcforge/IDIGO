@@ -10,6 +10,8 @@ const miscRoutes = (app) => {
     const { pageSize, pageIndex } = req.body;
     try {
       const o = await collectionGoods.aggregate([{
+        "$match": { _updateAt: { $gte: Date.now() - 1000*3600*24*7 } }
+      }, {
         "$limit": pageSize
       }, {
         "$skip": pageIndex * pageSize
@@ -51,6 +53,7 @@ const miscRoutes = (app) => {
 
   app.post('/api/addgoods', async (req, res) => {
     const { data } = req.body;
+    data._updateAt = Date.now();
     try {
       const results = await collectionGoods.update(
         { GodId: data.GodId },

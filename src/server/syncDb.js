@@ -10,20 +10,17 @@ const syncCollection = schedule.scheduleJob(rule, async () => {
   console.log('Start to sync DB at ' + new Date().toISOString());
   const syncDb = async (item) => {
     try {
-      const url = `https://www.snailsmall.com/Goods/FindPage?data={"GodId":${item.GodId}},"PageIndex":0,"PageSize":1}`;
+      const url = `https://www.snailsmall.com/Goods/GetById?data={"GodId":${item.GodId}}`;
       const retRaw = await axios.get(encodeURI(url));
       if (retRaw.data.ResCode === '01' && retRaw.data.Data !== null) {
         const newDetails = retRaw.data.Data;
+        newDetails._updateAt = Date.now();
         const results = await collectionGoods.update(
           { GodId: newDetails.GodId },
           { $set: newDetails },
           { upsert: true },
         );
         console.log(`${item.GodId} is updated.`);
-      }
-      else {
-        await collectionGoods.remove({ GodId: item.GodId });
-        console.log(`${item.GodId} is removed.`);
       }
     }
     catch (err) {

@@ -48,7 +48,7 @@ const miscRoutes = (app) => {
         { $set: data },
         { upsert: true },
       );
-      res.sendStatus(200);
+      res.json(data);
     }
     catch (e) {
       console.log(e);

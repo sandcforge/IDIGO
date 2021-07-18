@@ -16,6 +16,8 @@ import {
   actionUpdateCart,
   actionSetSnackbar,
   actionGetPruductMisc,
+  actionAddProductToCollection,
+  actionRemoveProductFromCollection,
 } from './actions.js';
 
 const initialState = {
@@ -147,7 +149,6 @@ export const rootReducer = createReducer(initialState, (builder) => {
         }
       }
     })
-
     .addCase(actionGetProductCategory.fulfilled, (state, action) => {
       state.data.productCategory = action.payload;
     })
@@ -162,5 +163,12 @@ export const rootReducer = createReducer(initialState, (builder) => {
     })
     .addCase(actionGetSearchResults.fulfilled, (state, action) => {
       state.data.searchResults = state.data.searchResults.concat(action.payload);
+    })
+    .addCase(actionAddProductToCollection.fulfilled, (state, action) => {
+      state.data.collectionProducts.push(action.payload);
+    })
+    .addCase(actionRemoveProductFromCollection.fulfilled, (state, action) => {
+      const index_ = state.data.collectionProducts.findIndex(i => i.GodId === action.payload.GodId);
+      if (index_ !== -1) state.data.collectionProducts.splice(index_, 1)
     });
 });

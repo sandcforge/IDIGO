@@ -37,7 +37,6 @@ const asyncActionHelper = (func) => {
         message: err.message,
         autoHideDuration: 5000,
       }));
-
       console.log(err);
       throw err;
     }
@@ -121,7 +120,8 @@ export const actionGetCategoryProducts = createAsyncThunk(
 export const actionAddProductToCollection = createAsyncThunk(
   'AddProductToCollection',
   asyncActionHelper(async (productInfo, thunkApi) => {
-    await axios.post('/api/addgoods', { data: productInfo });
+    const res = await axios.post('/api/addgoods', { data: productInfo });
+    return res.data;
   })
 );
 
@@ -129,6 +129,7 @@ export const actionRemoveProductFromCollection = createAsyncThunk(
   'RemoveProductFromCollection',
   asyncActionHelper(async (productInfo, thunkApi) => {
     await axios.post('/api/delgoods', { data: productInfo });
+    return productInfo;
   })
 );
 

@@ -210,21 +210,13 @@ export const ItemCard = (props) => {
       <div >
         <IconButton
           color="secondary"
-          onClick={async () => {
-            dispatch(actionResetTab(UI_CONST.COLLECTION_TAB_INDEX));
-            await dispatch(actionAddProductToCollection(details));
-            await dispatch(actionGetCollectionProducts());
-          }}
+          onClick={() => dispatch(actionAddProductToCollection(details))}
         >
           <AddCircleIcon />
         </IconButton>
         <IconButton
           color="secondary"
-          onClick={async () => {
-            dispatch(actionResetTab(UI_CONST.COLLECTION_TAB_INDEX));
-            await dispatch(actionRemoveProductFromCollection(details));
-            await dispatch(actionGetCollectionProducts());
-          }}
+          onClick={() => dispatch(actionRemoveProductFromCollection(details))}
         >
           <RemoveCircleIcon />
         </IconButton>

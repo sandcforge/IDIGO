@@ -14,6 +14,7 @@ import {
   actionSetAccessRole,
   actionSetTabIndex,
   actionSetCustomerService,
+  actionGetPruductMisc,
 } from '../redux/actions.js';
 import { CategoryTab } from './CategoryTab.js';
 import { CollectionTab } from './CollectionTab.js';
@@ -59,6 +60,10 @@ export const HomePage = () => {
       dispatch(actionSetCustomerService(APP_CONST.CUSTOMER_SERVICE_NULL));
     }
 
+  }, []);
+
+  useEffect(() => {
+    dispatch(actionGetPruductMisc());
   }, []);
 
   const renderCartTabTitle = () => {

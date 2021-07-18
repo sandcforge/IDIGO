@@ -15,18 +15,6 @@ const miscRoutes = (app) => {
         "$limit": pageSize
       }, {
         "$skip": pageIndex * pageSize
-      }, {
-        "$lookup": {
-          "localField": "GodCode",
-          "from": envConfig.nodeEnv == 'production' ? "products" : "products_dev",
-          "foreignField": "GodCode",
-          "as": "_"
-        }
-      }, {
-        "$unwind": {
-          path: "$_",
-          preserveNullAndEmptyArrays: true
-        }
       }]);
 
       res.json(o);

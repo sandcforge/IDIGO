@@ -29,3 +29,16 @@ export const showLoadMoreButtonOnTab = (tabIndex) => {
 export const mDelay = (ms) => {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+
+export const mergeWithProductMisc = (productList) => {
+  const _productMisc = store.getState().data.productMisc;
+  const m = new Map();
+  productList.map((x) => { m.set(x.GodId, x); });
+  _productMisc.map((x) => {
+    if (m.get(x.GodId)) {
+      m.set(x.GodId, { ...m.get(x.GodId), _: x });
+    }
+  });
+  return Array.from(m.values());
+}

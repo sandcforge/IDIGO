@@ -11,9 +11,11 @@ import { UI_CONST } from '../constants.js';
 import {
   actionResetTab,
   actionGetSearchResults,
-  actionGetPruductMisc,
 } from '../redux/actions.js';
-import { showLoadMoreButtonOnTab } from '../utils.js';
+import {
+  mergeWithProductMisc,
+  showLoadMoreButtonOnTab,
+} from '../utils.js';
 
 
 export const SearchTab = () => {
@@ -24,23 +26,8 @@ export const SearchTab = () => {
   // To merge misc info to product details,
   // Left Join: searchResults * productMisc
   const searchResultswithMisc = useSelector(state => {
-    const _searchResults = state.data.searchResults;
-    const _productMisc = state.data.productMisc;
-    const m = new Map();
-    _searchResults.map((x) => { m.set(x.GodId, x); });
-    _productMisc.map((x) => {
-      if (m.get(x.GodId)) {
-        m.set(x.GodId, { ...m.get(x.GodId), _: x });
-      }
-    });
-    return Array.from(m.values());
+    return mergeWithProductMisc(state.data.searchResults);
   });
-
-  useEffect(() => {
-    (async () => {
-      await dispatch(actionGetPruductMisc());
-    })();
-  }, []);
 
   const handleSearchTextFieldOnChange = (event) => {
     setSearchTextFieldValue(event.target.value);

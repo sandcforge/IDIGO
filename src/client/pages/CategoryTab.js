@@ -11,15 +11,21 @@ import {
   actionGetProductCategory,
   actionResetTab,
 } from '../redux/actions.js';
-import { showLoadMoreButtonOnTab } from '../utils.js';
+import {
+  mergeWithProductMisc,
+  showLoadMoreButtonOnTab
+} from '../utils.js';
 
 export const CategoryTab = () => {
   const dispatch = useDispatch();
 
   const [subTabValue, setSubTabValue] = React.useState(0);
   const productCategory = useSelector(state => state.data.productCategory);
-  const categoryProducts = useSelector(state => state.data.categoryProducts);
   const collectionGodIdSet = useSelector(state => new Set(state.data.collectionProducts.map(item => item.GodId)));
+
+  const categoryProductsWithMisc = useSelector(state => {
+    return mergeWithProductMisc(state.data.categoryProducts);
+  });
 
   const handleSubTabChange = (event, newValue) => {
     setSubTabValue(newValue);
@@ -49,12 +55,12 @@ export const CategoryTab = () => {
       </Tabs>
     </AppBar>
 
-      <ListView
-        whitelistSet={collectionGodIdSet}
-        listData={categoryProducts}
-        showLoadMoreButton={showLoadMoreButtonOnTab(UI_CONST.CATEGORY_TAB_INDEX)}
-        keyName='GodId'
-        onLoadData={() => dispatch(actionGetCategoryProducts(subTabValue))}
-      />
+    <ListView
+      whitelistSet={collectionGodIdSet}
+      listData={categoryProductsWithMisc}
+      showLoadMoreButton={showLoadMoreButtonOnTab(UI_CONST.CATEGORY_TAB_INDEX)}
+      keyName='GodId'
+      onLoadData={() => dispatch(actionGetCategoryProducts(subTabValue))}
+    />
   </>);
 }

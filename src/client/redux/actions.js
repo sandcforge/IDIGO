@@ -32,6 +32,12 @@ const asyncActionHelper = (func) => {
       return ret;
     } catch (err) {
       thunkApi.dispatch(actionSetApiLoading(false));
+      thunkApi.dispatch(actionSetSnackbar({
+        visible: true,
+        message: err.message,
+        autoHideDuration: 5000,
+      }));
+
       console.log(err);
       throw err;
     }

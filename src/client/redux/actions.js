@@ -39,10 +39,18 @@ const asyncActionHelper = (func) => {
 };
 
 export const actionGetProductCategory = createAsyncThunk(
-  'GetProductCategor',
+  'GetProductCategory',
   asyncActionHelper(async (arg, thunkApi) => {
     const result = await axios.post('/api/proxy', { method: 'GET', url: APP_CONST.GOODS_CATEGORY_EP });
     return result.data.Data;
+  })
+);
+
+export const actionGetPruductMisc = createAsyncThunk(
+  'GetPruductMisc',
+  asyncActionHelper(async (arg, thunkApi) => {
+    const result = await axios.post('/api/getproductmisc', {});
+    return result.data;
   })
 );
 
@@ -121,7 +129,7 @@ export const actionRemoveProductFromCollection = createAsyncThunk(
 export const actionUpdateProductCopyWriting = createAsyncThunk(
   'UpdateProductCopyWriting',
   asyncActionHelper(async (payload, thunkApi) => {
-    await axios.post('/api/addcopywriting', {data: payload});
+    await axios.post('/api/addcopywriting', { data: payload });
   })
 );
 

@@ -15,6 +15,7 @@ import {
   actionSetCustomerService,
   actionUpdateCart,
   actionSetSnackbar,
+  actionGetPruductMisc,
 } from './actions.js';
 
 const initialState = {
@@ -47,6 +48,7 @@ const initialState = {
     collectionProducts: [],
     categoryProducts: [],
     searchResults: [],
+    productMisc: [],
   },
   app: {
     accessRole: APP_CONST.ACCESS_ROLE_USER,
@@ -148,6 +150,9 @@ export const rootReducer = createReducer(initialState, (builder) => {
 
     .addCase(actionGetProductCategory.fulfilled, (state, action) => {
       state.data.productCategory = action.payload;
+    })
+    .addCase(actionGetPruductMisc.fulfilled, (state, action) => {
+      state.data.productMisc = action.payload;
     })
     .addCase(actionGetCollectionProducts.fulfilled, (state, action) => {
       state.data.collectionProducts = state.data.collectionProducts.concat(action.payload);

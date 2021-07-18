@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Box from '@material-ui/core/Box';
@@ -11,6 +11,7 @@ import { UI_CONST } from '../constants.js';
 import {
   actionResetTab,
   actionGetSearchResults,
+  actionGetPruductMisc,
 } from '../redux/actions.js';
 import { showLoadMoreButtonOnTab } from '../utils.js';
 
@@ -19,11 +20,27 @@ export const SearchTab = () => {
   const dispatch = useDispatch();
 
   const [searchTextFieldValue, setSearchTextFieldValue] = useState('');
-
-  const searchResults = useSelector(state => state.data.searchResults);
-  const dataLoadingStatus = useSelector(state => state.ui.dataLoadingStatus);
   const collectionGodIdSet = useSelector(state => new Set(state.data.collectionProducts.map(item => item.GodId)));
+  // To merge misc info to product details,
+  // Left Join: searchResults * productMisc
+  const searchResultswithMisc = useSelector(state => {
+    const _searchResults = state.data.searchResults;
+    const _productMisc = state.data.productMisc;
+    const m = new Map();
+    _searchResults.map((x) => { m.set(x.GodId, x); });
+    _productMisc.map((x) => {
+      if (m.get(x.GodId)) {
+        m.set(x.GodId, { ...m.get(x.GodId), _: x });
+      }
+    });
+    return Array.from(m.values());
+  });
 
+  useEffect(() => {
+    (async () => {
+      await dispatch(actionGetPruductMisc());
+    })();
+  }, []);
 
   const handleSearchTextFieldOnChange = (event) => {
     setSearchTextFieldValue(event.target.value);
@@ -56,7 +73,7 @@ export const SearchTab = () => {
     </Button>
     <ListView
       whitelistSet={collectionGodIdSet}
-      listData={searchResults}
+      listData={searchResultswithMisc}
       showLoadMoreButton={showLoadMoreButtonOnTab(UI_CONST.SEARCH_TAB_INDEX)}
       keyName='GodId'
       onLoadData={() => dispatch(actionGetSearchResults(searchTextFieldValue))}

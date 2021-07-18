@@ -10,7 +10,7 @@ const miscRoutes = (app) => {
     const { pageSize, pageIndex } = req.body;
     try {
       const o = await collectionGoods.aggregate([{
-        "$match": { _updateAt: { $gte: Date.now() - 1000*3600*24*7 } }
+        "$match": { _updateAt: { $gte: Date.now() - 1000 * 3600 * 24 * 7 } }
       }, {
         "$limit": pageSize
       }, {
@@ -120,6 +120,23 @@ const miscRoutes = (app) => {
     }
   });
 
+  /**
+   * Gets the misc info we created (NOT from Snailmall) from DB.
+   */
+  app.post('/api/getproductmisc', async (req, res) => {
+    try {
+      const o = await products.find({}, {
+        _id: 1,
+        GodId: 1,
+        _copywriting: 1,
+      });
+      res.json(o);
+    }
+    catch (e) {
+      console.log(e);
+      res.sendStatus(404);
+    }
+  });
 
 
   app.post('/api/proxy', async (req, res) => {

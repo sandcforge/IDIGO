@@ -137,6 +137,7 @@ export const actionUpdateProductCopyWriting = createAsyncThunk(
   'UpdateProductCopyWriting',
   asyncActionHelper(async (payload, thunkApi) => {
     await axios.post('/api/addcopywriting', { data: payload });
+    return payload;
   })
 );
 

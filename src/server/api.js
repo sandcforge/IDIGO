@@ -113,11 +113,7 @@ const miscRoutes = (app) => {
    */
   app.post('/api/getproductmisc', async (req, res) => {
     try {
-      const o = await products.find({}, {
-        _id: 1,
-        GodId: 1,
-        _copywriting: 1,
-      });
+      const o = await products.find({});
       res.json(o);
     }
     catch (e) {

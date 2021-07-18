@@ -18,6 +18,7 @@ import {
   actionGetPruductMisc,
   actionAddProductToCollection,
   actionRemoveProductFromCollection,
+  actionUpdateProductCopyWriting,
 } from './actions.js';
 
 const initialState = {
@@ -169,6 +170,17 @@ export const rootReducer = createReducer(initialState, (builder) => {
     })
     .addCase(actionRemoveProductFromCollection.fulfilled, (state, action) => {
       const index_ = state.data.collectionProducts.findIndex(i => i.GodId === action.payload.GodId);
-      if (index_ !== -1) state.data.collectionProducts.splice(index_, 1)
+      if (index_ !== -1) {
+        state.data.collectionProducts.splice(index_, 1);
+      }
+    })
+    .addCase(actionUpdateProductCopyWriting.fulfilled, (state, action) => {
+      const index_ = state.data.productMisc.findIndex(i => i.GodId === action.payload.GodId);
+      if (index_ !== -1) {
+        state.data.productMisc.push(action.payload);
+      }
+      else {
+        state.data.productMisc[index_] = action.payload;
+      }
     });
 });

@@ -22,7 +22,6 @@ export const CollectionTab = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const collectionProducts = useSelector(state => state.data.collectionProducts);
-  const dataLoadingStatus = useSelector(state => state.ui.dataLoadingStatus);
   const collectionGodIdSet = useSelector(state => new Set(state.data.collectionProducts.map(item => item.GodId)));
 
 

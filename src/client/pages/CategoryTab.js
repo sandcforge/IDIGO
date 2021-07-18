@@ -19,7 +19,6 @@ export const CategoryTab = () => {
   const [subTabValue, setSubTabValue] = React.useState(0);
   const productCategory = useSelector(state => state.data.productCategory);
   const categoryProducts = useSelector(state => state.data.categoryProducts);
-  const dataLoadingStatus = useSelector(state => state.ui.dataLoadingStatus);
   const collectionGodIdSet = useSelector(state => new Set(state.data.collectionProducts.map(item => item.GodId)));
 
   const handleSubTabChange = (event, newValue) => {

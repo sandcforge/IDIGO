@@ -138,6 +138,22 @@ export const ItemCard = (props) => {
 
 
   const renderCardContent = () => {
+
+    const handleOnCancel = () => {
+      setCollaspeStatus(COLLAPSE_STATUS.UNEXPANDED);
+    };
+
+    const handleOnConfirm = async (text) => {
+      await dispatch(actionUpdateProductCopyWriting({
+        _customerService: customerService,
+        GodAppTitle: details.GodAppTitle,
+        GodCode: details.GodCode,
+        GodId: details.GodId,
+        _copywriting: text,
+      }));
+      setCollaspeStatus(COLLAPSE_STATUS.UNEXPANDED);
+    }
+
     switch (collaspeStatus) {
       case COLLAPSE_STATUS.PRODUCT_MORE_DETAILS:
         return renderProductDetails(details);
@@ -145,16 +161,8 @@ export const ItemCard = (props) => {
         return (<TextEditor
           name='更改文案'
           initialText={(details._ && details._._copywriting) || details.GodAppDescribe}
-          onCancel={() => { setCollaspeStatus(COLLAPSE_STATUS.UNEXPANDED); }}
-          onConfirm={(text) => {
-            dispatch(actionUpdateProductCopyWriting({
-              _customerService: customerService,
-              GodAppTitle: details.GodAppTitle,
-              GodCode: details.GodCode,
-              GodId: details.GodId,
-              _copywriting: text,
-            }));
-          }}
+          onCancel={handleOnCancel}
+          onConfirm={handleOnConfirm}
         />);
       case COLLAPSE_STATUS.CART_ACTIONS:
         return renderCartActions();

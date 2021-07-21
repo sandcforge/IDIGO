@@ -40,6 +40,7 @@ import {
 } from '../redux/actions.js';
 import { getBuyerPrice } from '../utils.js';
 import { TextEditor } from './TextEditor.js';
+import { Link } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -194,7 +195,11 @@ export const ItemCard = (props) => {
       <TextListItem title='商品规格' content={details.GodSpecification} />
       <TextListItem title='商品介绍' content={(details._ && details._._copywriting) || details.GodAppDescribe} />
       {/* TODOs: Add a Clickable link here */}
-      <TextListItem title='商品链接' content={`${APP_CONST.SITE_DOMAIN}/${APP_CONST.PRODUCT_PATH}/${details.GodId}`} />
+      <TextListItem
+        isUrl={true}
+        title='商品链接'
+        content={`${APP_CONST.SITE_DOMAIN}/${APP_CONST.PRODUCT_PATH}/${details.GodId}`}
+      />
       <div className={classes.filmstripContainer}>
         <Image url={details.GodImageUrl} />
         <Image url={details.GodImageUrl1} />
@@ -327,7 +332,7 @@ export const ItemCard = (props) => {
 };
 
 const TextListItem = (props) => {
-  const { title, content } = props;
+  const { title, content, isUrl = false } = props;
   const [snackbarStatus, setSnackbarStatus] = React.useState(false);
 
   const showSnackbar = () => {
@@ -338,13 +343,24 @@ const TextListItem = (props) => {
     setSnackbarStatus(false);
   };
 
-
+  const renderContent = () => {
+    return isUrl ?
+      (
+        <a
+          href={`https://${content}`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {content}
+        </a>
+      ) : content;
+  };
   return (<>
     <ListItem alignItems="flex-start">
       <CopyToClipboard text={content} onCopy={() => { showSnackbar(); }}>
         <ListItemIcon ><IconButton><FileCopyIcon /></IconButton></ListItemIcon>
       </CopyToClipboard>
-      <ListItemText style={{ whiteSpace: 'pre-wrap' }} primary={title} secondary={content} />
+      <ListItemText style={{ whiteSpace: 'pre-wrap' }} primary={title} secondary={renderContent()} />
     </ListItem>
     <Snackbar
       anchorOrigin={{

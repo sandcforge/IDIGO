@@ -20,11 +20,10 @@ export const ProductPage = () => {
   const fetchProductDetailsById = async (productId) => {
     try {
       dispatch(actionSetApiLoading(true));
-      const EndpointOfFindProduct = `https://www.snailsmall.com/Goods/FindPage?data={"Criterion":{"GodId":"${productId}"},"PageIndex":0,"PageSize":1}`;
-      const result0 = await axios.post('/api/proxy', { method: 'POST', url: EndpointOfFindProduct });
-      const productList = result0.data.Data.DataBody;
-      if (productList && productList[0]) {
-        setProductDetails(productList[0]);
+      const EndpointOfFindProduct = `https://www.snailsmall.com/Goods/GetById?data={"GodId":${productId}}`;
+      const result = await axios.post('/api/proxy', { method: 'POST', url: EndpointOfFindProduct });
+      if (result.data.ResCode === '01') {
+        setProductDetails(result.data.Data);
       }
       else {
         throw new Error('无效的商品ID！');

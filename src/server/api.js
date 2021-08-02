@@ -81,6 +81,7 @@ const miscRoutes = (app) => {
         _customerService: 1,
         OrdCode: 1,
         OrdId: 1,
+	OrdAppTotalMoney: 1,
       });
       res.json(o);
     }

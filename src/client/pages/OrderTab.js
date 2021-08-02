@@ -33,7 +33,8 @@ export const OrderTab = (props) => {
   const [orderCodeTextFieldValue, setOrderCodeTextFieldValue] = useState('');
   const [receiverPhoneTextFieldValue, setReceiverPhoneTextFieldValue] = useState('');
 
-  const isAdmin = useSelector(state => state.app.accessRole === APP_CONST.ACCESS_ROLE_ADMIN);
+  const mustProvideReceiverPhone = useSelector(state => state.app.accessRole !== APP_CONST.ACCESS_ROLE_ADMIN);
+  const showExpressOrderNumber = useSelector(state => state.app.accessRole === APP_CONST.ACCESS_ROLE_ADMIN);
 
   const dispatch = useDispatch();
 
@@ -51,7 +52,7 @@ export const OrderTab = (props) => {
       if (isNaN(orderCodeTextFieldValue)) {
         throw new Error('无效的订单号！');
       }
-      if (!isAdmin
+      if (mustProvideReceiverPhone
         && (isNaN(receiverPhoneTextFieldValue)
           || receiverPhoneTextFieldValue.toString().length < 8)) {
         throw new Error('无效的电话号码！');
@@ -77,7 +78,7 @@ export const OrderTab = (props) => {
       }
 
 
-      if (!isAdmin
+      if (mustProvideReceiverPhone
         && orderSummary.OrdReceiverMobile !== receiverPhoneTextFieldValue
         && !orderSummary.OrdRemark.includes(receiverPhoneTextFieldValue)
       ) {
@@ -88,7 +89,6 @@ export const OrderTab = (props) => {
       const result2 = await axios.post('/api/proxy', { method: 'POST', url: EndpointOfLogisticSummary });
       const logisticSummary = result2.data.Data;
       dispatch(actionSetApiLoading(false));
-      console.log({ orderSummary, logisticSummary });
       setOrderDetails({ orderSummary, logisticSummary });
     }
     catch (err) {
@@ -156,6 +156,20 @@ export const OrderTab = (props) => {
             />
           </ListItem>
 
+          {showExpressOrderNumber &&
+            <ListItem >
+              <ListItemIcon>
+                <AssignmentIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary={"物流单号"}
+                secondary={`${orderDetails.logisticSummary.SorShowExpressUrl}: ${orderDetails.logisticSummary.SorShowWaybillNo}`}
+              />
+            </ListItem>
+          }
+
+
+
           <ListItem >
             <ListItemIcon>
               <EventIcon />
@@ -214,7 +228,7 @@ export const OrderTab = (props) => {
         onChange={handleOrderCodeTextFieldOnChange}
       />
     </Box>
-    {!isAdmin && <Box my={1}>
+    {mustProvideReceiverPhone && <Box my={1}>
       <TextField
         id="standard-basic"
         fullWidth={true}

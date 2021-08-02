@@ -9,14 +9,19 @@ const miscRoutes = (app) => {
   app.post('/api/getcollections', async (req, res) => {
     const { pageSize, pageIndex } = req.body;
     try {
-      const o = await collectionGoods.aggregate([{
-        "$match": { _updateAt: { $gte: Date.now() - 1000 * 3600 * 24 * 7 } }
-      }, {
-        "$limit": pageSize
-      }, {
-        "$skip": pageIndex * pageSize
-      }]);
-
+      // We update collection everyday in background, if one product is not
+      // updated for one week, we acclaim it is offline, and do not show in
+      // the collection. dev mode does not have this mechanism, so remove
+      // this logic.
+      const o = await collectionGoods
+        .findAsCursor({
+          _updateAt: {
+            $gte: envConfig.nodeEnv === 'production' ? Date.now() - 1000 * 3600 * 24 * 7 : 0
+          }
+        })
+        .skip(pageIndex * pageSize)
+        .limit(pageSize)
+        .toArray();
       res.json(o);
     }
     catch (e) {
@@ -81,7 +86,7 @@ const miscRoutes = (app) => {
         _customerService: 1,
         OrdCode: 1,
         OrdId: 1,
-	OrdAppTotalMoney: 1,
+        OrdAppTotalMoney: 1,
       });
       res.json(o);
     }

@@ -105,7 +105,11 @@ export const OrderTab = (props) => {
 
   const renderOrderDetails = () => {
     return (<>
-      <FolderCard avatar={<InfoIcon />} title={'订单详情'}>
+      <FolderCard
+        defaultExpansion={true}
+        avatar={<InfoIcon />}
+        title={'订单详情'}
+      >
         <List component="nav" >
           <ListItem >
             <ListItemIcon>
@@ -155,7 +159,6 @@ export const OrderTab = (props) => {
               secondary={orderDetails.orderSummary.OrdRemark}
             />
           </ListItem>
-
           {showExpressOrderNumber &&
             <ListItem >
               <ListItemIcon>
@@ -167,9 +170,6 @@ export const OrderTab = (props) => {
               />
             </ListItem>
           }
-
-
-
           <ListItem >
             <ListItemIcon>
               <EventIcon />
@@ -179,7 +179,6 @@ export const OrderTab = (props) => {
               secondary={orderDetails.orderSummary.OrdCreateTime}
             />
           </ListItem>
-
         </List>
       </FolderCard>
 

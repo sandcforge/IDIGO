@@ -31,8 +31,8 @@ const useStyles = makeStyles((theme) => ({
 
 export const FolderCard = (props) => {
   const classes = useStyles();
-  const [expanded, setExpanded] = React.useState(false);
-  const {avatar, subheader, title, children} = props;
+  const {avatar, subheader, title, children, defaultExpansion = false} = props;
+  const [expanded, setExpanded] = React.useState(defaultExpansion);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);

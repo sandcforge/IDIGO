@@ -21,13 +21,12 @@ import TelegramIcon from '@material-ui/icons/Telegram';
 
 import { actionSetApiLoading, actionSetSnackbar } from '../redux/actions.js';
 import { APP_CONST } from '../constants.js';
-import { mDelay } from '../utils.js';
 import { ItemCard } from '../components/ItemCard.js';
 
 export const CartTab = (props) => {
   const dispatch = useDispatch();
   const [alertOpen, setAlertOpen] = React.useState(false);
-  const [newOrders, setNewOrders] = React.useState([]);
+  const [newOrder, setNewOrder] = React.useState(null);
   const isAdmin = useSelector(state => state.app.accessRole === APP_CONST.ACCESS_ROLE_ADMIN);
   const isCustomerService = useSelector(state => state.app.accessRole === APP_CONST.ACCESS_ROLE_CUSTOMER_SERVICE);
   const mustProvideRevenue = isAdmin || isCustomerService;
@@ -45,33 +44,35 @@ export const CartTab = (props) => {
   const memoRef = useRef(null);
   const revenueRef = useRef(null);
 
-  const buildReq = (item) => {
+  const buildReq = () => {
+
+    const productList = cart.map(item => ({
+      "OgoGoodsCode": item.productDetails.GodCode,
+      "OgoBarcode": item.productDetails.GodBarcode,
+      "OgoName": item.productDetails.GodName,
+      "OgoGoodsTitle": item.productDetails.GodAppTitle,
+      "OgoBrand": item.productDetails.GodBrand,
+      "OgoNumber": item.productNum.toString(),
+      "OgoPrice": item.productDetails.GodPresentPrice,
+      "OgoTotalPrice": item.productNum * item.productDetails.GodPresentPrice
+    }));
+    const totalPrice = productList.reduce((a, item) => a + item.OgoTotalPrice, 0);
+
     const ret = {
       "OrdReceiverName": '便捷地址',
       "OrdReceiverMobile": '11111111111',
       "OrdReceiverCardNo": '',
-      "OrdReceiverPost": "",
+      "OrdReceiverPost": '',
       "OrdReceiverProvince": "备注",
       "OrdReceiverCity": "备注",
       "OrdReceiverCounty": "备注",
       "OrdReceiverAddress": '详细收件人信息填写在备注里',
       "OrdRemark": memoRef.current.value,
-      "OrdAppTotalMoney": item.productNum * item.productDetails.GodPresentPrice,
+      "OrdAppTotalMoney": totalPrice,
       "OrdAppCouponMoney": 0,
-      "OrdAppPaymentMoney": item.productNum * item.productDetails.GodPresentPrice,
+      "OrdAppPaymentMoney": totalPrice,
       "OrdAppCouponCode": "",
-      "EcmOrderGoodsInfos": [
-        {
-          "OgoGoodsCode": item.productDetails.GodCode,
-          "OgoBarcode": item.productDetails.GodBarcode,
-          "OgoName": item.productDetails.GodName,
-          "OgoGoodsTitle": item.productDetails.GodAppTitle,
-          "OgoBrand": item.productDetails.GodBrand,
-          "OgoNumber": item.productNum.toString(),
-          "OgoPrice": item.productDetails.GodPresentPrice,
-          "OgoTotalPrice": item.productNum * item.productDetails.GodPresentPrice
-        },
-      ],
+      "EcmOrderGoodsInfos": productList,
     };
     return ret;
   };
@@ -110,56 +111,32 @@ export const CartTab = (props) => {
     handleAlertClose();
     dispatch(actionSetApiLoading(true));
 
-    const totalCost = cart.reduce((a, item) => a + item.productNum * item.productDetails.GodPresentPrice, 0);
+    try {
+      const EndpointOfAddOrder = `https://www.snailsmall.com/Order/Add?data=${JSON.stringify(buildReq())}&buyercode=${APP_CONST.MY_BUYER_CODE}`;
+      const result = await axios.post('/api/proxy', { method: 'POST', url: EndpointOfAddOrder });
+      if (result.data.ResCode != '01') {
+        throw new Error(result.data.ResMessage);
+      }
 
-    const ret = await cart.reduce(async (a, item) => {
-      let acc = undefined;
-      try {
-        // This line MUST be here at the beginning.
-        acc = await a;
-        await mDelay(500);
-        const EndpointOfAddOrder = `https://www.snailsmall.com/Order/Add?data=${JSON.stringify(buildReq(item))}&buyercode=${APP_CONST.MY_BUYER_CODE}`;
-        const result = await axios.post('/api/proxy', { method: 'POST', url: EndpointOfAddOrder });
-        if (result.data.ResCode != '01') {
-          throw new Error(result.data.ResMessage);
-        }
-        //Backup the revenue and customerservice index.
-        if (mustProvideRevenue) {
-          const partialRevenue = item.productNum * item.productDetails.GodPresentPrice / totalCost * parseFloat(revenueRef.current.value);
-          result.data.Data._revenue = partialRevenue;
-          result.data.Data._customerService = customerServiceIndex;
-          await axios.post('/api/addorder', { data: result.data.Data });
-        }
+      //Backup the revenue and customerservice index.
+      if (mustProvideRevenue) {
+        result.data.Data._revenue = parseFloat(revenueRef.current.value);
+        result.data.Data._customerService = customerServiceIndex;
+        await axios.post('/api/addorder', { data: result.data.Data });
+      }
+      dispatch(actionSetApiLoading(false));
+      setNewOrder(result.data.Data);
+    }
+    catch (err) {
 
-        return [...acc, result.data.Data];
-      }
-      catch (err) {
-        return [...acc, { error: err.message }];
-      }
-    }, []);
+      dispatch(actionSetApiLoading(false));
+      dispatch(actionSetSnackbar({
+        visible: true,
+        message: err.message,
+        autoHideDuration: 5000,
+      }));
 
-    const _newOrder = ret.map((order, i) => {
-      if (order.error) {
-        return {
-          productName: cart[i].productDetails.GodAppTitle,
-          productImage: cart[i].productDetails.GodImageUrl,
-          productNumber: cart[i].productNum,
-          orderCode: null,
-          error: order.error,
-        };
-      }
-      else {
-        return {
-          productName: order.EcmOrderGoodsInfos[0].OgoGoodsTitle,
-          productImage: order.EcmOrderGoodsInfos[0].OgoGoodsImageUrl,
-          productNumber: order.EcmOrderGoodsInfos[0].OgoNumber,
-          orderCode: order.OrdCode,
-          error: null,
-        };
-      }
-    });
-    dispatch(actionSetApiLoading(false));
-    setNewOrders(_newOrder);
+    }
   };
   return (<>
     <Box my={1}>
@@ -192,7 +169,7 @@ export const CartTab = (props) => {
     >
       提交订单
     </Button>
-    {newOrders.map((order, i) => <OrderSummary key={i} details={order} />)}
+    {newOrder && <OrderSummary details={newOrder} />}
     <Dialog
       open={alertOpen}
       onClose={handleAlertClose}
@@ -236,22 +213,12 @@ const OrderSummary = (prop) => {
     <Card style={classes.root}>
       <CardContent>
         <ListItem>
-          <ListItemAvatar>
-            <Avatar src={details.productImage} />
-          </ListItemAvatar>
-
-          <ListItemText
-            primary={details.productName}
-            secondary={`数量：${details.productNumber}`}
-          />
-        </ListItem>
-        <ListItem>
           <ListItemIcon >
             <InfoIcon />
           </ListItemIcon>
           <ListItemText
-            primary= {details.error === null ? '订单号' : '错误信息'}
-            secondary={details.error === null ? details.orderCode : details.error}
+            primary={'订单号'}
+            secondary={details.OrdCode}
           />
         </ListItem>
       </CardContent>

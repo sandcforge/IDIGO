@@ -12,6 +12,7 @@ export const actionIncreaseTabPageIndex = createAction('IncreaseTabPageIndex');
 export const actionResetTab = createAction('ResetTab');
 export const actionSetApiLoading = createAction('SetApiLoading');
 export const actionUpdateCart = createAction('UpdateCart');
+export const actionResetCart = createAction('ResetCart');
 export const actionSetSnackbar = createAction('SetSnackbar');
 
 export const actionSetHasMoreOnTab = createAction('SetHasMoreOnTab', (tabIndex, hasMore) => {

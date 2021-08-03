@@ -14,6 +14,7 @@ import {
   actionSetApiLoading,
   actionSetCustomerService,
   actionUpdateCart,
+  actionResetCart,
   actionSetSnackbar,
   actionGetPruductMisc,
   actionAddProductToCollection,
@@ -131,6 +132,9 @@ export const rootReducer = createReducer(initialState, (builder) => {
           state.data.searchResults = [];
           break;
       }
+    })
+    .addCase(actionResetCart, (state, action) => {
+      state.ui.cart = [];
     })
     .addCase(actionUpdateCart, (state, action) => {
       const { productDetails, productNum } = action.payload;

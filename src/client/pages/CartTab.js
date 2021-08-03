@@ -19,7 +19,7 @@ import TextField from '@material-ui/core/TextField';
 import SearchIcon from '@material-ui/icons/Search';
 import TelegramIcon from '@material-ui/icons/Telegram';
 
-import { actionSetApiLoading, actionSetSnackbar } from '../redux/actions.js';
+import { actionResetCart, actionSetApiLoading, actionSetSnackbar } from '../redux/actions.js';
 import { APP_CONST } from '../constants.js';
 import { ItemCard } from '../components/ItemCard.js';
 
@@ -125,6 +125,7 @@ export const CartTab = (props) => {
         await axios.post('/api/addorder', { data: result.data.Data });
       }
       dispatch(actionSetApiLoading(false));
+      dispatch(actionResetCart());
       setNewOrder(result.data.Data);
     }
     catch (err) {

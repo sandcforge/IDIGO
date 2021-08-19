@@ -26,6 +26,7 @@ import { ItemCard } from '../components/ItemCard.js';
 export const CartTab = (props) => {
   const dispatch = useDispatch();
   const [alertOpen, setAlertOpen] = React.useState(false);
+  const [submitEnabled, setSubmitEnabled] = React.useState(true);
   const [newOrder, setNewOrder] = React.useState(null);
   const isAdmin = useSelector(state => state.app.accessRole === APP_CONST.ACCESS_ROLE_ADMIN);
   const isCustomerService = useSelector(state => state.app.accessRole === APP_CONST.ACCESS_ROLE_CUSTOMER_SERVICE);
@@ -110,7 +111,7 @@ export const CartTab = (props) => {
   const submitOrder = async () => {
     handleAlertClose();
     dispatch(actionSetApiLoading(true));
-
+    setSubmitEnabled(false);
     try {
       const EndpointOfAddOrder = `https://www.snailsmall.com/Order/Add?data=${JSON.stringify(buildReq())}&buyercode=${APP_CONST.MY_BUYER_CODE}`;
       const result = await axios.post('/api/submitorder', { url: 'https://www.snailsmall.com/Order/Add', data: { data: buildReq(), buyercode: APP_CONST.MY_BUYER_CODE } });
@@ -125,12 +126,14 @@ export const CartTab = (props) => {
         await axios.post('/api/addorder', { data: result.data.Data });
       }
       dispatch(actionSetApiLoading(false));
+      setSubmitEnabled(true);
       dispatch(actionResetCart());
       setNewOrder(result.data.Data);
     }
     catch (err) {
 
       dispatch(actionSetApiLoading(false));
+      setSubmitEnabled(true);
       dispatch(actionSetSnackbar({
         visible: true,
         message: err.message,
@@ -164,6 +167,7 @@ export const CartTab = (props) => {
     <Button
       variant="contained"
       fullWidth={true}
+      disabled={!submitEnabled}
       color="primary"
       startIcon={<TelegramIcon />}
       onClick={presubmitOrder}

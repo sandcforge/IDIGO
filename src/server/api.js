@@ -1,4 +1,5 @@
 const axios = require('axios');
+const FormData = require('form-data');
 const { collectionGoods, orders, products } = require('./db.js');
 const { envConfig } = require('./constants.js');
 const miscRoutes = (app) => {
@@ -140,6 +141,23 @@ const miscRoutes = (app) => {
       console.log('proxy POST');
       const retRaw = await axios.post(encodeURI(url), data);
       res.json(retRaw.data);
+    }
+  });
+
+  app.post('/api/submitorder', async (req, res) => {
+    const { url, data } = req.body;
+    const formData = new FormData();
+    formData.append('data', JSON.stringify(data.data));
+    formData.append('buyercode', data.buyercode);
+    try {
+      const retRaw = await axios.post(url, formData, {
+        headers: formData.getHeaders(),
+      });
+      res.json(retRaw.data);
+    }
+    catch (err) {
+      console.log(err);
+      res.sendStatus(404);
     }
   });
 };

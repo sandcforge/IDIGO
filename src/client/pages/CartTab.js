@@ -113,7 +113,7 @@ export const CartTab = (props) => {
 
     try {
       const EndpointOfAddOrder = `https://www.snailsmall.com/Order/Add?data=${JSON.stringify(buildReq())}&buyercode=${APP_CONST.MY_BUYER_CODE}`;
-      const result = await axios.post('/api/proxy', { method: 'POST', url: EndpointOfAddOrder });
+      const result = await axios.post('/api/submitorder', { url: 'https://www.snailsmall.com/Order/Add', data: { data: buildReq(), buyercode: APP_CONST.MY_BUYER_CODE } });
       if (result.data.ResCode != '01') {
         throw new Error(result.data.ResMessage);
       }

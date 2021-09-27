@@ -1,6 +1,5 @@
 const { default: axios } = require('axios');
 const schedule = require('node-schedule');
-const { ProvidePlugin } = require('webpack');
 const { envConfig } = require('./constants');
 const { collectionGoods } = require('./db');
 

@@ -25,9 +25,10 @@ export const ListView = (props) => {
   />);
 
   const isAdmin = useSelector(state => state.app.accessRole === APP_CONST.ACCESS_ROLE_ADMIN);
+  const isCustomerService = useSelector(state => state.app.accessRole === APP_CONST.ACCESS_ROLE_CUSTOMER_SERVICE);
 
   const listDataOnWhiteList =
-    (whitelistSet && (!isAdmin)) ?
+    (whitelistSet && (!(isAdmin || isCustomerService))) ?
       listData.filter(item => whitelistSet.has(item.GodId)) :
       listData;
 

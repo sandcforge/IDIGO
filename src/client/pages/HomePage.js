@@ -88,7 +88,7 @@ export const HomePage = () => {
           aria-label="simple tabs example"
         >
           <Tab value={UI_CONST.COLLECTION_TAB_INDEX} label="精选" {...a11yProps(UI_CONST.COLLECTION_TAB_INDEX)} />
-          {isAdmin && <Tab value={UI_CONST.CATEGORY_TAB_INDEX} label="分类" {...a11yProps(UI_CONST.CATEGORY_TAB_INDEX)} />}
+          {(isCustomerService || isAdmin) && <Tab value={UI_CONST.CATEGORY_TAB_INDEX} label="分类" {...a11yProps(UI_CONST.CATEGORY_TAB_INDEX)} />}
           <Tab value={UI_CONST.SEARCH_TAB_INDEX} label="搜索" {...a11yProps(UI_CONST.SEARCH_TAB_INDEX)} />
           <Tab value={UI_CONST.ORDER_TAB_INDEX} label="订单" {...a11yProps(UI_CONST.ORDER_TAB_INDEX)} />
           {(isCustomerService || isAdmin) && <Tab value={UI_CONST.CART_TAB_INDEX} label={renderCartTabTitle()} {...a11yProps(UI_CONST.CART_TAB_INDEX)} />}
@@ -98,7 +98,7 @@ export const HomePage = () => {
       <TabPanel value={rootTabValue} index={UI_CONST.COLLECTION_TAB_INDEX}>
         <CollectionTab />
       </TabPanel>
-      {isAdmin &&
+      {(isCustomerService || isAdmin) &&
         (<TabPanel value={rootTabValue} index={UI_CONST.CATEGORY_TAB_INDEX}>
           <CategoryTab />
         </TabPanel>)}
